@@ -2,6 +2,8 @@
 #include "game.h"
 #include "entityBlackHole.h"
 
+#include <cstdio>
+
 #define VIRTUAL_SCREEN_WIDTH 800 // FIX ME
 #define VIRTUAL_SCREEN_HEIGHT 600 // FIX ME
 
@@ -85,7 +87,7 @@ static int runThread(void *ptr)
                         // Add drag
                         particle->speedX *= particle->drag;
                         particle->speedY *= particle->drag;
-                
+
                         Point3d speedClamp(particle->speedX, particle->speedY, 0);
                         speedClamp = mathutils::clamp2dVector(speedClamp, 2);
                         particle->speedX = speedClamp.x;
@@ -144,10 +146,14 @@ particle::particle()
     }
 
     // Thread stuff
-    mRunThread = SDL_CreateThread(runThread, "runThread");
+    mRunThread = SDL_CreateThread(runThread, "runThread", NULL);
     if (!mRunThread)
     {
+#ifdef USE_SDL
+		printf("Couldn't create particle run thread: %s\n", SDL_GetError());
+#else
         OutputDebugString(L"Couldn't create particle run thread\n");
+#endif
     }
 
 }

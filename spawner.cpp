@@ -1,6 +1,9 @@
 #include "spawner.h"
 #include "game.h"
-#include <math.h>
+
+#include <cmath>
+#include <cstdio>
+#include <algorithm>
 
 #define MIN_SPAWN_DISTANCE 30
 #define MAX_SPAWN_INDEX 40
@@ -100,7 +103,7 @@ void spawner::run(void)
 
         if (player->mJoined && (player->getState() == entity::ENTITY_STATE_INACTIVE))
         {
-            if (theGame.numPlayers() == 1)
+            if (theGame->numPlayers() == 1)
             {
                 mSpawnWaitTimer = 50;
             }
@@ -116,7 +119,7 @@ void spawner::run(void)
                 }
                 else
                 {
-                    if (theGame.numPlayers() == 1)
+                    if (theGame->numPlayers() == 1)
                     {
 	    			    game::mGameMode = game::GAMEMODE_GAMEOVER_TRANSITION;
                     }
@@ -226,49 +229,49 @@ void spawner::run(void)
                 // SWARM TYPE
                 //
                 case 0:
-                    newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_GRUNT, max(20, ceil(numEnemyGrunt * mSpawnProgress)));
+                    newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_GRUNT, std::max(20, (int)ceil(numEnemyGrunt * mSpawnProgress)));
                     break;
                 case 1:
-                    newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_WEAVER, max(20, ceil(numEnemyWeaver * mSpawnProgress)));
+                    newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_WEAVER, std::max(20, (int)ceil(numEnemyWeaver * mSpawnProgress)));
                     break;
                 case 2:
                     if (index > 4)
                     {
-                        newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_SNAKE, max(8, ceil(numEnemySnake * mSpawnProgress)));
+                        newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_SNAKE, std::max(8, (int)ceil(numEnemySnake * mSpawnProgress)));
                     }
                     break;
                 case 3:
-                    newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_SPINNER, max(20, ceil(numEnemySpinner * mSpawnProgress)));
+                    newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_SPINNER, std::max(20, (int)ceil(numEnemySpinner * mSpawnProgress)));
                     break;
                 case 4:
                     if (index > 4)
                     {
-                        newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_BLACKHOLE, max(4, ceil(mathutils::frandFrom0To1() * numEnemyBlackHole * mSpawnProgress)));
+                        newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_BLACKHOLE, std::max(4, (int)ceil(mathutils::frandFrom0To1() * numEnemyBlackHole * mSpawnProgress)));
                     }
                     break;
                 case 5:
                     if (index > 8)
                     {
-                        newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_MAYFLY, max(50, ceil(numEnemyMayfly * mSpawnProgress)));
+                        newWave(WAVETYPE_SWARM, entity::ENTITY_TYPE_MAYFLY, std::max(50, (int)ceil(numEnemyMayfly * mSpawnProgress)));
                     }
                     break;
                 //
                 // RUSH TYPE
                 //
                 case 6:
-                    newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_GRUNT, max(20, ceil(numEnemyGrunt * mSpawnProgress) / 2));
+                    newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_GRUNT, std::max(20, (int)ceil(numEnemyGrunt * mSpawnProgress) / 2));
                     break;
                 case 7:
-                    newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_WEAVER, max(20, ceil(numEnemyWeaver * mSpawnProgress) / 2));
+                    newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_WEAVER, std::max(20, (int)ceil(numEnemyWeaver * mSpawnProgress) / 2));
                     break;
                 case 8:
                     if (index > 4)
                     {
-                        newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_SNAKE, max(8, ceil(numEnemySnake * mSpawnProgress) / 2));
+                        newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_SNAKE, std::max(8, (int)ceil(numEnemySnake * mSpawnProgress) / 2));
                     }
                     break;
                 case 9:
-                    newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_SPINNER, max(20, ceil(numEnemySpinner * mSpawnProgress) / 2));
+                    newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_SPINNER, std::max(20, (int)ceil(numEnemySpinner * mSpawnProgress) / 2));
                     break;
                 case 10:
 //                    newWave(WAVETYPE_RUSH, entity::ENTITY_TYPE_BLACKHOLE, ceil(mathutils::frandFrom0To1() * numEnemyBlackHole * mSpawnProgress) / 2);
@@ -317,8 +320,8 @@ void spawner::spawnEntities(entity::EntityType type, int numWanted)
     const float margin = 15;
     const float leftEdge = margin;
     const float bottomEdge = margin;
-    const float rightEdge = (theGame.mGrid.extentX()-1)-margin;
-    const float topEdge = (theGame.mGrid.extentY()-1)-margin;
+    const float rightEdge = (theGame->mGrid.extentX()-1)-margin;
+    const float topEdge = (theGame->mGrid.extentY()-1)-margin;
 
 
     int numHave = game::mEnemies.getNumActiveEnemiesOfType(type);
@@ -360,8 +363,8 @@ void spawner::runWaves()
             static const float margin = 2;
             static const float leftEdge = margin;
             static const float bottomEdge = margin;
-            static const float rightEdge = (theGame.mGrid.extentX()-1)-margin;
-            static const float topEdge = (theGame.mGrid.extentY()-1)-margin;
+            static const float rightEdge = (theGame->mGrid.extentX()-1)-margin;
+            static const float topEdge = (theGame->mGrid.extentY()-1)-margin;
 
             if (wd->mWaveType == WAVETYPE_RUSH)
             {
@@ -445,8 +448,8 @@ void spawner::runWaves()
 
                                     const float leftEdge = radius;
                                     const float bottomEdge = radius;
-                                    const float rightEdge = (theGame.mGrid.extentX() - radius)-1;
-                                    const float topEdge = (theGame.mGrid.extentY() - radius)-1;
+                                    const float rightEdge = (theGame->mGrid.extentX() - radius)-1;
+                                    const float topEdge = (theGame->mGrid.extentY() - radius)-1;
 
                                     if (spawnPoint.x < leftEdge)
                                     {

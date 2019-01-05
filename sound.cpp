@@ -1,6 +1,7 @@
 #include "sound.h"
 #include "game.h"
 
+#include <cstdio>
 
 #define SAMPLE_SIZE 512
 #define NUM_TRACKS  200
@@ -12,9 +13,7 @@ float* sound::mRightSamples;
 
 sound::sound()
 {
-    OutputDebugString(L"Initing sound\n");
-
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
+    printf("Initing sound\n");
 
     sound::mTracks = new TRACK[NUM_TRACKS];
 
@@ -49,8 +48,6 @@ sound::~sound()
     delete mRightSamples;
 
     SDL_UnlockAudio();
-
-    SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK);
 }
 
 void sound::bufferCallback(void *unused, Uint8 *stream, int len)
@@ -156,15 +153,23 @@ void sound::loadTrack(char *file, int track, float volume, bool loop/*=false*/)
     // Load the sound file and convert it to 16-bit stereo at 44Hz
     if ( SDL_LoadWAV(file, &wave, &data, &dlen) == NULL )
     {
+#ifdef USE_SDL
+		printf("Failed loading audio track %d: %s\n", track, SDL_GetError());
+#else
         TCHAR s[512];
         wsprintf(s, L"Failed loading audio track %d\n", track);
         OutputDebugString(s);
+#endif
         return;
     }
 
+#ifdef USE_SDL
+	printf("Loaded audio track %d\n", track);
+#else
     TCHAR s[512];
     wsprintf(s, L"Loaded audio track %d\n", track);
     OutputDebugString(s);
+#endif
 
     desired = wave;
     desired.channels = 2;
@@ -188,9 +193,13 @@ void sound::loadTrack(char *file, int track, float volume, bool loop/*=false*/)
 
     if (SDL_ConvertAudio(&cvt) != 0)
     {
+#ifdef USE_SDL
+		printf("Failed to convert track %d: %s\n", track, SDL_GetError());
+#else
         TCHAR s[256];
         wsprintf(s, L"Failed to convert track %d\n", track);
         OutputDebugString(s);
+#endif
     }
 
     if (mTracks[track].data)

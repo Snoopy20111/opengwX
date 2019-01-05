@@ -17,8 +17,8 @@ entityPlayer1::entityPlayer1()
     mMissilesPen = vector::pen(.96, 1, .68, 40, 5);
     mFontPen = vector::pen(1, 1, 0, 40, 5);
 
-    mPos.x = theGame.mGrid.extentX() / 2;
-    mPos.y = theGame.mGrid.extentY() / 2;
+    mPos.x = theGame->mGrid.extentX() / 2;
+    mPos.y = theGame->mGrid.extentY() / 2;
     mPos.z = 0;
 
     int i=0;
@@ -52,15 +52,15 @@ void entityPlayer1::initPlayerForGame()
 {
     player::initPlayerForGame();
 
-    if ((theGame.numPlayers() == 1) || (theGame.mGameMode != game::GAMEMODE_PLAYING))
+    if ((theGame->numPlayers() == 1) || (theGame->mGameMode != game::GAMEMODE_PLAYING))
     {
         mPen = vector::pen(1, 1, 1, 1, 12);
         mExhaustPen = vector::pen(.9, 1, .35, 1, 5);
         mMissilesPen = vector::pen(.9, 1, .35, 1, 5);
         mFontPen = vector::pen(1, 1, 0, 1, 5);
 
-        mPos.x = theGame.mGrid.extentX() / 2;
-        mPos.y = theGame.mGrid.extentY() / 2;
+        mPos.x = theGame->mGrid.extentX() / 2;
+        mPos.y = theGame->mGrid.extentY() / 2;
         mPos.z = 0;
     }
     else
@@ -70,8 +70,8 @@ void entityPlayer1::initPlayerForGame()
         mMissilesPen = vector::pen(1, .4, .4, 1, 5);
         mFontPen = vector::pen(1, .4, .4, 1, 5);
 
-        mPos.x = (theGame.mGrid.extentX() / 2) - 9;
-        mPos.y = (theGame.mGrid.extentY() / 2) + 9;
+        mPos.x = (theGame->mGrid.extentX() / 2) - 9;
+        mPos.y = (theGame->mGrid.extentY() / 2) + 9;
         mPos.z = 0;
     }
 
@@ -81,15 +81,15 @@ void entityPlayer1::spawnTransition()
 {
     player::spawnTransition();
 
-    if (theGame.numPlayers() > 1)
+    if (theGame->numPlayers() > 1)
     {
         mPen = vector::pen(1, .4, .4, 1, 12);
         mExhaustPen = vector::pen(1, .4, .4, 1, 5);
         mMissilesPen = vector::pen(1, .4, .4, 1, 5);
         mFontPen = vector::pen(1, .4, .4, 40, 5);
 
-        mPos.x = (theGame.mGrid.extentX() / 2) - 9;
-        mPos.y = (theGame.mGrid.extentY() / 2) + 9;
+        mPos.x = (theGame->mGrid.extentX() / 2) - 9;
+        mPos.y = (theGame->mGrid.extentY() / 2) + 9;
         mPos.z = 0;
         mAngle = 0;
     }

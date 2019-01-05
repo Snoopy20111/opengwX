@@ -1,6 +1,8 @@
 #include "highscore.h"
 #include "game.h"
 
+#include <cstdio>
+
 extern scene oglScene;
 extern vector::pen defaultFontPen;
 

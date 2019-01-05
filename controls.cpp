@@ -2,6 +2,8 @@
 #include "mathutils.h"
 #include "scene.h"
 
+#include <cstdio>
+
 // XBOX JOYSTICK VALUES
 
 #define AXIS_MAX 32768
@@ -20,14 +22,19 @@ const float CLAMPVALUE = .3;
 
 controls::controls()
 {
-    OutputDebugString(L"Initing controls\n");
-
     // Look for an xbox controller to use
     mNumJoysticks = SDL_NumJoysticks();
+
+#ifdef USE_SDL
+    printf("Initing controls\n");
+	printf("Found %d joysticks\n", mNumJoysticks);
+#else
+    OutputDebugString(L"Initing controls\n");
 
     TCHAR s[256];
     wsprintf(s, L"Found %d joysticks\n", mNumJoysticks);
     OutputDebugString(s);
+#endif
 
     mControllers[0] = NULL;
     mControllers[1] = NULL;

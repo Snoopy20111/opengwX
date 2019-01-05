@@ -8,8 +8,8 @@ stars::stars()
     const float overscan = 700;
     const float leftEdge = 0-overscan;
     const float bottomEdge = 0-overscan;
-    const float rightEdge = (theGame.mGrid.extentX() + overscan);
-    const float topEdge = (theGame.mGrid.extentY() + overscan);
+    const float rightEdge = (theGame->mGrid.extentX() + overscan);
+    const float topEdge = (theGame->mGrid.extentY() + overscan);
 
     mStars = new STAR[NUM_STARS];
 

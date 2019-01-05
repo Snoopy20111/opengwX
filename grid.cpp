@@ -8,6 +8,7 @@
 #include "grid.h"
 #include "game.h"
 
+#include <cstdio>
 
 // The Grid
 // GW is 33w x 22h
@@ -301,10 +302,14 @@ grid::grid()
     }
 
     // Thread stuff
-    mRunThread = SDL_CreateThread(runThread, "runThread");
+    mRunThread = SDL_CreateThread(runThread, "runThread", NULL);
     if (!mRunThread)
     {
+#ifdef USE_SDL
+		printf("Couldn't create grid run thread: %s\n", SDL_GetError());
+#else
         OutputDebugString(L"Couldn't create grid run thread\n");
+#endif
     }
 
 }

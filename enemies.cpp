@@ -2,6 +2,7 @@
 #include "game.h"
 #include "entityblackhole.h"
 
+#include <cstdio>
 
 static int idxWandererStart;
 static int idxWandererEnd;
@@ -151,9 +152,13 @@ enemies::enemies()
 		idxProtonEnd = entity-1;
     }
 
+#ifdef USE_SDL
+	printf("Num enemies created = %d\n", entity);
+#else
     TCHAR s[256];
     wsprintf(s, L"Num enemies created = %d\n", entity);
     OutputDebugString(s);
+#endif
 
     // Fill the rest of the list with empty entries
     for (int i=entity; i<NUM_ENEMIES; i++)

@@ -51,7 +51,7 @@ public:
         if (mValue >= 1)
         {
             // Create line entities for the shield lines
-            entityLine* line = theGame.mEnemies.getUnusedLine();
+            entityLine* line = theGame->mEnemies.getUnusedLine();
             if (line)
             {
                 line->setEdgeBounce(FALSE);

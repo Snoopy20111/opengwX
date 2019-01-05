@@ -3,7 +3,12 @@
 #include "menuSelectGameType.h"
 
 #include "game.h"
-game theGame;
+
+#include <cstdio>
+#include <memory>
+
+//game theGame;
+std::unique_ptr<game> theGame;
 
 int scene::mPass;
 bool scene::mEnableGridGlow = true;
@@ -18,6 +23,8 @@ vector::pen defaultFontPen(0, 1, 0, .6, 3);
 
 scene::scene()
 {
+	theGame.reset(new game);
+
 	mAttractModeTimer = 0;
 	mShowHighScores = FALSE;
 
@@ -58,7 +65,7 @@ scene::scene()
 
 void scene::run()
 {
-	theGame.run();
+	theGame->run();
 }
 
 void scene::draw(int pass)
@@ -95,7 +102,7 @@ void scene::draw(int pass)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-		theGame.draw(pass);
+		theGame->draw(pass);
 
 		glDisable(GL_BLEND);
 
@@ -438,7 +445,7 @@ void scene::drawNumLives()
 
 void scene::drawNumBombs()
 {
-    if (theGame.mGameType == game::GAMETYPE_SINGLEPLAYER)
+    if (theGame->mGameType == game::GAMETYPE_SINGLEPLAYER)
     {
         // 1 player display
 
@@ -482,7 +489,7 @@ void scene::drawScores()
 {
     BOOL gameover = (game::mGameMode != game::GAMEMODE_PLAYING);
 
-    if (theGame.mGameType == game::GAMETYPE_SINGLEPLAYER)
+    if (theGame->mGameType == game::GAMETYPE_SINGLEPLAYER)
     {
         // 1 player display
 

@@ -479,11 +479,11 @@ void entitySnake::draw()
 			glBegin(GL_LINES);
 
             progress = 1-progress;
-			
+
             float a = progress;
             if (a<0) a = 0;
             if (a>1) a = 1;
-			
+
             pen.a = a;
 
             mModel.Identity();
@@ -491,7 +491,7 @@ void entitySnake::draw()
             mModel.Rotate(mAngle);
             mModel.Translate(trans);
             mModel.emit(pen);
-			
+
             // *********************************************
 
             progress = progress + .25;
@@ -552,7 +552,7 @@ void entitySnake::draw()
             mSegments[i].draw();
         }
     }
-    
+
 }
 
 void entitySnake::indicateTransition()
@@ -578,8 +578,8 @@ void entitySnake::updateTarget()
     const float margin = 15;
     const float leftEdge = margin;
     const float bottomEdge = margin;
-    const float rightEdge = (theGame.mGrid.extentX()-1)-margin;
-    const float topEdge = (theGame.mGrid.extentY()-1)-margin;
+    const float rightEdge = (theGame->mGrid.extentX()-1)-margin;
+    const float topEdge = (theGame->mGrid.extentY()-1)-margin;
 
     if (mTarget.x < leftEdge)
         mTarget.x = leftEdge;

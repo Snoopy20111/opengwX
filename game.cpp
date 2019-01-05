@@ -1,6 +1,8 @@
 #include "game.h"
 #include "menuSelectGameType.h"
 
+#include <cstdio>
+
 // Statics
 sound game::mSound;
 particle game::mParticles;
@@ -109,7 +111,7 @@ game::game()
     for (int i=0; i<4; i++)
     {
         mAttractModeBlackHoles[i] = new entity();
-        mAttractModeBlackHoles[i]->setPos(Point3d(mathutils::frandFrom0To1() *theGame.mGrid.extentX(), mathutils::frandFrom0To1() * theGame.mGrid.extentY(), 0));
+        mAttractModeBlackHoles[i]->setPos(Point3d(mathutils::frandFrom0To1() *theGame->mGrid.extentX(), mathutils::frandFrom0To1() * theGame->mGrid.extentY(), 0));
         mAttractModeBlackHoles[i]->setEdgeBounce(FALSE);
 
         static float heading=mathutils::frandFrom0To1() * (2*PI);
@@ -406,7 +408,7 @@ void game::run()
         {
             mAttractModeBlackHoles[i]->setState(entity::ENTITY_STATE_RUNNING);
             mAttractModeBlackHoles[i]->run();
-            
+
             Point3d pos = mAttractModeBlackHoles[i]->getPos();
 
             attractor::Attractor* att = game::mAttractors.getAttractor();

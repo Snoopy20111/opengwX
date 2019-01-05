@@ -160,8 +160,8 @@ void entityBlackHole::run()
 
     const float leftEdge = getRadius();
     const float bottomEdge = getRadius();
-    const float rightEdge = (theGame.mGrid.extentX() - getRadius())-1;
-    const float topEdge = (theGame.mGrid.extentY() - getRadius())-1;
+    const float rightEdge = (theGame->mGrid.extentX() - getRadius())-1;
+    const float topEdge = (theGame->mGrid.extentY() - getRadius())-1;
 
     if (mPos.x < leftEdge)
     {
@@ -337,7 +337,7 @@ void entityBlackHole::hit(entity* aEntity)
         {
             mActivated = TRUE;
 
-            if (theGame.mGameMode == game::GAMEMODE_PLAYING)
+            if (theGame->mGameMode == game::GAMEMODE_PLAYING)
             {
                 if (mHumLoopSoundId == -1)
                     mHumLoopSoundId = game::mSound.playTrackGroup(SOUNDID_GRAVITYWELL_HUMLOOPA, SOUNDID_GRAVITYWELL_HUMLOOPF);
@@ -661,7 +661,7 @@ void entityBlackHole::drawRing()
         glLineWidth(mPen.lineRadius);
     }
 
-    if (!theGame.mSettings.mEnemySmoothing)
+    if (!theGame->mSettings.mEnemySmoothing)
     {
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_MULTISAMPLE);
@@ -676,7 +676,7 @@ void entityBlackHole::drawRing()
 
     glEnd();
 
-    if (!theGame.mSettings.mEnemySmoothing)
+    if (!theGame->mSettings.mEnemySmoothing)
     {
         glDisable(GL_MULTISAMPLE);
         glDisable(GL_LINE_SMOOTH);

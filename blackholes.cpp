@@ -3,6 +3,8 @@
 #include "entityBlackHole.h"
 #include "particle.h"
 
+#include <algorithm>
+
 blackholes::blackholes()
 {
 }
@@ -76,7 +78,7 @@ void blackholes::run()
                                         // Combine both black holes
 
                                         Point3d avgPos = (blackHole->getPos() + blackHole2->getPos()) * .5;
-                                        float strength = max(blackHole->mStrength, blackHole2->mStrength);
+                                        float strength = std::max(blackHole->mStrength, blackHole2->mStrength);
                                         int feedCount = blackHole->mFeedCount + blackHole2->mFeedCount;
 
                                         // Upgrade the first one

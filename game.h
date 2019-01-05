@@ -23,6 +23,7 @@
 #include "highscore.h"
 #include "settings.h"
 
+#include <memory>
 
 enum
 {
@@ -183,6 +184,7 @@ private:
 
 };
 
-extern game theGame;
+//extern game theGame;
+extern std::unique_ptr<game> theGame;
 
 #endif // GAME_H
