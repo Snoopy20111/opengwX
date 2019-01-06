@@ -1,4 +1,4 @@
-#include "entityMayfly.h"
+#include "entitymayfly.h"
 #include "game.h"
 
 entityMayfly::entityMayfly()

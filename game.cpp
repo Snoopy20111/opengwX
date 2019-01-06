@@ -133,7 +133,7 @@ game::game()
 
 game::~game()
 {
-    delete mPointDisplays;
+    delete [] mPointDisplays;
 }
 
 void game::run()

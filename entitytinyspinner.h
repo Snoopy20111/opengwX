@@ -1,7 +1,7 @@
 #ifndef ENTITYTINYSPINNER_H
 #define ENTITYTINYSPINNER_H
 
-#include "entitySpinner.h"
+#include "entityspinner.h"
 
 class entityTinySpinner : public entitySpinner
 {

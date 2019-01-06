@@ -24,7 +24,7 @@ bomb::~bomb(void)
             mRings[i].timeToLive = 0;
         }
 
-        delete mRings;
+        delete [] mRings;
     }
     mRings = NULL;
 }

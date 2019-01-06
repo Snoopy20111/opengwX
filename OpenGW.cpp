@@ -53,8 +53,8 @@ static void drawOffscreens();
 
 static int mWidth, mHeight;
 
-static DWORD lastTime;
-static DWORD fpsTime;
+static Uint32 lastTime;
+static Uint32 fpsTime;
 static int frameCount;
 static int fps;
 

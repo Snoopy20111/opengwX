@@ -13,8 +13,8 @@
 #include "entitysnake.h"
 #include "entityblackhole.h"
 #include "entityrepulsor.h"
-#include "entityProton.h"
-#include "entityLine.h"
+#include "entityproton.h"
+#include "entityline.h"
 
 entity::entity()
     : mType(ENTITY_TYPE_UNDEF)

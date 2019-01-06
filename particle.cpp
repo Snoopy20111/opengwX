@@ -1,6 +1,6 @@
 #include "particle.h"
 #include "game.h"
-#include "entityBlackHole.h"
+#include "entityblackhole.h"
 
 #include <cstdio>
 
@@ -24,7 +24,7 @@ static int runThread(void *ptr)
     {
         while (!mRunFlag)
         {
-            Sleep(1);
+            SDL_Delay(1);
         };
         mRunFlag = false;
 
@@ -155,7 +155,7 @@ particle::~particle()
             mParticles[i].timeToLive = 0;
         }
 
-        delete mParticles;
+        delete [] mParticles;
     }
     mParticles = NULL;
 }
@@ -217,7 +217,7 @@ void particle::assignParticle(Point3d* position,
         particle->speedZ = aSpeedZ;
         particle->color = *aColor;
         particle->timeToLive = aTime * mathutils::frandFrom0To1();
-        particle->fadeStep = 1.0 / particle->timeToLive;
+        particle->fadeStep = particle->timeToLive ? 1.0 / particle->timeToLive : 1.0f;
         particle->gravity = gravity;
         particle->gridBound = gridBound;
         particle->drag = drag;

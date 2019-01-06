@@ -32,8 +32,6 @@ entityProton::entityProton(void)
         mModel.mVertexList[i] = Point3d(r*cos(angle), r*sin(angle));
     }
 
-    i = 0;
-
     mModel.mNumEdges = mModel.mNumVertex;
     mModel.mEdgeList = new model::Edge[mModel.mNumEdges];
 

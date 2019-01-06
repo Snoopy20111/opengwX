@@ -1,4 +1,4 @@
-#include "entityTinySpinner.h"
+#include "entitytinyspinner.h"
 #include "game.h"
 
 

@@ -16,7 +16,7 @@ attractor::attractor()
 attractor::~attractor()
 {
     if (mAttractors)
-        delete mAttractors;
+        delete [] mAttractors;
 }
 
 attractor::Attractor* attractor::getAttractor()

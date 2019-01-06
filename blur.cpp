@@ -100,11 +100,11 @@ void superFastBlur(unsigned char *pix, int w, int h, int radius)
         }
     }
 
-    delete r;
-    delete g;
-    delete b;
+    delete [] r;
+    delete [] g;
+    delete [] b;
 
-    delete vMIN;
-    delete vMAX;
-    delete dv;
+    delete [] vMIN;
+    delete [] vMAX;
+    delete [] dv;
 }

@@ -1,6 +1,6 @@
 #include "entityPlayer4.h"
 #include "game.h"
-#include "entityPlayerMissile.h"
+#include "entityplayermissile.h"
 
 
 entityPlayer4::entityPlayer4()

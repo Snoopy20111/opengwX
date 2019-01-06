@@ -68,7 +68,7 @@ static int runThread(void *ptr)
     {
         while (!mRunFlag)
         {
-            Sleep(1);
+            SDL_Delay(1);
         };
         mRunFlag = false;
 
@@ -316,10 +316,10 @@ grid::grid()
 
 grid::~grid()
 {
-    delete gridVertexArrayX;
-    delete gridVertexArrayY;
-    delete gridColorArrayX;
-    delete gridColorArrayY;
+    delete [] gridVertexArrayX;
+    delete [] gridVertexArrayY;
+    delete [] gridColorArrayX;
+    delete [] gridColorArrayY;
 }
 
 void grid::run()

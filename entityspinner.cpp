@@ -1,5 +1,5 @@
-#include "entitySpinner.h"
-#include "entityTinySpinner.h"
+#include "entityspinner.h"
+#include "entitytinyspinner.h"
 #include "game.h"
 #include "sincos.h"
 

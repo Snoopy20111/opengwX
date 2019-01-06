@@ -1,6 +1,6 @@
 #include "blackholes.h"
 #include "game.h"
-#include "entityBlackHole.h"
+#include "entityblackhole.h"
 #include "particle.h"
 
 #include <algorithm>

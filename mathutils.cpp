@@ -1,6 +1,7 @@
 #include "mathutils.h"
 #include "sincos.h"
 
+#include <cstdlib>
 
 namespace mathutils
 {

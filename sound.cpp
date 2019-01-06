@@ -39,13 +39,13 @@ sound::~sound()
     for (int i=0; i < NUM_TRACKS; i++)
     {
         if (mTracks[i].data)
-            delete mTracks[i].data;
+            free(mTracks[i].data);
     }
 
-    delete sound::mTracks;
+    delete [] sound::mTracks;
 
-    delete mLeftSamples;
-    delete mRightSamples;
+    delete [] mLeftSamples;
+    delete [] mRightSamples;
 
     SDL_UnlockAudio();
 }

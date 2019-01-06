@@ -27,7 +27,7 @@ controls::controls()
 
 #ifdef USE_SDL
     printf("Initing controls\n");
-	printf("Found %d joysticks\n", mNumJoysticks);
+    printf("Found %d joysticks\n", mNumJoysticks);
 #else
     OutputDebugString(L"Initing controls\n");
 
@@ -104,6 +104,23 @@ bool controls::getPauseButton(int player)
 {
     return readKeyboardPause(player) || readXBoxPause(player);
 }
+
+#ifdef __linux__
+// TODO
+
+#define VK_UP 0
+#define VK_DOWN 0
+#define VK_LEFT 0
+#define VK_RIGHT 0
+#define VK_SPACE 0
+#define VK_BACK 0
+
+bool GetAsyncKeyState(char c)
+{
+    return true;
+}
+
+#endif
 
 //
 // Keyboard controller
@@ -280,3 +297,4 @@ bool controls::readXBoxPause(int player)
 
     return SDL_JoystickGetButton(mControllers[player], XBOX_BUTTON_START);
 }
+

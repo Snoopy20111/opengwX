@@ -185,7 +185,7 @@ player* players::getPlayerClosestToPosition(const Point3d& point)
         }
         if (distancePlayer4 < minDistance)
         {
-            minDistance = distancePlayer4;
+            //minDistance = distancePlayer4;
             closePlayer = game::mPlayers.mPlayer4;
         }
 
