@@ -11,7 +11,7 @@ public:
     virtual void run();
     virtual void spawnTransition();
 
-    float mCurrentHeading;
+    float mCurrentHeading { 0.0f };
     float mAnimationIndex;
     bool mFlipped;
 };

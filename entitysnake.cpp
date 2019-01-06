@@ -18,7 +18,7 @@ public:
     }SegmentStreamItem;
 
     float mTail;
-    entity* mParent;
+    entity* mParent { nullptr };
 
     entitySnakeSegment()
     {

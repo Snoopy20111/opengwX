@@ -48,7 +48,7 @@ stars::stars()
 
 stars::~stars()
 {
-    delete mStars;
+    delete [] mStars;
 }
 
 void stars::run()

@@ -10,7 +10,6 @@ entityPlayerMissile::entityPlayerMissile()
     mScale = .16;
     mRadius = 1;
 
-    mType = 0;
     mPlayerSource = 1;
 
     mScoreValue = 0;

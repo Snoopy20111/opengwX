@@ -170,15 +170,15 @@ private:
     void drawPointDisplays();
     void clearPointDisplays();
 
-    float mMusicSpeed;
-    float mMusicSpeedTarget;
+    float mMusicSpeed { 0.0f };
+    float mMusicSpeedTarget { 0.0f };
 
-    int mGameOverTimer;
-    int mWeaponChangeTimer;
+    int mGameOverTimer { 0 };
+    int mWeaponChangeTimer { 0 };
 
     float mBrightness;
 
-    bool mDebounce;
+    bool mDebounce { false };
 
     entity* mAttractModeBlackHoles[4];
 

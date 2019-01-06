@@ -125,10 +125,10 @@ protected:
     Point3d mPos;
     Point3d mSpeed;
     Point3d mDrift;
-    float mAngle;
-    float mRotationRate;
+    float mAngle { 0.0f };
+    float mRotationRate { 0.0f };
     Point3d mScale;
-    float mRadius;
+    float mRadius { 0.0f };
     BOOL mEdgeBounce;
     BOOL mGridBound;
     vector::pen mPen;
@@ -142,7 +142,7 @@ protected:
     int mIndicateTime;
     float mStateTimer;
 
-    int mScoreValue;
+    int mScoreValue { 0 };
 
     int mGenId;
 

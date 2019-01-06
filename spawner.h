@@ -51,17 +51,16 @@ private:
     int numWaveData();
     void addEntityToWaveTracker(WAVEDATA* wd, entity* e);
 
-    float mSpawnIndex;
-    int mLastSpawnIndex;
-    int mNumWavesAllowed;
-    float mSpawnProgress;
+    float mSpawnIndex { 0.0f };
+    int mLastSpawnIndex { 0 };
+    int mNumWavesAllowed { 0 };
+    float mSpawnProgress { 0.0f };
 
-    int mSpawnCheckTimer;
+    int mSpawnCheckTimer { 0 };
+    int mSpawnWaitTimer { 0 };
 
-    int mSpawnWaitTimer;
-
-    int mWaveStartTimer;
-    WAVEDATA mWaveData[NUM_WAVEDATA];
+    int mWaveStartTimer { 0 };
+    WAVEDATA mWaveData[NUM_WAVEDATA] { };
 };
 
 #endif

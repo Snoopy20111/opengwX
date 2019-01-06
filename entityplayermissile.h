@@ -14,9 +14,9 @@ public:
 
     virtual void draw();
 
-    int mType;
+    int mType; // TODO: entity class also has mType
     int mPlayerSource;
-    float mVelocity;
+    float mVelocity { 0.0f };
 
 private:
     Point3d mLastPos;

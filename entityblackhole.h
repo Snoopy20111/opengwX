@@ -22,7 +22,7 @@ public:
     void feed(int points);
 
     const float getRadius() const;
-    
+
     BOOL mActivated;
     float mAnimationIndex;
     float mAnimationSpeed;
@@ -35,15 +35,15 @@ public:
 
     float mStrength;
 
-    int mFeedCount;
+    int mFeedCount { 0 };
 
-    int mPoints;
+    int mPoints { 0 };
 
 private:
     void drawRing();
 
-    float mHumSpeed;
-    float mHumSpeedTarget;
+    float mHumSpeed { 0.0f };
+    float mHumSpeedTarget { 0.0f };
     int mHumLoopSoundId;
     float mGridPullIndex;
 };

@@ -25,15 +25,15 @@ private:
 		char name[4];
 		int score;
 	}ENTRY;
-	
+
 	ENTRY mEntries[10];
 
-	int mEditCurrentPos;
+	int mEditCurrentPos { 0 };
 	int mEditCurrentLetter[3];
-	int mDebounceTimer;
+	int mDebounceTimer { 0 };
 	int mLastLetter;
-	char mEditName[4];
-	int mScore;
+	char mEditName[4] { 0, 0, 0, 0 };
+	int mScore { 0 };
 };
 
 

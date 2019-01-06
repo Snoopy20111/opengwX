@@ -10,7 +10,6 @@ entityTinySpinner::entityTinySpinner()
 
     mScoreValue = 50;
 
-    mVirtualPos = Point3d(0,0,0);
     mAnimationIndex = 0;
 
     mType = ENTITY_TYPE_TINYSPINNER;

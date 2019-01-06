@@ -21,8 +21,7 @@ public:
     void setInitialSpeed(const Point3d& speed) { mInitialSpeed = speed; }
 
 private:
-    Point3d mVirtualPos;
-    float mAnimationIndex;
+    Point3d mVirtualPos { 0, 0, 0 };
     Point3d mInitialSpeed;
 
 };

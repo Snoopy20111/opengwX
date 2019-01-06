@@ -31,9 +31,9 @@ public:
 
 
 private:
-	float mWidth;
-	float mHeight;
-    float mAspect;
+	float mWidth { 0.0f };
+	float mHeight { 0.0f };
+    float mAspect { 0.0f };
 
     void drawCredits();
     void drawNumBombs();
