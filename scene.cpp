@@ -7,7 +7,6 @@
 #include <cstdio>
 #include <memory>
 
-//game theGame;
 std::unique_ptr<game> theGame;
 
 int scene::mPass;
@@ -129,7 +128,6 @@ void scene::draw(int pass)
         glVertex2d(-1.0, top);
         glEnd();
 
-
         glColor4f(0, 1, 0, .1);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
@@ -176,7 +174,6 @@ void scene::draw(int pass)
         glVertex2d(1.0, top);
         glVertex2d(-1.0, top);
         glEnd();
-
 
         glColor4f(0, 1, 0, .1);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -283,7 +280,6 @@ void scene::draw(int pass)
 				if (game::mGameMode == game::GAMEMODE_CREDITED)
 				{
 					drawCredits();
-
 /*
 					static int flashTimer = 0;
 					++flashTimer;
@@ -319,7 +315,6 @@ void scene::draw(int pass)
 							font::AlphanumericsPrint(font::ALIGN_CENTER, .025, 0, -.2, &pen, "Press 1, 2, 3, or 4 Player Start");
 					}
 */
-
 				}
 				else
 				{
@@ -382,7 +377,6 @@ void scene::draw(int pass)
 
 		glDisable2D();
     }
-
 }
 
 void scene::drawCredits()
@@ -583,21 +577,17 @@ void scene::glEnable2D()
 	vPort[2] = 0;
 	vPort[3] = VIRTUAL_SCREEN_WIDTH;
 
-
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-
 
 	glOrtho(vPort[0], vPort[0]+vPort[2], vPort[1]+vPort[3], vPort[1], -1, 1);
 
 	glViewport(0, 0, mWidth, mHeight);
 
-
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-
 }
 
 void scene::glDisable2D()
@@ -621,4 +611,3 @@ void scene::showHighScores()
 	mAttractModeTimer = -200;
 	mShowHighScores = TRUE;
 }
-

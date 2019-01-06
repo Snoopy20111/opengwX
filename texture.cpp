@@ -8,7 +8,7 @@ texture::texture(void)
 {
     mWidth = 0;
     mHeight = 0;
-    mTextureId = NULL;
+    mTextureId = 0;
     mLoaded = FALSE;
 }
 

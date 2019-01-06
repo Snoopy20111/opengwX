@@ -54,7 +54,6 @@ void sound::bufferCallback(void *unused, Uint8 *stream, int len)
 {
 	Sint16 *buf = (Sint16 *)stream;
 
-    // Clear the buffers
     memset(buf, 0, len);
 
     memset(mLeftSamples, 0, len * sizeof(float));
@@ -64,8 +63,6 @@ void sound::bufferCallback(void *unused, Uint8 *stream, int len)
 
     int i, s;
 
-	const int max_audioval = ((1<<(16-1))-1);
-	const int min_audioval = -(1<<(16-1));
     const int max_int_val = (1<<16);
 
     // Fill the input buffers
@@ -141,9 +138,8 @@ void sound::bufferCallback(void *unused, Uint8 *stream, int len)
     }
 }
 
-void sound::loadTrack(char *file, int track, float volume, bool loop/*=false*/)
+void sound::loadTrack(const char *file, int track, float volume, bool loop/*=false*/)
 {
-    int index;
     SDL_AudioSpec wave;
     SDL_AudioSpec desired;
     Uint8 *data;

@@ -103,11 +103,11 @@ void entity::draw()
 			glBegin(GL_LINES);
 
             progress = 1-progress;
-			
+
             float a = progress;
             if (a<0) a = 0;
             if (a>1) a = 1;
-			
+
             pen.a = a;
 
             mModel.Identity();
@@ -115,7 +115,7 @@ void entity::draw()
             mModel.Rotate(mAngle);
             mModel.Translate(trans);
             mModel.emit(pen);
-			
+
             // *********************************************
 
             progress = progress + .25;
@@ -305,7 +305,7 @@ void entity::hit(entity* aEntity)
         {
             game::mSound.playTrack(SOUNDID_ENEMYHIT);
         }
-        else if (aEntity && (aEntity->getType() == entity::ENTITY_TYPE_PLAYER1) || (aEntity->getType() == entity::ENTITY_TYPE_PLAYER2))
+        else if ((aEntity && (aEntity->getType() == entity::ENTITY_TYPE_PLAYER1)) || (aEntity->getType() == entity::ENTITY_TYPE_PLAYER2))
         {
             game::mSound.playTrack(SOUNDID_ENEMYHIT);
         }

@@ -1,4 +1,8 @@
 #include "players.h"
+#include "entityPlayer1.h"
+#include "entityPlayer2.h"
+#include "entityPlayer3.h"
+#include "entityPlayer4.h"
 #include "game.h"
 
 player* players::mPlayer1;

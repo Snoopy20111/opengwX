@@ -331,7 +331,6 @@ void spawner::spawnEntities(entity::EntityType type, int numWanted)
         if (enemy)
         {
             // Spawn somewhere random but not too close to the player
-            float distance;
             float x = (mathutils::frandFrom0To1() * (rightEdge-leftEdge))+leftEdge;
             float y = (mathutils::frandFrom0To1() * (topEdge-bottomEdge))+bottomEdge;
             Point3d spawnPoint(x,y, 0);
@@ -346,7 +345,7 @@ void spawner::spawnEntities(entity::EntityType type, int numWanted)
 
             // TODO - FIX THIS SO ENEMIES ARE SPAWNED OFF A RADIAL AT A MIN DISTANCE RATHER THAN
             // JUST USING RANDOM XY COORDS ON THE GRID?
-            distance = mathutils::calculate2dDistance(spawnPoint, game::mPlayers.mPlayer1->getPos());
+            //float distance = mathutils::calculate2dDistance(spawnPoint, game::mPlayers.mPlayer1->getPos());
 
             enemy->setState(entity::ENTITY_STATE_SPAWN_TRANSITION);
         }

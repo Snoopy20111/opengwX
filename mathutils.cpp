@@ -170,7 +170,7 @@ namespace mathutils
                 continue;
             }
 
-			if ((from.y < testPoint.y && to.y >= testPoint.y || to.y < testPoint.y && from.y >= testPoint.y) && (from.x <= testPoint.x || to.x <= testPoint.x))
+			if (((from.y < testPoint.y && to.y >= testPoint.y) || (to.y < testPoint.y && from.y >= testPoint.y)) && (from.x <= testPoint.x || to.x <= testPoint.x))
 			{
 				oddNodes ^= (from.x + (testPoint.y-from.y) / (to.y - from.y) * (to.x - from.x) < testPoint.x);
 			}
@@ -186,11 +186,11 @@ namespace mathutils
     {
         Point3d lineDiffVect = lineTo - lineFrom;
         float length = calculate2dDistance(Point3d(0,0,0), lineDiffVect);
- 
+
         const Point3d lineToPointVect = testPoint - lineFrom;
         const float dotProduct = Point3d::dot(lineDiffVect, lineToPointVect);
         const float percAlongLine = dotProduct / (length*length);
- 
+
         // If point is outside of the line segment, clamp it to one end or another
         if (percAlongLine < 0.0f)
         {
@@ -208,11 +208,11 @@ namespace mathutils
     {
         Point3d lineDiffVect = lineTo - lineFrom;
         float length = calculate2dDistance(Point3d(0,0,0), lineDiffVect);
- 
+
         const Point3d lineToPointVect = testPoint - lineFrom;
         const float dotProduct = Point3d::dot(lineDiffVect, lineToPointVect);
         const float percAlongLine = dotProduct / (length*length);
- 
+
         // If point is outside of the line segment, clamp it to one end or another
         if (percAlongLine < 0.0f)
         {

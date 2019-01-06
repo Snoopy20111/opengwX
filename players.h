@@ -2,10 +2,6 @@
 #define PLAYERS_H
 
 #include "player.h"
-#include "entityPlayer1.h"
-#include "entityPlayer2.h"
-#include "entityPlayer3.h"
-#include "entityPlayer4.h"
 
 class players
 {

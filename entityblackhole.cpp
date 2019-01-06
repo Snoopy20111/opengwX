@@ -111,10 +111,6 @@ void entityBlackHole::run()
 
         // Distort the grid
 
-        const float distance = 2;
-
-        float dir = (mathutils::frandFrom0To1() * 100) < 10 ? -1 : 1;
-
         attractor::Attractor* att = game::mAttractors.getAttractor();
         if (att)
         {
@@ -707,6 +703,3 @@ const float entityBlackHole::getRadius() const
 
     return r;
 }
-
-
-

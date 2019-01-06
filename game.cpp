@@ -118,7 +118,6 @@ game::game()
         if ((mathutils::frandFrom0To1() * 40) < 1)
         {
             // Pick a random direction
-            const float variation = 1.5;
             heading += mathutils::frandFrom0To1() * (2*PI);
         }
 
@@ -453,12 +452,11 @@ void game::run()
                 mAttractModeBlackHoles[j]->setDrift(speed);
             }
 
-            float heading;
+            //float heading;
             if ((mathutils::frandFrom0To1() * 40) < 1)
             {
                 // Pick a random direction
-                const float variation = 1.5;
-                heading + mathutils::frandFrom0To1() * (2*PI);
+                //heading + mathutils::frandFrom0To1() * (2*PI);
             }
 
             // Change direction when we hit the grid edges
@@ -471,7 +469,6 @@ void game::run()
             const float rightEdge = (sizex - 2)-1;
             const float topEdge = (sizey - 2)-1;
 
-            BOOL hitEdge = FALSE;
             if (mPos.x <= leftEdge)
             {
                 mSpeed.x = -mSpeed.x;
@@ -495,7 +492,6 @@ void game::run()
 
             mAttractModeBlackHoles[i]->setDrift(mSpeed);
             mAttractModeBlackHoles[i]->setPos(mPos);
-
         }
 
         if (mGameMode != GAMEMODE_CHOOSE_GAMETYPE)
@@ -706,7 +702,6 @@ void game::draw(int pass)
                 drawPointDisplays();
             }
         }
-
 	}
 }
 
@@ -886,5 +881,3 @@ int game::numPlayers()
 
     return numPlayers;
 }
-
-

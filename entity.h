@@ -51,6 +51,7 @@ public:
     }EntityState;
 
     entity();
+	virtual ~entity() = default;
 
     static entity* createEntity(EntityType _entity); // Static class factory
 

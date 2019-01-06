@@ -1,7 +1,7 @@
 #include "entityrepulsor.h"
 #include "game.h"
 #include "entityLine.h"
-
+#include "entityPlayer1.h"
 
 class entityRepulsorShieldLine : public entity
 {

@@ -11,25 +11,15 @@
 #define _MIN_DISTANCE .001
 #define _MAX_DISTANCE 800
 
-
-static BOOL renderParticles = TRUE;
-static float brightness = 1.0f;
-static float particleLineRadius = 3;
-
-
 static SDL_Thread* mRunThread = NULL;
 static bool mRunFlag = false;
-
 
 particle::PARTICLE* particle::mParticles = NULL;
 int particle::mNumParticles = 0;
 int particle::mIndex = 0;
 
-
 static int runThread(void *ptr)
 {
-    int x,y;
-
     while(1)
     {
         while (!mRunFlag)
@@ -58,7 +48,6 @@ static int runThread(void *ptr)
                     else
                     {
                         // Evaluate against attractors
-                        Point3d ppoint = particle->posStream[0];
                         if (particle->gravity)
                         {
                             Point3d speed = game::mAttractors.evaluateParticle(particle);
@@ -155,7 +144,6 @@ particle::particle()
         OutputDebugString(L"Couldn't create particle run thread\n");
 #endif
     }
-
 }
 
 particle::~particle()
@@ -171,7 +159,6 @@ particle::~particle()
     }
     mParticles = NULL;
 }
-
 
 void particle::emitter(Point3d* position, Point3d* angle, float speed, float spread, int num, vector::pen* color, int timeToLive,
                        BOOL gravity, BOOL gridBound, float drag, BOOL glowPass)
@@ -197,17 +184,13 @@ void particle::emitter(Point3d* position, Point3d* angle, float speed, float spr
         assignParticle(position,
                        speedVector.x, speedVector.y, speedVector.z,
                        timeToLive, color, gravity, gridBound, drag, glowPass);
-
     }
 }
-
 
 void particle::assignParticle(Point3d* position,
                               float aSpeedX, float aSpeedY, float aSpeedZ,
                               int aTime, vector::pen* aColor, BOOL gravity, BOOL gridBound, float drag, BOOL glowPass)
 {
-    int i;
-
     PARTICLE* particle = &mParticles[mIndex++];
     if (mIndex >= mNumParticles) mIndex = 0;
 
@@ -241,9 +224,7 @@ void particle::assignParticle(Point3d* position,
         particle->glowPass = glowPass;
         particle->hitGrid = false;
     }
-
 }
-
 
 void particle::draw()
 {
@@ -311,19 +292,13 @@ void particle::draw()
                     glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
                     glVertex3d(to.x, to.y, 0);
                     aa-=.1;
-
                 }
 
         	    glEnd();
-
             }
         }
-
-
     }
-
 }
-
 
 void particle::run()
 {
@@ -340,7 +315,3 @@ void particle::killAll()
         }
     }
 }
-
-
-
-

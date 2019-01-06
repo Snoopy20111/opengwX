@@ -6,6 +6,8 @@
 extern scene oglScene;
 extern vector::pen defaultFontPen;
 
+static constexpr char LAST = '\0';
+
 static char charList[] =
 {
 	'A',
@@ -45,7 +47,7 @@ static char charList[] =
 	'9',
 	'0',
 	' ',
-	NULL,
+	LAST,
 };
 
 
@@ -58,7 +60,7 @@ highscore::highscore(void)
 	}
 
 	mLastLetter = 0;
-	for (int i=0; charList[i] != NULL; i++)
+	for (int i=0; charList[i] != LAST; i++)
 	{
 		++mLastLetter;
 	}
