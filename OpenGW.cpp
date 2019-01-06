@@ -11,10 +11,8 @@
 #include <cstdio>
 #include <memory>
 
-#define filterWidth 5
-#define filterHeight 5
-#define imageWidth 320
-#define imageHeight 240
+static const int displayWidth = 800;
+static const int displayHeight = 600;
 
 //declare image buffers
 static const int blurBufferWidth = 500;
@@ -89,8 +87,8 @@ int main(int argc, char** argv) {
 		flags |= SDL_WINDOW_FULLSCREEN;
 	}
 
-	window = SDL_CreateWindow("opengw", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		800, 600, flags);
+	window = SDL_CreateWindow("OpenGL SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		displayWidth, displayHeight, flags);
 
 	if (window) {
 		srand(SDL_GetTicks());
@@ -120,7 +118,7 @@ static void OGLCreate()
 		printf("SDL_GL_CreateContext failed: %s\n", SDL_GetError());
 	}
 
-    OGLSize(800, 600);
+    OGLSize(displayWidth, displayHeight);
 
     // Do stuff with the context here if needed...
     createOffscreens();
