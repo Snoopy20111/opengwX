@@ -2,7 +2,7 @@ LIBS = -LC:\SDK\lib -lmingw32 -lSDL2main -lSDL2 -lopengl32 -lglu32
 OWN_PATHS = -I.
 HEADERS = -mwindows $(OWN_PATHS) -IC:\SDK\include\SDL2
 DEFINES = -DUSE_SDL
-CFLAGS = -Wall -O0 -ggdb
+CFLAGS = -std=c++11 -Wall -O3 -ggdb
 NAME = opengw.exe
 OBJDIR = obj
 

@@ -345,8 +345,8 @@ entity* enemies::hitTestEnemiesAtPosition(const Point3d& point, float radius, bo
 
 int enemies::getNumActiveEnemiesOfType(const entity::EntityType& type)
 {
-	int idxStart;
-	int idxEnd;
+	int idxStart { 0 };
+	int idxEnd { 0 };
 
 	switch (type)
 	{
@@ -406,8 +406,8 @@ int enemies::getNumActiveEnemiesOfType(const entity::EntityType& type)
 
 entity* enemies::getUnusedEnemyOfType(const entity::EntityType& type)
 {
-	int idxStart;
-	int idxEnd;
+	int idxStart { 0 };
+	int idxEnd { 0 };
 
 	switch (type)
 	{

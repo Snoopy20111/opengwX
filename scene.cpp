@@ -4,6 +4,8 @@
 
 #include "game.h"
 
+#include <GL/glu.h>
+
 #include <cstdio>
 #include <memory>
 
