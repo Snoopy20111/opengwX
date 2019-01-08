@@ -21,7 +21,6 @@ public:
         vector::pen color;
 
         int timeToLive;
-
         float fadeStep;
 
         BOOL gravity;

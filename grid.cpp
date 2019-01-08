@@ -8,6 +8,8 @@
 #include "grid.h"
 #include "game.h"
 
+#include <atomic>
+#include <mutex>
 #include <cstdio>
 
 // The Grid
@@ -43,7 +45,7 @@ static SDL_mutex* mDrawMutex;
 */
 
 static SDL_Thread* mRunThread = NULL;
-static bool mRunFlag = false;
+static std::atomic_bool mRunFlag { false };
 
 static float q;
 static float damping;
@@ -58,6 +60,8 @@ typedef struct gridPoint
 
 static GridPoint* mGrid;
 
+static std::mutex m;
+
 //#define GRID_GLOW // PERFORMANCE: Making the grid glow causes us to have to draw it twice, which is slower. This is also defined in game.cpp!
 
 static int runThread(void *ptr)
@@ -71,6 +75,8 @@ static int runThread(void *ptr)
             SDL_Delay(1);
         };
         mRunFlag = false;
+
+        std::unique_lock<std::mutex> lock(m);
 
         // Apply attractors
         for (int a=0; a<game::mAttractors.mNumAttractors; a++)
@@ -329,6 +335,8 @@ void grid::run()
 
 void grid::draw()
 {
+    std::unique_lock<std::mutex> lock(m);
+
     if (brightness <= .05) return;
 
     glLineWidth(5);

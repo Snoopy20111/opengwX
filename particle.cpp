@@ -1,7 +1,10 @@
 #include "particle.h"
 #include "game.h"
 #include "entityblackhole.h"
+#include "enemies.h"
 
+#include <atomic>
+#include <mutex>
 #include <cstdio>
 
 #define VIRTUAL_SCREEN_WIDTH 800 // FIX ME
@@ -12,11 +15,13 @@
 #define _MAX_DISTANCE 800
 
 static SDL_Thread* mRunThread = NULL;
-static bool mRunFlag = false;
+static std::atomic_bool mRunFlag { false };
 
 particle::PARTICLE* particle::mParticles = NULL;
 int particle::mNumParticles = 0;
 int particle::mIndex = 0;
+
+static std::mutex m;
 
 static int runThread(void *ptr)
 {
@@ -27,6 +32,8 @@ static int runThread(void *ptr)
             SDL_Delay(1);
         };
         mRunFlag = false;
+
+        std::unique_lock<std::mutex> lock(m);
 
         int i;
         if (particle::mParticles)
@@ -58,9 +65,9 @@ static int runThread(void *ptr)
                         // Evaluate against black holes
                         for (int i=0; i<NUM_ENEMIES; i++)
                         {
-                            if ((game::mEnemies.mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (game::mEnemies.mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
+                            if ((theGame->mEnemies->mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (theGame->mEnemies->mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
                             {
-                                entityBlackHole* blackHole = static_cast<entityBlackHole*>(game::mEnemies.mEnemies[i]);
+                                entityBlackHole* blackHole = static_cast<entityBlackHole*>(theGame->mEnemies->mEnemies[i]);
                                 if (blackHole->mActivated)
                                 {
                                     if (mathutils::calculate2dDistance(particle->posStream[0], blackHole->getPos()) < blackHole->getRadius()*1.01)
@@ -228,6 +235,7 @@ void particle::assignParticle(Point3d* position,
 
 void particle::draw()
 {
+    std::unique_lock<std::mutex> lock(m);
     if (mParticles)
     {
         for (int i=0; i<mNumParticles; i++)
@@ -307,6 +315,8 @@ void particle::run()
 
 void particle::killAll()
 {
+    std::unique_lock<std::mutex> lock(m);
+
     if (mParticles)
     {
         for (int i=0; i<mNumParticles; i++)

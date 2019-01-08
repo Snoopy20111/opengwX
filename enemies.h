@@ -13,6 +13,7 @@
 #include "entityline.h"
 #include "player.h"
 
+class game;
 
 const int numEnemyWanderer    = 100;
 const int numEnemyGrunt       = 200;
@@ -32,7 +33,7 @@ const int numEnemyProton      = 200;
 class enemies
 {
 public:
-    enemies();
+    enemies(const game& gameRef);
     ~enemies();
 
     void run();
@@ -53,6 +54,7 @@ public:
     entity* mEnemies[NUM_ENEMIES];
     entityLine* mLines[NUM_LINES];
 
+    const game& mGame;
 };
 
 #endif // ENEMIES_H

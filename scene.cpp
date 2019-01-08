@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "game.h"
 #include "menuSelectGameType.h"
+#include "players.h"
 
 #include "game.h"
 
@@ -409,7 +410,7 @@ void scene::drawCredits()
 void scene::drawNumLives()
 {
     int overflow = 0;
-    int num = game::mPlayers.mPlayer1->getNumLives();
+    int num = theGame->mPlayers->mPlayer1->getNumLives();
     if (num > 5)
     {
         overflow = num;
@@ -421,11 +422,11 @@ void scene::drawNumLives()
 		vector::pen pen(defaultFontPen, .75, 10);
         float scale = .017;
 
-        game::mPlayers.mPlayer1->getModel()->Identity();
-        game::mPlayers.mPlayer1->getModel()->Scale(Point3d(scale, scale*mAspect, 0));
-        game::mPlayers.mPlayer1->getModel()->Rotate(0);
-        game::mPlayers.mPlayer1->getModel()->Translate(Point3d(-.12 + (.04*i), .9, 0));
-        game::mPlayers.mPlayer1->getModel()->draw(pen);
+        theGame->mPlayers->mPlayer1->getModel()->Identity();
+        theGame->mPlayers->mPlayer1->getModel()->Scale(Point3d(scale, scale*mAspect, 0));
+        theGame->mPlayers->mPlayer1->getModel()->Rotate(0);
+        theGame->mPlayers->mPlayer1->getModel()->Translate(Point3d(-.12 + (.04*i), .9, 0));
+        theGame->mPlayers->mPlayer1->getModel()->draw(pen);
     }
 
     if (overflow > 0)
@@ -446,7 +447,7 @@ void scene::drawNumBombs()
         // 1 player display
 
         int overflow = 0;
-        int num = game::mPlayers.mPlayer1->getNumBombs();
+        int num = theGame->mPlayers->mPlayer1->getNumBombs();
         if (num > 5)
         {
             overflow = num;
@@ -483,7 +484,7 @@ void scene::drawNumBombs()
 
 void scene::drawScores()
 {
-    BOOL gameover = (game::mGameMode != game::GAMEMODE_PLAYING);
+    BOOL gameover = (theGame->mGameMode != game::GAMEMODE_PLAYING);
 
     if (theGame->mGameType == game::GAMETYPE_SINGLEPLAYER)
     {
@@ -492,14 +493,14 @@ void scene::drawScores()
         // Player 1 score display
         {
             char format[512];
-            sprintf(format, "%d", game::mPlayers.mPlayer1->mScore);
+            sprintf(format, "%d", theGame->mPlayers->mPlayer1->mScore);
             char* s = font::formatStringWithCommas(format);
 
             vector::pen pen = defaultFontPen;
             if (gameover)
                 font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score");
             else
-                font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", game::mPlayers.mPlayer1->mMultiplier);
+                font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", theGame->mPlayers->mPlayer1->mMultiplier);
 		    font::AlphanumericsPrint(font::ALIGN_LEFT, .02, -.94, .82, &pen, s);
 
 		    pen.a=.1;
@@ -507,7 +508,7 @@ void scene::drawScores()
             if (gameover)
                 font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score");
             else
-            font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", game::mPlayers.mPlayer1->mMultiplier);
+            font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", theGame->mPlayers->mPlayer1->mMultiplier);
 		    font::AlphanumericsPrint(font::ALIGN_LEFT, .02, -.94, .82, &pen, s);
         }
     }
@@ -522,19 +523,19 @@ void scene::drawScores()
             switch(i)
             {
                 case 0:
-                    player = game::mPlayers.mPlayer1;
+                    player = theGame->mPlayers->mPlayer1;
                     pos = Point3d(-.7, .9, 0);
                     break;
                 case 1:
-                    player = game::mPlayers.mPlayer2;
+                    player = theGame->mPlayers->mPlayer2;
                     pos = Point3d(.3, .9, 0);
                     break;
                 case 2:
-                    player = game::mPlayers.mPlayer3;
+                    player = theGame->mPlayers->mPlayer3;
                     pos = Point3d(-.7, -.9, 0);
                     break;
                 case 3:
-                    player = game::mPlayers.mPlayer4;
+                    player = theGame->mPlayers->mPlayer4;
                     pos = Point3d(.3, -.9, 0);
                     break;
             }

@@ -9,6 +9,8 @@
 
 #include "point3d.h"
 
+class game;
+
 class entity
 {
 public:
@@ -53,7 +55,7 @@ public:
     entity();
 	virtual ~entity() = default;
 
-    static entity* createEntity(EntityType _entity); // Static class factory
+    static entity* createEntity(EntityType _entity, const game& gameRef); // Static class factory
 
     EntityType getType() const { return mType; }
 

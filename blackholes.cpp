@@ -2,6 +2,8 @@
 #include "game.h"
 #include "entityblackhole.h"
 #include "particle.h"
+#include "players.h"
+#include "enemies.h"
 
 #include <algorithm>
 
@@ -14,16 +16,16 @@ void blackholes::run()
     // Suck enemies and particles into the black holes
     for (int i=0; i<NUM_ENEMIES; i++)
     {
-        if ((game::mEnemies.mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (game::mEnemies.mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
+        if ((theGame->mEnemies->mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (theGame->mEnemies->mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
         {
-            entityBlackHole* blackHole = static_cast<entityBlackHole*>(game::mEnemies.mEnemies[i]);
+            entityBlackHole* blackHole = static_cast<entityBlackHole*>(theGame->mEnemies->mEnemies[i]);
             if (blackHole->mActivated)
             {
                 //
                 // Players
                 for (int p=0; p<2; p++)
                 {
-                    entity* player = (p==0) ? game::mPlayers.mPlayer1 : game::mPlayers.mPlayer2;
+                    entity* player = (p==0) ? theGame->mPlayers->mPlayer1 : theGame->mPlayers->mPlayer2;
                     if (player->getEnabled())
                     {
                         float angle = mathutils::calculate2dAngle(player->getPos(), blackHole->getPos());
@@ -56,16 +58,16 @@ void blackholes::run()
 
                 for (int j=0; j<NUM_ENEMIES; j++)
                 {
-                    if ((game::mEnemies.mEnemies[j]->getState() == entity::ENTITY_STATE_RUNNING))
+                    if ((theGame->mEnemies->mEnemies[j]->getState() == entity::ENTITY_STATE_RUNNING))
                     {
                         if (j != i)
                         {
-                            entity* enemy = game::mEnemies.mEnemies[j];
+                            entity* enemy = theGame->mEnemies->mEnemies[j];
 
                             float angle = mathutils::calculate2dAngle(enemy->getPos(), blackHole->getPos());
                             float distance = mathutils::calculate2dDistance(enemy->getPos(), blackHole->getPos());
 
-                            if (game::mEnemies.mEnemies[j]->getType() == entity::ENTITY_TYPE_BLACKHOLE)
+                            if (theGame->mEnemies->mEnemies[j]->getType() == entity::ENTITY_TYPE_BLACKHOLE)
                             {
                                 // It's another black hole. Keep it at the proper distance or combine it
 

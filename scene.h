@@ -4,7 +4,6 @@
 #include "model.h"
 #include "texture.h"
 
-
 class scene
 {
 public:

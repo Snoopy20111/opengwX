@@ -3,10 +3,12 @@
 
 #include "entityspinner.h"
 
+class game;
+
 class entityTinySpinner : public entitySpinner
 {
 public:
-    entityTinySpinner();
+    entityTinySpinner(const game& gameRef);
 
     virtual void run();
     virtual void spawnTransition();
@@ -24,6 +26,7 @@ private:
     Point3d mVirtualPos { 0, 0, 0 };
     Point3d mInitialSpeed;
 
+    const game& mGame;
 };
 
 #endif // ENTITYTINYSPINNER_H

@@ -3,10 +3,12 @@
 
 #include "player.h"
 
+class game;
+
 class players
 {
 public:
-    players();
+    players(const game& gameRef);
     ~players();
 
     void run();
@@ -19,6 +21,8 @@ public:
     static player* mPlayer2;
     static player* mPlayer3;
     static player* mPlayer4;
+
+    const game& mGame;
 };
 
 #endif // PLAYERS_H

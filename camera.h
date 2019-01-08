@@ -3,10 +3,12 @@
 
 #include "point3d.h"
 
+class game;
+
 class camera
 {
 public:
-    camera();
+    camera(const game& gameRef);
 
     void center();
     void followPlayer();
@@ -17,6 +19,8 @@ public:
 
     Point3d mCurrentPos;
     Point3d mTargetPos;
+
+    const game& mGame;
 };
 
 #endif // CAMERA_H

@@ -1,5 +1,7 @@
 #include "spawner.h"
 #include "game.h"
+#include "players.h"
+#include "enemies.h"
 
 #include <cmath>
 #include <cstdio>
@@ -48,24 +50,24 @@ void spawner::run(void)
     }
 
     int numPlayersActive = 0;
-    if (game::mPlayers.mPlayer1->mJoined)
+    if (theGame->mPlayers->mPlayer1->mJoined)
     {
-        if (game::mPlayers.mPlayer1->getState() == entity::ENTITY_STATE_RUNNING)
+        if (theGame->mPlayers->mPlayer1->getState() == entity::ENTITY_STATE_RUNNING)
             ++numPlayersActive;
     }
-    if (game::mPlayers.mPlayer2->mJoined)
+    if (theGame->mPlayers->mPlayer2->mJoined)
     {
-        if (game::mPlayers.mPlayer2->getState() == entity::ENTITY_STATE_RUNNING)
+        if (theGame->mPlayers->mPlayer2->getState() == entity::ENTITY_STATE_RUNNING)
             ++numPlayersActive;
     }
-    if (game::mPlayers.mPlayer3->mJoined)
+    if (theGame->mPlayers->mPlayer3->mJoined)
     {
-        if (game::mPlayers.mPlayer3->getState() == entity::ENTITY_STATE_RUNNING)
+        if (theGame->mPlayers->mPlayer3->getState() == entity::ENTITY_STATE_RUNNING)
             ++numPlayersActive;
     }
-    if (game::mPlayers.mPlayer4->mJoined)
+    if (theGame->mPlayers->mPlayer4->mJoined)
     {
-        if (game::mPlayers.mPlayer4->getState() == entity::ENTITY_STATE_RUNNING)
+        if (theGame->mPlayers->mPlayer4->getState() == entity::ENTITY_STATE_RUNNING)
             ++numPlayersActive;
     }
 
@@ -84,19 +86,19 @@ void spawner::run(void)
         switch(i)
         {
             case 0:
-                player = game::mPlayers.mPlayer1;
+                player = theGame->mPlayers->mPlayer1;
                 timer = &player1SpawnTimer;
                 break;
             case 1:
-                player = game::mPlayers.mPlayer2;
+                player = theGame->mPlayers->mPlayer2;
                 timer = &player2SpawnTimer;
                 break;
             case 2:
-                player = game::mPlayers.mPlayer3;
+                player = theGame->mPlayers->mPlayer3;
                 timer = &player3SpawnTimer;
                 break;
             case 3:
-                player = game::mPlayers.mPlayer4;
+                player = theGame->mPlayers->mPlayer4;
                 timer = &player4SpawnTimer;
                 break;
         }
@@ -294,7 +296,7 @@ void spawner::run(void)
 
     // Run the mayfly sound loop
     // This is a dumb place for this to live
-    if (game::mEnemies.getNumActiveEnemiesOfType(entity::ENTITY_TYPE_MAYFLY) > 0)
+    if (theGame->mEnemies->getNumActiveEnemiesOfType(entity::ENTITY_TYPE_MAYFLY) > 0)
     {
         if (!game::mSound.isTrackPlaying(SOUNDID_MAYFLIES))
             game::mSound.playTrack(SOUNDID_MAYFLIES);
@@ -328,10 +330,10 @@ void spawner::spawnEntities(entity::EntityType type, int numWanted)
     const float topEdge = (theGame->mGrid.extentY()-1)-margin;
 
 
-    int numHave = game::mEnemies.getNumActiveEnemiesOfType(type);
+    int numHave = theGame->mEnemies->getNumActiveEnemiesOfType(type);
     if (numHave < numWanted)
     {
-        entity* enemy = game::mEnemies.getUnusedEnemyOfType(type);
+        entity* enemy = theGame->mEnemies->getUnusedEnemyOfType(type);
         if (enemy)
         {
             // Spawn somewhere random but not too close to the player
@@ -372,14 +374,14 @@ void spawner::runWaves()
             if (wd->mWaveType == WAVETYPE_RUSH)
             {
                 // Pick a player to attack
-                player* randPlayer = game::mPlayers.getRandomActivePlayer();
+                player* randPlayer = theGame->mPlayers->getRandomActivePlayer();
                 if (!randPlayer) return;
                 Point3d playerPos = randPlayer->getPos();
 
                 // Keep cranking out enemies until the spawn counter reaches 0
                 while (wd->spawnCount-- > 0)
                 {
-                    entity* enemy = game::mEnemies.getUnusedEnemyOfType(wd->entityType);
+                    entity* enemy = theGame->mEnemies->getUnusedEnemyOfType(wd->entityType);
                     if (enemy)
                     {
                         // Add the enemy to our tracking list
@@ -417,7 +419,7 @@ void spawner::runWaves()
                         // Keep cranking out enemies until the spawn counter reaches 0
                         if (wd->spawnCount-- > 0)
                         {
-                            entity* enemy = game::mEnemies.getUnusedEnemyOfType(wd->entityType);
+                            entity* enemy = theGame->mEnemies->getUnusedEnemyOfType(wd->entityType);
                             if (enemy)
                             {
                                 // Add the enemy to our tracking list

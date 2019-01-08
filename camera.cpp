@@ -1,10 +1,11 @@
 #include "game.h"
 #include "camera.h"
+#include "players.h"
 
 static const int zoomedIn = 46; // 50
 static const int zoomedOut = 72; // 66
 
-camera::camera()
+camera::camera(const game& gameRef) : mGame(gameRef)
 {
     center();
     mCurrentPos = mTargetPos;
@@ -14,7 +15,7 @@ void camera::center()
 {
     mCurrentZoom = zoomedIn;
     mTargetZoom = zoomedIn;
-    mTargetPos = Point3d((theGame->mGrid.extentX()-1)/2, (theGame->mGrid.extentY()-1)/2, mTargetZoom);
+    mTargetPos = Point3d((mGame.mGrid.extentX()-1)/2, (mGame.mGrid.extentY()-1)/2, mTargetZoom);
 }
 
 void camera::followPlayer()
@@ -29,16 +30,16 @@ void camera::followPlayer()
         switch(i)
         {
             case 0:
-                player = game::mPlayers.mPlayer1;
+                player = mGame.mPlayers->mPlayer1;
                 break;
             case 1:
-                player = game::mPlayers.mPlayer2;
+                player = mGame.mPlayers->mPlayer2;
                 break;
             case 2:
-                player = game::mPlayers.mPlayer3;
+                player = mGame.mPlayers->mPlayer3;
                 break;
             case 3:
-                player = game::mPlayers.mPlayer4;
+                player = mGame.mPlayers->mPlayer4;
                 break;
         }
 
@@ -73,16 +74,16 @@ void camera::followPlayer()
         switch(i)
         {
             case 0:
-                playerA = game::mPlayers.mPlayer1;
+                playerA = mGame.mPlayers->mPlayer1;
                 break;
             case 1:
-                playerA = game::mPlayers.mPlayer2;
+                playerA = mGame.mPlayers->mPlayer2;
                 break;
             case 2:
-                playerA = game::mPlayers.mPlayer3;
+                playerA = mGame.mPlayers->mPlayer3;
                 break;
             case 3:
-                playerA = game::mPlayers.mPlayer4;
+                playerA = mGame.mPlayers->mPlayer4;
                 break;
         }
 
@@ -94,16 +95,16 @@ void camera::followPlayer()
                 switch(j)
                 {
                     case 0:
-                        playerB = game::mPlayers.mPlayer1;
+                        playerB = mGame.mPlayers->mPlayer1;
                         break;
                     case 1:
-                        playerB = game::mPlayers.mPlayer2;
+                        playerB = mGame.mPlayers->mPlayer2;
                         break;
                     case 2:
-                        playerB = game::mPlayers.mPlayer3;
+                        playerB = mGame.mPlayers->mPlayer3;
                         break;
                     case 3:
-                        playerB = game::mPlayers.mPlayer4;
+                        playerB = mGame.mPlayers->mPlayer4;
                         break;
                 }
 
@@ -118,7 +119,7 @@ void camera::followPlayer()
         }
     }
 
-    static const float hypotenuse = sqrt((float)(theGame->mGrid.extentX()*theGame->mGrid.extentX()) + (theGame->mGrid.extentY()*theGame->mGrid.extentY()));
+    static const float hypotenuse = sqrt((float)(mGame.mGrid.extentX()*mGame.mGrid.extentX()) + (mGame.mGrid.extentY()*mGame.mGrid.extentY()));
 
     mTargetZoom = (zoomedIn + (zoomedOut-zoomedIn)) * ((playerDistance*3) / hypotenuse);
 
@@ -127,13 +128,13 @@ void camera::followPlayer()
     else if (mTargetZoom > zoomedOut)
         mTargetZoom = zoomedOut;
 
-    float ax = (playerPos.x / theGame->mGrid.extentX());
-    float ay = (playerPos.y / theGame->mGrid.extentY());
+    float ax = (playerPos.x / mGame.mGrid.extentX());
+    float ay = (playerPos.y / mGame.mGrid.extentY());
 
     const int border = -20;
 
-    mTargetPos.x = (ax * (theGame->mGrid.extentX() + (border*2))) - border;
-    mTargetPos.y = (ay * (theGame->mGrid.extentY() + (border*2))) - border;
+    mTargetPos.x = (ax * (mGame.mGrid.extentX() + (border*2))) - border;
+    mTargetPos.y = (ay * (mGame.mGrid.extentY() + (border*2))) - border;
 }
 
 void camera::run()

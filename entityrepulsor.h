@@ -3,12 +3,15 @@
 
 #include "entity.h"
 
+#include <memory>
+
 class entityRepulsorShieldLine;
+class game;
 
 class entityRepulsor : public entity
 {
 public:
-    entityRepulsor();
+    entityRepulsor(const game& gameRef);
 
     virtual void run();
     virtual void spawnTransition();
@@ -32,9 +35,11 @@ protected:
     int mTimer;
     int mLoopSoundId;
 
-    entityRepulsorShieldLine* mShield1;
-    entityRepulsorShieldLine* mShield2;
-    entityRepulsorShieldLine* mShield3;
+    std::unique_ptr<entityRepulsorShieldLine> mShield1;
+    std::unique_ptr<entityRepulsorShieldLine> mShield2;
+    std::unique_ptr<entityRepulsorShieldLine> mShield3;
+
+    const game& mGame;
 };
 
 #endif // ENTITYREPULSOR_H

@@ -1,15 +1,13 @@
 #include "stars.h"
 #include "game.h"
 
-
-
-stars::stars()
+stars::stars(const game& gameRef) : mGame(gameRef)
 {
     const float overscan = 700;
     const float leftEdge = 0-overscan;
     const float bottomEdge = 0-overscan;
-    const float rightEdge = (theGame->mGrid.extentX() + overscan);
-    const float topEdge = (theGame->mGrid.extentY() + overscan);
+    const float rightEdge = (mGame.mGrid.extentX() + overscan);
+    const float topEdge = (mGame.mGrid.extentY() + overscan);
 
     mStars = new STAR[NUM_STARS];
 
@@ -60,7 +58,7 @@ void stars::draw()
     float brightness = 1; //game::mGrid.brightness;
     float twinkle = 1;
 
-    if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
+    if (mGame.mGameMode == game::GAMEMODE_ATTRACT || mGame.mGameMode == game::GAMEMODE_CREDITED)
         brightness = 1;
 
     if (brightness <= 0)

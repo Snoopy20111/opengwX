@@ -1,5 +1,6 @@
 #include "highscore.h"
 #include "game.h"
+#include "players.h"
 
 #include <cstdio>
 
@@ -93,7 +94,7 @@ bool highscore::isHighScore(int score)
 
 void highscore::init()
 {
-	mScore = game::mPlayers.mPlayer1->mScore;
+	mScore = theGame->mPlayers->mPlayer1->mScore;
 	mEditCurrentPos = 0;
 	strcpy(mEditName, "   ");
 }

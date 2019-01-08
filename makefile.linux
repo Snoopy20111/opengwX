@@ -2,7 +2,7 @@ LIBS = -lSDL2 -lGL -lGLU
 OWN_PATHS = -I.
 HEADERS = $(OWN_PATHS) -I/usr/include/SDL2
 DEFINES = -DUSE_SDL
-CFLAGS = -std=c++11 -Wall -O0 -ggdb
+CFLAGS = -std=c++11 -Wall -O3 -ggdb
 NAME = opengw
 OBJDIR = obj
 
@@ -17,12 +17,12 @@ CLANG_ANALYZE   = #--analyze
 CLANG_THREAD    = #-fsanitize=thread
 CLANG_ADDRESS   = #-fsanitize=address
 CLANG_MEMORY    = #-fsanitize=memory
-CLANG_UNDEFINED = -fsanitize=undefined
+CLANG_UNDEFINED = #-fsanitize=undefined
 
 CLANG_FLAGS= $(CLANG_ANALYZE) $(CLANG_THREAD) $(CLANG_ADDRESS) $(CLANG_MEMORY) $(CLANG_UNDEFINED)
 
 COMPILER = g++
-COMPILER = clang++
+#COMPILER = clang++
 
 all: $(NAME)
 	$(NAME)

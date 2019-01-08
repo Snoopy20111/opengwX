@@ -15,6 +15,8 @@
 #include "entityrepulsor.h"
 #include "entityproton.h"
 #include "entityline.h"
+#include "players.h"
+#include "enemies.h"
 
 entity::entity()
     : mType(ENTITY_TYPE_UNDEF)
@@ -31,34 +33,34 @@ entity::entity()
 }
 
 // Static class factory
-entity* entity::createEntity(EntityType _entity)
+entity* entity::createEntity(EntityType _entity, const game& gameRef)
 {
     switch (_entity)
     {
         case ENTITY_TYPE_PLAYER1:
-            return new entityPlayer1();
+            return new entityPlayer1(gameRef);
         case ENTITY_TYPE_PLAYER2:
             return new entityPlayer2();
         case ENTITY_TYPE_PLAYER_MISSILE:
             return new entityPlayerMissile();
         case ENTITY_TYPE_GRUNT:
-            return new entityGrunt();
+            return new entityGrunt(gameRef);
         case ENTITY_TYPE_WANDERER:
             return new entityWanderer();
         case ENTITY_TYPE_WEAVER:
             return new entityWeaver();
         case ENTITY_TYPE_SPINNER:
-            return new entitySpinner();
+            return new entitySpinner(gameRef);
         case ENTITY_TYPE_TINYSPINNER:
-            return new entityTinySpinner();
+            return new entityTinySpinner(gameRef);
         case ENTITY_TYPE_MAYFLY:
             return new entityMayfly();
         case ENTITY_TYPE_SNAKE:
             return new entitySnake();
         case ENTITY_TYPE_BLACKHOLE:
-            return new entityBlackHole();
+            return new entityBlackHole(gameRef);
         case ENTITY_TYPE_REPULSOR:
-            return new entityRepulsor();
+            return new entityRepulsor(gameRef);
         case ENTITY_TYPE_PROTON:
             return new entityProton();
         case ENTITY_TYPE_LINE:
@@ -237,7 +239,7 @@ void entity::destroyTransition()
     ++mGenId;
 
     // Explode the object into line entities
-    game::mEnemies.explodeEntity(*this);
+    theGame->mEnemies->explodeEntity(*this);
 }
 
 void entity::destroy()
@@ -290,13 +292,13 @@ void entity::hit(entity* aEntity)
             {
                 // Add points and display them at the destruction point
                 if (missile->mPlayerSource == 0)
-                    game::mPlayers.mPlayer1->addKillAtLocation(mScoreValue, getPos());
+                    theGame->mPlayers->mPlayer1->addKillAtLocation(mScoreValue, getPos());
                 else if (missile->mPlayerSource == 1)
-                    game::mPlayers.mPlayer2->addKillAtLocation(mScoreValue, getPos());
+                    theGame->mPlayers->mPlayer2->addKillAtLocation(mScoreValue, getPos());
                 else if (missile->mPlayerSource == 2)
-                    game::mPlayers.mPlayer3->addKillAtLocation(mScoreValue, getPos());
+                    theGame->mPlayers->mPlayer3->addKillAtLocation(mScoreValue, getPos());
                 else if (missile->mPlayerSource == 3)
-                    game::mPlayers.mPlayer4->addKillAtLocation(mScoreValue, getPos());
+                    theGame->mPlayers->mPlayer4->addKillAtLocation(mScoreValue, getPos());
             }
 
             game::mSound.playTrack(SOUNDID_ENEMYHIT);
@@ -331,8 +333,4 @@ entity* entity::hitTest(const Point3d& pos, float radius)
     }
     return NULL;
 }
-
-
-
-
 

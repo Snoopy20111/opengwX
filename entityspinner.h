@@ -3,10 +3,12 @@
 
 #include "entity.h"
 
+class game;
+
 class entitySpinner : public entity
 {
 public:
-    entitySpinner();
+    entitySpinner(const game& constRef);
 
     virtual void run();
     virtual void destroyTransition();
@@ -18,6 +20,7 @@ public:
 
 private:
     Point3d mHitSpeed;
+    const game& mGame;
 };
 
 #endif // ENTITYSPINNER_H

@@ -1,6 +1,7 @@
 #include "hyperspace.h"
 #include "game.h"
 #include "mathutils.h"
+#include "camera.h"
 
 extern Point3d cameraPos;
 
@@ -64,8 +65,8 @@ void hyperspace::draw()
 //        glColor4f(mStars[i].color.r, mStars[i].color.g, mStars[i].color.b, mCurrentBrightness * 1);
         glColor4f(1,1,1,.5 * mCurrentBrightness);
 
-        glVertex3d(mStars[i].lastPos.x + game::mCamera.mCurrentPos.x, mStars[i].lastPos.y + game::mCamera.mCurrentPos.y, mStars[i].lastPos.z + game::mCamera.mCurrentPos.z);
-        glVertex3d(mStars[i].pos.x + game::mCamera.mCurrentPos.x, mStars[i].pos.y + game::mCamera.mCurrentPos.y, mStars[i].pos.z + game::mCamera.mCurrentPos.z);
+        glVertex3d(mStars[i].lastPos.x + theGame->mCamera->mCurrentPos.x, mStars[i].lastPos.y + theGame->mCamera->mCurrentPos.y, mStars[i].lastPos.z + theGame->mCamera->mCurrentPos.z);
+        glVertex3d(mStars[i].pos.x + theGame->mCamera->mCurrentPos.x, mStars[i].pos.y + theGame->mCamera->mCurrentPos.y, mStars[i].pos.z + theGame->mCamera->mCurrentPos.z);
     }
 
     glEnd();

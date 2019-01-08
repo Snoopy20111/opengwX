@@ -1,7 +1,7 @@
 #include "entityweaver.h"
 #include "game.h"
 #include "entityPlayer1.h"
-
+#include "players.h"
 
 entityWeaver::entityWeaver()
     : entity()
@@ -54,7 +54,7 @@ void entityWeaver::run()
         // Check for missiles around us
         for (int i=0; i<entityPlayer1::mMaxMissiles; i++)
         {
-            entityPlayerMissile* missile = &((entityPlayer1*)game::mPlayers.mPlayer1)->missiles[i];
+            entityPlayerMissile* missile = &((entityPlayer1*)theGame->mPlayers->mPlayer1)->missiles[i];
             if (missile->getEnabled())
             {
                 // Test this missile to see if it's aimed at us
@@ -71,7 +71,7 @@ void entityWeaver::run()
                     if (distance < 25)
                     {
                         // Run away from it
-                        float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.mPlayer1->getPos());
+                        float angle = mathutils::calculate2dAngle(mPos, theGame->mPlayers->mPlayer1->getPos());
                         Point3d moveVector(.8, diff > 0 ? 1.1 : -1.1, 0);
                         moveVector = mathutils::rotate2dPoint(moveVector, angle + mathutils::DegreesToRads(180));
                         moveVector = mathutils::clamp2dVector(moveVector, .06);
@@ -82,7 +82,7 @@ void entityWeaver::run()
         }
 
         // Seek the player
-        float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.getPlayerClosestToPosition(mPos)->getPos());
+        float angle = mathutils::calculate2dAngle(mPos, theGame->mPlayers->getPlayerClosestToPosition(mPos)->getPos());
         Point3d moveVector(1, 0, 0);
         moveVector = mathutils::rotate2dPoint(moveVector, angle);
         moveVector = mathutils::clamp2dVector(moveVector, .05);

@@ -1,5 +1,6 @@
 #include "menuSelectGameType.h"
-
+#include "game.h"
+#include "players.h"
 
 int menuSelectGameType::selection = 0;
 
@@ -21,10 +22,10 @@ void menuSelectGameType::init(int player)
     mpPlayer3Amount = 0;
     mpPlayer4Amount = 0;
 
-    theGame->mPlayers.mPlayer1->mJoined = player == 0 ? true : false;
-    theGame->mPlayers.mPlayer2->mJoined = player == 1 ? true : false;
-    theGame->mPlayers.mPlayer3->mJoined = player == 2 ? true : false;
-    theGame->mPlayers.mPlayer4->mJoined = player == 3 ? true : false;
+    theGame->mPlayers->mPlayer1->mJoined = player == 0 ? true : false;
+    theGame->mPlayers->mPlayer2->mJoined = player == 1 ? true : false;
+    theGame->mPlayers->mPlayer3->mJoined = player == 2 ? true : false;
+    theGame->mPlayers->mPlayer4->mJoined = player == 3 ? true : false;
 
     game::mSound.playTrack(SOUNDID_MENU_SELECT);
 }
@@ -53,10 +54,10 @@ void menuSelectGameType::run()
         }
         else
         {
-            if (theGame->mControls.getStartButton(0)) theGame->mPlayers.mPlayer1->mJoined = true;
-            if (theGame->mControls.getStartButton(1)) theGame->mPlayers.mPlayer2->mJoined = true;
-            if (theGame->mControls.getStartButton(2)) theGame->mPlayers.mPlayer3->mJoined = true;
-            if (theGame->mControls.getStartButton(3)) theGame->mPlayers.mPlayer4->mJoined = true;
+            if (theGame->mControls.getStartButton(0)) theGame->mPlayers->mPlayer1->mJoined = true;
+            if (theGame->mControls.getStartButton(1)) theGame->mPlayers->mPlayer2->mJoined = true;
+            if (theGame->mControls.getStartButton(2)) theGame->mPlayers->mPlayer3->mJoined = true;
+            if (theGame->mControls.getStartButton(3)) theGame->mPlayers->mPlayer4->mJoined = true;
 
             if (theGame->mControls.getTriggerButton(0)
                 || theGame->mControls.getTriggerButton(1)
@@ -195,10 +196,10 @@ void menuSelectGameType::run()
     }
     else if (selection == 1)
     {
-        float player1Target = theGame->mPlayers.mPlayer1->mJoined ? 1 : 0;
-        float player2Target = theGame->mPlayers.mPlayer2->mJoined ? 1 : 0;
-        float player3Target = theGame->mPlayers.mPlayer3->mJoined ? 1 : 0;
-        float player4Target = theGame->mPlayers.mPlayer4->mJoined ? 1 : 0;
+        float player1Target = theGame->mPlayers->mPlayer1->mJoined ? 1 : 0;
+        float player2Target = theGame->mPlayers->mPlayer2->mJoined ? 1 : 0;
+        float player3Target = theGame->mPlayers->mPlayer3->mJoined ? 1 : 0;
+        float player4Target = theGame->mPlayers->mPlayer4->mJoined ? 1 : 0;
 
         if (mpPlayer1Amount < player1Target)
         {
@@ -272,17 +273,17 @@ void menuSelectGameType::draw()
     pos.y = (theGame->mGrid.extentY() / 2)+16;
 
     {
-        vector::pen pen = theGame->mPlayers.mPlayer1->getPen();
+        vector::pen pen = theGame->mPlayers->mPlayer1->getPen();
         pen.r = 1;
         pen.g = 1;
         pen.b = 1;
         pen.a = .5;
         glBegin(GL_LINES);
-        theGame->mPlayers.mPlayer1->getModel()->Identity();
-        theGame->mPlayers.mPlayer1->getModel()->Scale(4);
-        theGame->mPlayers.mPlayer1->getModel()->Rotate((sin(angle0)*.5) * player1Amount);
-        theGame->mPlayers.mPlayer1->getModel()->Translate(pos);
-        theGame->mPlayers.mPlayer1->getModel()->emit(pen);
+        theGame->mPlayers->mPlayer1->getModel()->Identity();
+        theGame->mPlayers->mPlayer1->getModel()->Scale(4);
+        theGame->mPlayers->mPlayer1->getModel()->Rotate((sin(angle0)*.5) * player1Amount);
+        theGame->mPlayers->mPlayer1->getModel()->Translate(pos);
+        theGame->mPlayers->mPlayer1->getModel()->emit(pen);
         glEnd();
     }
 
@@ -301,13 +302,13 @@ void menuSelectGameType::draw()
 
     {
         vector::pen pen = vector::pen(1, .3, .3, 1, 12); // HACK - find a better way to get this color :-(
-        if (!theGame->mPlayers.mPlayer1->mJoined) pen.a *= .25;
+        if (!theGame->mPlayers->mPlayer1->mJoined) pen.a *= .25;
         glBegin(GL_LINES);
-        theGame->mPlayers.mPlayer1->getModel()->Identity();
-        theGame->mPlayers.mPlayer1->getModel()->Scale(4);
-        theGame->mPlayers.mPlayer1->getModel()->Rotate((sin(angle1)*.5) * mpPlayer1Amount);
-        theGame->mPlayers.mPlayer1->getModel()->Translate(pos);
-        theGame->mPlayers.mPlayer1->getModel()->emit(pen);
+        theGame->mPlayers->mPlayer1->getModel()->Identity();
+        theGame->mPlayers->mPlayer1->getModel()->Scale(4);
+        theGame->mPlayers->mPlayer1->getModel()->Rotate((sin(angle1)*.5) * mpPlayer1Amount);
+        theGame->mPlayers->mPlayer1->getModel()->Translate(pos);
+        theGame->mPlayers->mPlayer1->getModel()->emit(pen);
         glEnd();
     }
 
@@ -317,14 +318,14 @@ void menuSelectGameType::draw()
     pos.y = (theGame->mGrid.extentY() / 2)-16;
 
     {
-        vector::pen pen = theGame->mPlayers.mPlayer2->getPen();
-        if (!theGame->mPlayers.mPlayer2->mJoined) pen.a *= .25;
+        vector::pen pen = theGame->mPlayers->mPlayer2->getPen();
+        if (!theGame->mPlayers->mPlayer2->mJoined) pen.a *= .25;
         glBegin(GL_LINES);
-        theGame->mPlayers.mPlayer2->getModel()->Identity();
-        theGame->mPlayers.mPlayer2->getModel()->Scale(.25);
-        theGame->mPlayers.mPlayer2->getModel()->Rotate((sin(angle2)*.5) * mpPlayer2Amount);
-        theGame->mPlayers.mPlayer2->getModel()->Translate(pos);
-        theGame->mPlayers.mPlayer2->getModel()->emit(pen);
+        theGame->mPlayers->mPlayer2->getModel()->Identity();
+        theGame->mPlayers->mPlayer2->getModel()->Scale(.25);
+        theGame->mPlayers->mPlayer2->getModel()->Rotate((sin(angle2)*.5) * mpPlayer2Amount);
+        theGame->mPlayers->mPlayer2->getModel()->Translate(pos);
+        theGame->mPlayers->mPlayer2->getModel()->emit(pen);
         glEnd();
     }
 
@@ -334,14 +335,14 @@ void menuSelectGameType::draw()
     pos.y = (theGame->mGrid.extentY() / 2)-16;
 
     {
-        vector::pen pen = theGame->mPlayers.mPlayer3->getPen();
-        if (!theGame->mPlayers.mPlayer3->mJoined) pen.a *= .25;
+        vector::pen pen = theGame->mPlayers->mPlayer3->getPen();
+        if (!theGame->mPlayers->mPlayer3->mJoined) pen.a *= .25;
         glBegin(GL_LINES);
-        theGame->mPlayers.mPlayer3->getModel()->Identity();
-        theGame->mPlayers.mPlayer3->getModel()->Scale(.25);
-        theGame->mPlayers.mPlayer3->getModel()->Rotate((sin(angle3)*.5) * mpPlayer3Amount);
-        theGame->mPlayers.mPlayer3->getModel()->Translate(pos);
-        theGame->mPlayers.mPlayer3->getModel()->emit(pen);
+        theGame->mPlayers->mPlayer3->getModel()->Identity();
+        theGame->mPlayers->mPlayer3->getModel()->Scale(.25);
+        theGame->mPlayers->mPlayer3->getModel()->Rotate((sin(angle3)*.5) * mpPlayer3Amount);
+        theGame->mPlayers->mPlayer3->getModel()->Translate(pos);
+        theGame->mPlayers->mPlayer3->getModel()->emit(pen);
         glEnd();
     }
 
@@ -351,14 +352,14 @@ void menuSelectGameType::draw()
     pos.y = (theGame->mGrid.extentY() / 2)-16;
 
     {
-        vector::pen pen = theGame->mPlayers.mPlayer4->getPen();
-        if (!theGame->mPlayers.mPlayer4->mJoined) pen.a *= .25;
+        vector::pen pen = theGame->mPlayers->mPlayer4->getPen();
+        if (!theGame->mPlayers->mPlayer4->mJoined) pen.a *= .25;
         glBegin(GL_LINES);
-        theGame->mPlayers.mPlayer4->getModel()->Identity();
-        theGame->mPlayers.mPlayer4->getModel()->Scale(.25);
-        theGame->mPlayers.mPlayer4->getModel()->Rotate((sin(angle4)*.5) * mpPlayer4Amount);
-        theGame->mPlayers.mPlayer4->getModel()->Translate(pos);
-        theGame->mPlayers.mPlayer4->getModel()->emit(pen);
+        theGame->mPlayers->mPlayer4->getModel()->Identity();
+        theGame->mPlayers->mPlayer4->getModel()->Scale(.25);
+        theGame->mPlayers->mPlayer4->getModel()->Rotate((sin(angle4)*.5) * mpPlayer4Amount);
+        theGame->mPlayers->mPlayer4->getModel()->Translate(pos);
+        theGame->mPlayers->mPlayer4->getModel()->emit(pen);
         glEnd();
     }
 
@@ -400,22 +401,22 @@ void menuSelectGameType::draw()
 
         // Player 1 indicator
         Point3d p4(player1xPos-(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
-        Point3d p5(player1xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers.mPlayer1->mJoined) ? indicatorH : 0), 0);
+        Point3d p5(player1xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers->mPlayer1->mJoined) ? indicatorH : 0), 0);
         Point3d p6(player1xPos+(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
 
         // Player 2 indicator
         Point3d p7(player2xPos-(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
-        Point3d p8(player2xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers.mPlayer2->mJoined) ? indicatorH : 0), 0);
+        Point3d p8(player2xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers->mPlayer2->mJoined) ? indicatorH : 0), 0);
         Point3d p9(player2xPos+(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
 
         // Player 3 indicator
         Point3d p10(player3xPos-(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
-        Point3d p11(player3xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers.mPlayer3->mJoined) ? indicatorH : 0), 0);
+        Point3d p11(player3xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers->mPlayer3->mJoined) ? indicatorH : 0), 0);
         Point3d p12(player3xPos+(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
 
         // Player 4 indicator
         Point3d p13(player4xPos-(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
-        Point3d p14(player4xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers.mPlayer4->mJoined) ? indicatorH : 0), 0);
+        Point3d p14(player4xPos, ((theGame->mGrid.extentY() / 2)-25) + ((theGame->mPlayers->mPlayer4->mJoined) ? indicatorH : 0), 0);
         Point3d p15(player4xPos+(indicatorW/2), ((theGame->mGrid.extentY() / 2)-25), 0);
 
         Point3d p16((theGame->mGrid.extentX() / 2)+40, (theGame->mGrid.extentY() / 2)-25, 0);

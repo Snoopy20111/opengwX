@@ -2,6 +2,8 @@
 #include "game.h"
 #include "entityline.h"
 #include "entityPlayer1.h"
+#include "players.h"
+#include "enemies.h"
 
 class entityRepulsorShieldLine : public entity
 {
@@ -51,7 +53,7 @@ public:
         if (mValue >= 1)
         {
             // Create line entities for the shield lines
-            entityLine* line = theGame->mEnemies.getUnusedLine();
+            entityLine* line = theGame->mEnemies->getUnusedLine();
             if (line)
             {
                 line->setEdgeBounce(FALSE);
@@ -113,8 +115,8 @@ public:
 };
 
 
-entityRepulsor::entityRepulsor()
-    : entity()
+entityRepulsor::entityRepulsor(const game& gameRef)
+    : entity(), mGame(gameRef)
 {
     mScale = .12;
     mRadius = 2.6;
@@ -173,9 +175,9 @@ entityRepulsor::entityRepulsor()
     mModel.mEdgeList[i].from = 8; mModel.mEdgeList[i++].to = 10;
     mModel.mEdgeList[i].from = 1; mModel.mEdgeList[i++].to = 3;
 
-    mShield1 = new entityRepulsorShieldLine();
-    mShield2 = new entityRepulsorShieldLine();
-    mShield3 = new entityRepulsorShieldLine();
+    mShield1.reset(new entityRepulsorShieldLine());
+    mShield2.reset(new entityRepulsorShieldLine());
+    mShield3.reset(new entityRepulsorShieldLine());
 }
 
 
@@ -187,7 +189,7 @@ void entityRepulsor::run()
         bool enable = false;
         for (int i=0; (i<entityPlayer1::mMaxMissiles) && !enable; i++)
         {
-            entityPlayerMissile* missile = &((entityPlayer1*)game::mPlayers.mPlayer1)->missiles[i];
+            entityPlayerMissile* missile = &((entityPlayer1*)mGame.mPlayers->mPlayer1)->missiles[i];
             if (missile->getEnabled())
             {
                 // Test this missile to see if it's close to us
@@ -215,7 +217,7 @@ void entityRepulsor::run()
             mShield3->mValue = -4;
         }
 
-        Point3d targetPos = game::mPlayers.getPlayerClosestToPosition(mPos)->getPos();
+        Point3d targetPos = mGame.mPlayers->getPlayerClosestToPosition(mPos)->getPos();
         float angle = mathutils::calculate2dAngle(mPos, targetPos) + mathutils::DegreesToRads(-90);
         float angleDiff = mathutils::diffAngles(mAngle, angle);
 

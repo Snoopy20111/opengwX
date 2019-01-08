@@ -1,8 +1,10 @@
 #include "entityblackhole.h"
 #include "game.h"
 #include "sincos.h"
+#include "players.h"
+#include "enemies.h"
 
-entityBlackHole::entityBlackHole()
+entityBlackHole::entityBlackHole(const game& gameRef) : mGame(gameRef)
 {
     mScale = 1.5;
     mRadius = 2.5;
@@ -83,7 +85,7 @@ void entityBlackHole::run()
 
             for (int i=0; i<20; i++)
             {
-                entity* enemy = game::mEnemies.getUnusedEnemyOfType(entity::ENTITY_TYPE_PROTON);
+                entity* enemy = theGame->mEnemies->getUnusedEnemyOfType(entity::ENTITY_TYPE_PROTON);
                 if (enemy)
                 {
                     const float distance = mathutils::frandFrom0To1() * 10;
@@ -140,7 +142,7 @@ void entityBlackHole::run()
 
     // Seek the player
 
-    float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.getPlayerClosestToPosition(mPos)->getPos());
+    float angle = mathutils::calculate2dAngle(mPos, mGame.mPlayers->getPlayerClosestToPosition(mPos)->getPos());
     Point3d moveVector(1, 0, 0);
     moveVector = mathutils::rotate2dPoint(moveVector, angle);
     mSpeed += moveVector * .002;
@@ -156,8 +158,8 @@ void entityBlackHole::run()
 
     const float leftEdge = getRadius();
     const float bottomEdge = getRadius();
-    const float rightEdge = (theGame->mGrid.extentX() - getRadius())-1;
-    const float topEdge = (theGame->mGrid.extentY() - getRadius())-1;
+    const float rightEdge = (mGame.mGrid.extentX() - getRadius())-1;
+    const float topEdge = (mGame.mGrid.extentY() - getRadius())-1;
 
     if (mPos.x < leftEdge)
     {
@@ -322,9 +324,9 @@ void entityBlackHole::hit(entity* aEntity)
 
                         // Add points and display them at the destruction point
                         if (missile->mPlayerSource == 0)
-                            game::mPlayers.mPlayer1->addKillAtLocation(mPoints, pos);
+                            mGame.mPlayers->mPlayer1->addKillAtLocation(mPoints, pos);
                         else if (missile->mPlayerSource == 1)
-                            game::mPlayers.mPlayer2->addKillAtLocation(mPoints, pos);
+                            mGame.mPlayers->mPlayer2->addKillAtLocation(mPoints, pos);
                     }
                 }
             }
@@ -333,7 +335,7 @@ void entityBlackHole::hit(entity* aEntity)
         {
             mActivated = TRUE;
 
-            if (theGame->mGameMode == game::GAMEMODE_PLAYING)
+            if (mGame.mGameMode == game::GAMEMODE_PLAYING)
             {
                 if (mHumLoopSoundId == -1)
                     mHumLoopSoundId = game::mSound.playTrackGroup(SOUNDID_GRAVITYWELL_HUMLOOPA, SOUNDID_GRAVITYWELL_HUMLOOPF);
@@ -657,7 +659,7 @@ void entityBlackHole::drawRing()
         glLineWidth(mPen.lineRadius);
     }
 
-    if (!theGame->mSettings.mEnemySmoothing)
+    if (!mGame.mSettings.mEnemySmoothing)
     {
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_MULTISAMPLE);
@@ -672,7 +674,7 @@ void entityBlackHole::drawRing()
 
     glEnd();
 
-    if (!theGame->mSettings.mEnemySmoothing)
+    if (!mGame.mSettings.mEnemySmoothing)
     {
         glDisable(GL_MULTISAMPLE);
         glDisable(GL_LINE_SMOOTH);

@@ -3,6 +3,8 @@
 
 #include "entity.h"
 
+#include <vector>
+
 class entitySnakeSegment;
 
 class entitySnake : public entity
@@ -24,7 +26,7 @@ public:
 
 private:
     Point3d mTarget;
-    entitySnakeSegment* mSegments;
+    std::vector<entitySnakeSegment> mSegments;
 
     void updateTarget();
 };

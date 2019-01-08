@@ -1,9 +1,10 @@
 #include "entitygrunt.h"
 #include "game.h"
 #include "sincos.h"
+#include "players.h"
 
-entityGrunt::entityGrunt()
-    : entity()
+entityGrunt::entityGrunt(const game& gameRef)
+    : entity(), mGame(gameRef)
 {
     mScale = 1.5;
     mRadius = 3;
@@ -42,7 +43,7 @@ void entityGrunt::run()
     {
         // Seek the player
 
-        float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.getPlayerClosestToPosition(mPos)->getPos());
+        float angle = mathutils::calculate2dAngle(mPos, mGame.mPlayers->getPlayerClosestToPosition(mPos)->getPos());
         Point3d moveVector(1, 0, 0);
         moveVector = mathutils::rotate2dPoint(moveVector, angle);
         mSpeed += moveVector * .01;

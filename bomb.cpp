@@ -1,5 +1,6 @@
 #include "bomb.h"
 #include "game.h"
+#include "enemies.h"
 
 bomb::bomb(void)
 {
@@ -59,17 +60,17 @@ void bomb::run()
             // Look for any enemies within the blast radius and destroy them
             for (int j=0; j<NUM_ENEMIES; j++)
             {
-                if ((game::mEnemies.mEnemies[j]->getState() != entity::ENTITY_STATE_INACTIVE)
-                    && (game::mEnemies.mEnemies[j]->getState() != entity::ENTITY_STATE_INDICATING)
-                    && (game::mEnemies.mEnemies[j]->getState() != entity::ENTITY_STATE_INDICATE_TRANSITION)
-                    && (game::mEnemies.mEnemies[j]->getState() != entity::ENTITY_STATE_DESTROY_TRANSITION)
-                    && (game::mEnemies.mEnemies[j]->getState() != entity::ENTITY_STATE_DESTROYED))
+                if ((theGame->mEnemies->mEnemies[j]->getState() != entity::ENTITY_STATE_INACTIVE)
+                    && (theGame->mEnemies->mEnemies[j]->getState() != entity::ENTITY_STATE_INDICATING)
+                    && (theGame->mEnemies->mEnemies[j]->getState() != entity::ENTITY_STATE_INDICATE_TRANSITION)
+                    && (theGame->mEnemies->mEnemies[j]->getState() != entity::ENTITY_STATE_DESTROY_TRANSITION)
+                    && (theGame->mEnemies->mEnemies[j]->getState() != entity::ENTITY_STATE_DESTROYED))
                 {
-                    float distance = mathutils::calculate2dDistance(mRings[i].pos, game::mEnemies.mEnemies[j]->getPos());
+                    float distance = mathutils::calculate2dDistance(mRings[i].pos, theGame->mEnemies->mEnemies[j]->getPos());
                     if ((distance > mRings[i].radius-10) && (distance < mRings[i].radius))
                     {
                         // Destroy it
-                        game::mEnemies.mEnemies[j]->hit(NULL);
+                        theGame->mEnemies->mEnemies[j]->hit(NULL);
                     }
                 }
             }
@@ -167,6 +168,4 @@ bool bomb::isBombing()
     }
     return false;
 }
-
-
 

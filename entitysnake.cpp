@@ -1,5 +1,6 @@
 #include "entitysnake.h"
 #include "game.h"
+#include "enemies.h"
 
 #define NUM_SEGMENTS 23
 #define NUM_SEG_STREAM_ITEMS 5 // sets the spacing between segments
@@ -51,7 +52,7 @@ public:
 		mModel.mEdgeList[i].from = 1; mModel.mEdgeList[i++].to = 2;
 		mModel.mEdgeList[i].from = 2; mModel.mEdgeList[i++].to = 0;
 
-        mSegmentStream = new SegmentStreamItem[NUM_SEG_STREAM_ITEMS];
+        mSegmentStream.resize(NUM_SEG_STREAM_ITEMS);
         for (int i=0; i<NUM_SEG_STREAM_ITEMS; i++)
         {
             mSegmentStream[i].pos = mPos;
@@ -206,7 +207,7 @@ public:
         game::mParticles.emitter(&pos, &angle, speed, spread, num, &pen, timeToLive, TRUE, TRUE, .98, TRUE);
 
         // Explode the object into line entities
-        game::mEnemies.explodeEntity(*this);
+        theGame->mEnemies->explodeEntity(*this);
     }
 
     void destroy()
@@ -219,8 +220,7 @@ public:
         // Do nothing and don't call the base class method (tail segments are invinsible)
     }
 
-    SegmentStreamItem* mSegmentStream;
-
+    std::vector<SegmentStreamItem> mSegmentStream;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -279,7 +279,8 @@ entitySnake::entitySnake()
     mModel.mEdgeList[i].from = 13; mModel.mEdgeList[i++].to = 0;
 
     // Create the tail segments
-    mSegments = new entitySnakeSegment[NUM_SEGMENTS];
+    mSegments.resize(NUM_SEGMENTS);
+
     for (int i=0; i<NUM_SEGMENTS; i++)
     {
         mSegments[i].setState(ENTITY_STATE_INACTIVE);

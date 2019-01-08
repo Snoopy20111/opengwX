@@ -37,7 +37,7 @@ static int idxProtonEnd;
 
 
 
-enemies::enemies()
+enemies::enemies(const game& gameRef) : mGame(gameRef)
 {
     int entity = 0;
 
@@ -47,7 +47,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyWanderer; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_WANDERER);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_WANDERER, gameRef);
         }
 
 		idxWandererEnd = entity-1;
@@ -58,7 +58,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyGrunt; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_GRUNT);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_GRUNT, gameRef);
         }
 
 		idxGruntEnd = entity-1;
@@ -69,7 +69,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemySpinner; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_SPINNER);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_SPINNER, gameRef);
         }
 
 		idxSpinnerEnd = entity-1;
@@ -80,7 +80,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyTinySpinner; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_TINYSPINNER);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_TINYSPINNER, gameRef);
         }
 
 		idxTinySpinnerEnd = entity-1;
@@ -91,7 +91,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyWeaver; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_WEAVER);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_WEAVER, gameRef);
         }
 
 		idxWeaverEnd = entity-1;
@@ -102,7 +102,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemySnake; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_SNAKE);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_SNAKE, gameRef);
         }
 
 		idxSnakeEnd = entity-1;
@@ -113,7 +113,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyBlackHole; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_BLACKHOLE);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_BLACKHOLE, gameRef);
         }
 
 		idxBlackHoleEnd = entity-1;
@@ -124,7 +124,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyRepulsor; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_REPULSOR);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_REPULSOR, gameRef);
         }
 
 		idxRepulsorEnd = entity-1;
@@ -135,7 +135,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyMayfly; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_MAYFLY);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_MAYFLY, gameRef);
         }
 
 		idxMayflyEnd = entity-1;
@@ -146,7 +146,7 @@ enemies::enemies()
 
         for (int i=0; i<numEnemyProton; i++)
         {
-            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_PROTON);
+            mEnemies[entity++] = entity::createEntity(entity::ENTITY_TYPE_PROTON, gameRef);
         }
 
 		idxProtonEnd = entity-1;
@@ -163,12 +163,12 @@ enemies::enemies()
     // Fill the rest of the list with empty entries
     for (int i=entity; i<NUM_ENEMIES; i++)
     {
-        mEnemies[i] = entity::createEntity(entity::ENTITY_TYPE_UNDEF);
+        mEnemies[i] = entity::createEntity(entity::ENTITY_TYPE_UNDEF, gameRef);
     }
 
     for (int i=0; i<NUM_LINES; i++)
     {
-        mLines[i] = static_cast<entityLine*>(entity::createEntity(entity::ENTITY_TYPE_LINE));
+        mLines[i] = static_cast<entityLine*>(entity::createEntity(entity::ENTITY_TYPE_LINE, gameRef));
     }
 }
 

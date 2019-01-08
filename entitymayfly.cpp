@@ -1,5 +1,6 @@
 #include "entitymayfly.h"
 #include "game.h"
+#include "players.h"
 
 entityMayfly::entityMayfly()
     : entity()
@@ -149,7 +150,7 @@ void entityMayfly::run()
             mFlipDirection = -mFlipDirection;
 
             // Update the target
-            mTarget = game::mPlayers.getPlayerClosestToPosition(mPos)->getPos();
+            mTarget = theGame->mPlayers->getPlayerClosestToPosition(mPos)->getPos();
             mTarget.x += (mathutils::frandFrom0To1() * 30) - 15;
             mTarget.y += (mathutils::frandFrom0To1() * 30) - 15;
         }

@@ -1,9 +1,9 @@
 #include "entitytinyspinner.h"
 #include "game.h"
+#include "players.h"
 
-
-entityTinySpinner::entityTinySpinner()
-    : entitySpinner()
+entityTinySpinner::entityTinySpinner(const game& gameRef)
+    : entitySpinner(gameRef), mGame(gameRef)
 {
     mScale = 1;
     mRadius = 2.2;
@@ -44,7 +44,7 @@ void entityTinySpinner::run()
     {
         // Seek the player
 
-        float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.getPlayerClosestToPosition(mPos)->getPos());
+        float angle = mathutils::calculate2dAngle(mPos, mGame.mPlayers->getPlayerClosestToPosition(mPos)->getPos());
         Point3d moveVector(1, 0, 0);
         moveVector = mathutils::rotate2dPoint(moveVector, angle);
         mSpeed += moveVector * .02;

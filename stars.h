@@ -5,10 +5,12 @@
 
 #define NUM_STARS 8000
 
+class game;
+
 class stars
 {
 public:
-    stars();
+    stars(const game& gameRef);
     ~stars();
 
     void run();
@@ -22,6 +24,7 @@ public:
     }STAR;
 
     STAR* mStars;
+    const game& mGame;
 };
 
 #endif // STARS_H

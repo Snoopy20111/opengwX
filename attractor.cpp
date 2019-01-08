@@ -6,17 +6,8 @@ attractor::attractor()
 {
     mNumAttractors = 50; // PERFORMANCE: If you set this too high things will start to slow down in grid::run()!!
 
-    mAttractors = new Attractor[mNumAttractors];
-    if (mAttractors)
-    {
-        clearAll();
-    }
-}
-
-attractor::~attractor()
-{
-    if (mAttractors)
-        delete [] mAttractors;
+    mAttractors.resize(mNumAttractors);
+    clearAll();
 }
 
 attractor::Attractor* attractor::getAttractor()

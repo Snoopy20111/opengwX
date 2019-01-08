@@ -3,10 +3,12 @@
 
 #include "entity.h"
 
+class game;
+
 class entityBlackHole : public entity
 {
 public:
-    entityBlackHole();
+    entityBlackHole(const game& gameRef);
 
     virtual void runTransition();
     virtual void run();
@@ -46,6 +48,8 @@ private:
     float mHumSpeedTarget { 0.0f };
     int mHumLoopSoundId;
     float mGridPullIndex;
+
+    const game& mGame;
 };
 
 #endif // ENTITYBLACKHOLE_H

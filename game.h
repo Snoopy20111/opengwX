@@ -8,14 +8,10 @@
 #include "point3d.h"
 #include "grid.h"
 #include "particle.h"
-#include "camera.h"
 #include "attractor.h"
 #include "controls.h"
 #include "mathutils.h"
 #include "entity.h"
-#include "enemies.h"
-#include "stars.h"
-#include "players.h"
 #include "blackholes.h"
 #include "font.h"
 #include "spawner.h"
@@ -24,6 +20,11 @@
 #include "settings.h"
 
 #include <memory>
+
+class camera;
+class stars;
+class players;
+class enemies;
 
 enum
 {
@@ -123,17 +124,18 @@ public:
 
     void startBomb();
 
-    int numPlayers();
+    int numPlayers() const;
 
     static sound mSound;
     static grid mGrid;
     static particle mParticles;
-    static camera mCamera;
+    std::unique_ptr<camera> mCamera;
     static attractor mAttractors;
     static controls mControls;
-    static enemies mEnemies;
-    static stars mStars;
-    static players mPlayers;
+    //static enemies mEnemies;
+    std::unique_ptr<enemies> mEnemies;
+    std::unique_ptr<stars> mStars;
+    std::unique_ptr<players> mPlayers; 
     static blackholes mBlackHoles;
     static spawner mSpawner;
     static bomb mBomb;
@@ -180,8 +182,7 @@ private:
 
     bool mDebounce { false };
 
-    entity* mAttractModeBlackHoles[4];
-
+    std::unique_ptr<entity> mAttractModeBlackHoles[4];
 };
 
 //extern game theGame;

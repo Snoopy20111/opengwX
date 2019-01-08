@@ -3,13 +3,12 @@
 
 #include "point3d.h"
 #include "particle.h"
-#include "SDL.h"
+#include <vector>
 
 class attractor
 {
 public:
     attractor();
-    ~attractor();
 
     void clearAll();
 
@@ -26,7 +25,7 @@ public:
 
     attractor::Attractor* getAttractor();
 
-    Attractor* mAttractors;
+    std::vector<Attractor> mAttractors;
     int mNumAttractors;
 };
 
