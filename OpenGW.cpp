@@ -56,6 +56,8 @@ static Uint32 fpsTime;
 static int frameCount;
 static int fps;
 
+const Uint8* keyboardState;
+
 static bool handleEvents()
 {
 	SDL_Event e;
@@ -67,6 +69,7 @@ static bool handleEvents()
 		}
 	}
 
+	keyboardState = SDL_GetKeyboardState(nullptr);
 	return true;
 }
 
