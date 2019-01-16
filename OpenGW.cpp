@@ -34,7 +34,6 @@ static SDL_GLContext context;
 static void OGLCreate();
 static void OGLDestroy();
 static void OGLSize(int cx, int cy);
-static void OGLPaint();
 
 std::unique_ptr<scene> oglScene;
 
@@ -45,6 +44,7 @@ static unsigned int texOffscreen;
 
 static void createOffscreens();
 static void drawOffscreens();
+static void run();
 
 #define CONTEXT_PRIMARY 0
 #define CONTEXT_GLOW    1
@@ -71,12 +71,6 @@ static bool handleEvents()
 
 	keyboardState = SDL_GetKeyboardState(nullptr);
 	return true;
-}
-
-static void run() {
-	while (handleEvents()) {
-		OGLPaint();
-	}
 }
 
 int main(int argc, char** argv) {
@@ -126,7 +120,7 @@ static void OGLCreate()
     // Do stuff with the context here if needed...
     createOffscreens();
 
-	if (SDL_GL_SetSwapInterval(1) == -1) {
+	if (SDL_GL_SetSwapInterval(0) == -1) {
 		printf("SDL_GL_SetSwapInterval failed: %s\n", SDL_GetError());
 	}
 
@@ -206,16 +200,15 @@ static void drawOffscreens()
         glBindTexture(GL_TEXTURE_2D, texOffscreen);
         glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
 
+		int blurRadius = 4;
+
         if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
         {
-            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 8);
-            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 8);
+			blurRadius = 8;
         }
-        else
-        {
-            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 4);
-            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 4);
-        }
+
+		superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, blurRadius);
+		superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, blurRadius);
 
         // Bind the blur result back to our texture
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, blurBufferWidth, blurBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
@@ -256,27 +249,15 @@ static void drawOffscreens()
     }
 }
 
-static void OGLPaint()
+static void updateFps(Uint32 now)
 {
-    if (!oglInited) return;
-
-    static BOOL inpaint = FALSE;
-    if (inpaint) return;
-    inpaint = TRUE;
-
-    oglScene->run();
-
-    // ****************************************
-
     ++frameCount;
 
-    Uint32 newTime = SDL_GetTicks();
-    lastTime = newTime;
+    lastTime = now;
 
-
-    if ((newTime - fpsTime) > 1000)
+    if ((now - fpsTime) > 1000)
     {
-        fpsTime = newTime;
+        fpsTime = now;
         fps = (fps + frameCount) / 2;
         frameCount = 0;
 
@@ -284,15 +265,34 @@ static void OGLPaint()
 		snprintf(buf, sizeof(buf), "OpenGW SDL2 - FPS %d", fps);
 		SDL_SetWindowTitle(window, buf);
     }
+}
 
-    // ****************************************
+static void run()
+{
+    if (!oglInited) return;
 
-	SDL_GL_MakeCurrent(window, context);
+	constexpr Uint32 logicRate = 60;
+	constexpr Uint32 logicPeriod = 1000 / logicRate;
 
-	drawOffscreens();
+	Uint32 lastLogicUpdate = SDL_GetTicks();
 
-	SDL_GL_SwapWindow(window);
-	SDL_GL_MakeCurrent(nullptr, 0);
+	bool running = true;
 
-	inpaint = FALSE;
+	while (running) {
+		const Uint32 now = SDL_GetTicks();
+
+		while ((now - lastLogicUpdate) > logicPeriod) {
+			lastLogicUpdate += logicPeriod;
+			if (!handleEvents()) {
+				running = false;
+			}
+
+			oglScene->run();
+		}
+
+		drawOffscreens();
+
+		SDL_GL_SwapWindow(window);
+		updateFps(now);
+	}
 }
