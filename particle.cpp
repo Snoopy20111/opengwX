@@ -46,8 +46,7 @@ static int runThread(void *ptr)
 
                     particle::PARTICLE* particle = &particle::mParticles[i];
 
-                    --particle->timeToLive;
-                    if (particle->timeToLive <= 0)
+                    if (--particle->timeToLive < 0)
                     {
                         // This particle died
                         particle->timeToLive = 0;
@@ -245,27 +244,24 @@ void particle::draw()
                 // This particle is active
                 PARTICLE* particle = &mParticles[i];
 
-                float a = particle->color.a;
                 float speedNormal = mathutils::calculate2dDistance(Point3d(0,0,0), Point3d(particle->speedX, particle->speedY, particle->speedZ));
-                a = a * (speedNormal * .8);
+                float a = particle->color.a * (speedNormal * 0.8f);
 
-                if (a < .05)
+                if (a < 0.05f)
                 {
                     // This particle died
                     particle->timeToLive = 0;
                     continue;
                 }
 
-                float width = speedNormal * 8;
-                if (width > 4) width = 4;
-                else if (width < 1) width = 1;
+                float width = speedNormal * 8.0f;
+                if (width > 4.0f) width = 4.0f;
+                else if (width < 2.0f) width = 2.0f;
 
                 if (scene::mPass == scene::RENDERPASS_BLUR)
                 {
-                    width *= 4;
+                    width *= 4.0f;
                 }
-
-                if (width < 2) width = 2;
 
                 glLineWidth(width);
 
@@ -276,30 +272,29 @@ void particle::draw()
 
                 glBegin(GL_LINES);
 
-                float aa = a;
-                if (aa > 1) aa = 1;
-                for (int p=0; p<NUM_POS_STREAM_ITEMS-1; p++)
+				float aa = (a > 1.0f) ? 1.0f : a;
+
+                for (int p=0; (p < NUM_POS_STREAM_ITEMS - 1) && (aa > 0.0f); p++)
                 {
-                    if (aa <= 0) break;
+                    //glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
 
-                    glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
-
-                    Point3d from = particle->posStream[p];
-                    Point3d to = particle->posStream[p+1];
-
-                    if ((from.x == to.x) && (from.y == to.y))
-                    {
-                        to.x += .1;
-                        to.y += .1;
-                    }
+                    const Point3d& from = particle->posStream[p];
+                    const Point3d& to = particle->posStream[p + 1];
 
                     glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
                     glVertex3d(from.x, from.y, 0);
-                    aa-=.1;
+                    aa -= 0.1f;
 
                     glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
-                    glVertex3d(to.x, to.y, 0);
-                    aa-=.1;
+
+                    if ((from.x == to.x) && (from.y == to.y))
+					{
+						glVertex3d(to.x + 0.1f, to.y + 0.1f, 0);
+					} else {
+						glVertex3d(to.x, to.y, 0);
+					}
+
+                    aa -= 0.1f;
                 }
 
         	    glEnd();
