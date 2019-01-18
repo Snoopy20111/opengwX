@@ -21,7 +21,8 @@ public:
         Point3d pos;
         float radius;
         float brightness;
-    }STAR;
+		float twinkle;
+    } STAR;
 
     STAR* mStars;
     const game& mGame;

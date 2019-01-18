@@ -38,9 +38,9 @@ stars::stars(const game& gameRef) : mGame(gameRef)
         mStars[i].pos.x = mathutils::randFromTo(leftEdge, rightEdge);
         mStars[i].pos.y = mathutils::randFromTo(bottomEdge, topEdge);
         mStars[i].pos.z = z;
-        mStars[i].radius = ((mathutils::frandFrom0To1()*.5) + .25);
-        mStars[i].brightness = ((mathutils::frandFrom0To1()*.75) + .25);
-
+        mStars[i].radius = ((mathutils::frandFrom0To1() * 0.5f) + 0.25f);
+        mStars[i].brightness = ((mathutils::frandFrom0To1() * 0.75f) + 0.25f);
+		mStars[i].twinkle = 1.0f;
     }
 }
 
@@ -51,38 +51,38 @@ stars::~stars()
 
 void stars::run()
 {
+    for (int i = 0; i < NUM_STARS; i++)
+    {
+        if (mathutils::frandFrom0To1() > 0.98f)
+        {
+            mStars[i].twinkle = .5f;
+        }
+        else
+        {
+            mStars[i].twinkle = 1.0f;
+        }
+	}
 }
 
 void stars::draw()
 {
-    float brightness = 1; //game::mGrid.brightness;
-    float twinkle = 1;
+    constexpr float brightness = 1.0f; //game::mGrid.brightness;
 
+/*
     if (mGame.mGameMode == game::GAMEMODE_ATTRACT || mGame.mGameMode == game::GAMEMODE_CREDITED)
-        brightness = 1;
+        brightness = 1.0f;
 
-    if (brightness <= 0)
+    if (brightness <= 0.0f)
         return;
-
-    glPointSize(4);
+*/
+    glPointSize(4.0f);
 
     glBegin(GL_POINTS);
 
-    for (int i=0; i<NUM_STARS; i++)
+    for (int i = 0; i < NUM_STARS; i++)
     {
-        Point3d pt = mStars[i].pos;
-
-        if (mathutils::frandFrom0To1() * 100 > 98)
-        {
-            twinkle = .5;
-        }
-        else
-        {
-            twinkle = 1;
-        }
-
-        glColor4f(1.0f, 1.0f, 1.0f, (mStars[i].radius+.5) * brightness * mStars[i].brightness * twinkle);
-        glVertex3d(pt.x, pt.y, pt.z);
+        glColor4f(1.0f, 1.0f, 1.0f, (mStars[i].radius + 0.5f) * brightness * mStars[i].brightness * mStars[i].twinkle);
+        glVertex3d(mStars[i].pos.x, mStars[i].pos.y, mStars[i].pos.z);
     }
 
     glEnd();
