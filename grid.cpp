@@ -90,36 +90,35 @@ static int runThread(void *ptr)
                 int xend = grid::resolution_x-2;
                 int yend = grid::resolution_y-2;
 
+                const Point3d& apoint = att.pos;
+
                 for(y=ystart; y<=yend; ++y)
                 {
                     for(x=xstart; x<=xend; ++x)
                     {
                         //Point3d gpoint = (gridxy(x,y).pos + gridxy(x,y).center) * .5;
-                        Point3d gpoint = gridxy(x,y).pos;
-                        Point3d apoint = att.pos;
+                        const Point3d& gpoint = gridxy(x,y).pos;
 
-                        float distance = mathutils::calculate2dDistance(gpoint, apoint);
+                        float distance = mathutils::calculate2dDistanceSquared(gpoint, apoint);
 
-                        if ((distance < att.radius) && distance > 0)
+                        if ((distance < (att.radius * att.radius)) && distance > 0.0f)
                         {
-                            distance = (distance*distance); // Simulate gravity with distance squared
+                            //distance = (distance*distance); // Simulate gravity with distance squared
 
                             float angle = mathutils::calculate2dAngle(gpoint, apoint);
                             float strength = att.strength;
 
-                            Point3d gravityVector(-distance * strength, 0, 0);
+                            Point3d gravityVector(-distance * strength, 0.0f, 0.0f);
                             Point3d g = mathutils::rotate2dPoint(gravityVector, angle);
 
-                            gridxy(x,y).vel.x += g.x * .005;
-                            gridxy(x,y).vel.y += g.y * .005;
+                            gridxy(x,y).vel.x += g.x * .005f;
+                            gridxy(x,y).vel.y += g.y * .005f;
                         }
-
                     }
                 }
 
                 // Now that we've processed this attractor we can clear it out
                 game::mAttractors.mAttractors[a].enabled = false;
-
             }
         }
 
@@ -133,16 +132,16 @@ static int runThread(void *ptr)
                 for(x=1; x<grid::resolution_x-1; ++x)
                 {
                     // Weigh against neighbors
-                    Point3d p1 = gridxy(x-1,y).pos;
-                    Point3d p2 = gridxy(x+1,y).pos;
-                    Point3d p3 = gridxy(x,y-1).pos;
-                    Point3d p4 = gridxy(x,y+1).pos;
+                    const Point3d& p1 = gridxy(x-1,y).pos;
+                    const Point3d& p2 = gridxy(x+1,y).pos;
+                    const Point3d& p3 = gridxy(x,y-1).pos;
+                    const Point3d& p4 = gridxy(x,y+1).pos;
 
                     // Average the point
                     // avg_pos = (p1+p2+p3+p4) * .25;
                     Point3d avg_pos;
-                    avg_pos.x = (p1.x + p2.x + p3.x + p4.x) / 4;
-                    avg_pos.y = (p1.y + p2.y + p3.y + p4.y) / 4;
+                    avg_pos.x = (p1.x + p2.x + p3.x + p4.x) * 0.25f;
+                    avg_pos.y = (p1.y + p2.y + p3.y + p4.y) * 0.25f;
 
                     gridxy(x,y).vel += (gridxy(x,y).pos - avg_pos) * accel_c;
                     gridxy(x,y).vel *= damping_multiplier;
@@ -157,12 +156,10 @@ static int runThread(void *ptr)
                         gridxy(x,y).pos.y = 0;
                     else if (gridxy(x,y).pos.y > grid::resolution_y-1)
                         gridxy(x,y).pos.y = grid::resolution_y-1;
-
                 }
             }
         }
-    };
-
+    }
 
     return 0;
 }
@@ -171,8 +168,8 @@ grid::grid()
 {
     brightness = 1;
     mGrid = new gridPoint[resolution_x * resolution_y];
-    q=12; // 12
-    damping = 1.5; // 1.5
+    q=12;
+    damping = 1.5f;
 
     // Create our array of grid points
     int x,y;
@@ -216,11 +213,11 @@ grid::grid()
     // Init the grid line colors up front so it only has to happen once
 
 #ifdef GRID_GLOW
-    vector::pen darkColor(0.2f, 0.2f, 1.0f, (0.15f * ((scene::mPass == scene::RENDERPASS_PRIMARY) ? .75 : .25)) * brightness, 0);
-    vector::pen lightColor(0.2f, 0.2f, 1.0f, (0.4f * ((scene::mPass == scene::RENDERPASS_PRIMARY) ? .75 : .25)) * brightness, 0);
+    vector::pen darkColor(0.2f, 0.2f, 1.0f, (0.15f * ((scene::mPass == scene::RENDERPASS_PRIMARY) ? 0.75f : 0.25f)) * brightness, 0);
+    vector::pen lightColor(0.2f, 0.2f, 1.0f, (0.4f * ((scene::mPass == scene::RENDERPASS_PRIMARY) ? 0.75f : 0.25f)) * brightness, 0);
 #else
     vector::pen darkColor(0.4f, 0.4f, 1.0f, 0.15f * brightness, 0);
-    vector::pen lightColor(.4f, 0.4f, 1.0f, 0.4f * brightness, 0);
+    vector::pen lightColor(0.4f, 0.4f, 1.0f, 0.4f * brightness, 0);
 #endif
 
     unsigned int i=0;
@@ -317,7 +314,6 @@ grid::grid()
         OutputDebugString(L"Couldn't create grid run thread\n");
 #endif
     }
-
 }
 
 grid::~grid()
@@ -335,11 +331,11 @@ void grid::run()
 
 void grid::draw()
 {
+    if (brightness <= 0.05f) return;
+
     std::unique_lock<std::mutex> lock(m);
 
-    if (brightness <= .05) return;
-
-    glLineWidth(5);
+    glLineWidth(5.0f);
 
     unsigned int idxVertex = 0;
 
@@ -349,17 +345,17 @@ void grid::draw()
     {
         for (x=0; x<resolution_x-1; ++x)
         {
-            Point3d from = gridxy(x,y).pos;
-            Point3d to = gridxy(x+1,y).pos;
+            const Point3d& from = gridxy(x,y).pos;
+            const Point3d& to = gridxy(x+1,y).pos;
 
             gridVertexArrayX[idxVertex].x = from.x;
             gridVertexArrayX[idxVertex].y = from.y;
-            gridVertexArrayX[idxVertex].z = 0;
+            gridVertexArrayX[idxVertex].z = 0.0f;
             ++idxVertex;
 
             gridVertexArrayX[idxVertex].x = to.x;
             gridVertexArrayX[idxVertex].y = to.y;
-            gridVertexArrayX[idxVertex].z = 0;
+            gridVertexArrayX[idxVertex].z = 0.0f;
             ++idxVertex;
         }
     }
@@ -371,17 +367,17 @@ void grid::draw()
     {
         for (y=0; y<resolution_y-1; ++y)
         {
-            Point3d from = gridxy(x,y).pos;
-            Point3d to = gridxy(x,y+1).pos;
+            const Point3d& from = gridxy(x,y).pos;
+            const Point3d& to = gridxy(x,y+1).pos;
 
             gridVertexArrayY[idxVertex].x = from.x;
             gridVertexArrayY[idxVertex].y = from.y;
-            gridVertexArrayY[idxVertex].z = 0;
+            gridVertexArrayY[idxVertex].z = 0.0f;
             ++idxVertex;
 
             gridVertexArrayY[idxVertex].x = to.x;
             gridVertexArrayY[idxVertex].y = to.y;
-            gridVertexArrayY[idxVertex].z = 0;
+            gridVertexArrayY[idxVertex].z = 0.0f;
             ++idxVertex;
         }
     }
@@ -404,40 +400,39 @@ void grid::draw()
 
     // Grid outline
 
-    glColor4f(1,1,1,1); // RGBA
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // RGBA
 
-    glLineWidth(4);
+    glLineWidth(4.0f);
 
     glBegin(GL_LINE_LOOP);
 
-    glVertex3f(0, 0, 0 );
-    glVertex3f(grid::resolution_x-1, 0, 0 );
-    glVertex3f(grid::resolution_x-1, grid::resolution_y-1, 0 );
-    glVertex3f(0, grid::resolution_y-1, 0 );
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(grid::resolution_x-1, 0.0f, 0.0f);
+    glVertex3f(grid::resolution_x-1, grid::resolution_y-1, 0.0f);
+    glVertex3f(0.0f, grid::resolution_y-1, 0.0f);
 
     glEnd();
 
     // If the brightness has been lowered, cover the grid with a semi transparent scrim
     // since all our grid colors are locked.
 
-    if (brightness < .99)
+    if (brightness < 0.99f)
     {
-        glColor4f(0, 0, 0, 1-brightness);
+        glColor4f(0.0f, 0.0f, 0.0f, 1-brightness);
 
         glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
 
-        glVertex3f(-10, -10, 0 );
-        glVertex3f(grid::resolution_x+10, -10, 0 );
-        glVertex3f(grid::resolution_x+10, grid::resolution_y+10, 0 );
-        glVertex3f(-10, grid::resolution_y+10, 0 );
+        glVertex3f(-10.0f, -10.0f, 0.0f);
+        glVertex3f(grid::resolution_x+10, -10.0f, 0.0f );
+        glVertex3f(grid::resolution_x+10, grid::resolution_y+10, 0.0f);
+        glVertex3f(-10.0f, grid::resolution_y+10, 0.0f);
 
         glEnd();
 
 	    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
-
 }
 
 bool grid::hitTest(const Point3d& pos, float radius, Point3d* hitPos/*=0*/, Point3d* speed/*=0*/)
@@ -479,6 +474,3 @@ bool grid::hitTest(const Point3d& pos, float radius, Point3d* hitPos/*=0*/, Poin
 
     return hit;
 }
-
-
-
