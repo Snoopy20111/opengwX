@@ -8,11 +8,11 @@ namespace mathutils
     float wrapRadians(float radians)
     {
         radians = fmodf(radians, RADIAN);
-        if (radians < 0.0) radians += RADIAN;
+        if (radians < 0.0f) radians += RADIAN;
         return radians;
     }
 
-    float calculate2dDistance(Point3d p1, Point3d p2)
+    float calculate2dDistance(const Point3d& p1, const Point3d& p2)
     {
         float x1 = p1.x;
         float y1 = p1.y;
@@ -22,6 +22,20 @@ namespace mathutils
         float dy = x1 - x2;
         float dz = y1 - y2;
         float distance = sqrt((dz*dz) + (dy*dy));
+
+        return distance;
+    }
+
+    float calculate2dDistanceSquared(const Point3d& p1, const Point3d& p2)
+    {
+        float x1 = p1.x;
+        float y1 = p1.y;
+        float x2 = p2.x;
+        float y2 = p2.y;
+
+        float dy = x1 - x2;
+        float dz = y1 - y2;
+        float distance = (dz*dz) + (dy*dy);
 
         return distance;
     }
@@ -131,10 +145,15 @@ namespace mathutils
         return (int) ((frandFrom0To1()*(range+1))+from);
     }
 
-    float frandFrom0To1()
+#if 0
+	constexpr float onePerRandMax = 1.0f / RAND_MAX;
+
+	float frandFrom0To1()
     {
-        return (float)rand()/RAND_MAX;
+        //return (float)rand()/RAND_MAX;
+		return rand() * onePerRandMax;
     }
+#endif
 
 	//  Globals which should be set before calling this function:
 	//

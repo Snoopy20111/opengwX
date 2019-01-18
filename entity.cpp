@@ -322,15 +322,25 @@ void entity::hit(entity* aEntity)
 
 entity* entity::hitTest(const Point3d& pos, float radius)
 {
-    Point3d ourPos(0,0,0);
-    this->getModel()->mMatrix.TransformVertex(ourPos, &ourPos);
+    Point3d ourPos(0.0f, 0.0f, 0.0f);
+    //this->getModel()->mMatrix.TransformVertex(ourPos, &ourPos);
+	getModel()->mMatrix.TranslateVertex(ourPos);
 
+#if 0
     float distance = mathutils::calculate2dDistance(pos, ourPos);
     float resultRadius = radius + getRadius();
     if (distance < resultRadius)
     {
         return this;
     }
+#else
+    float distance = mathutils::calculate2dDistanceSquared(pos, ourPos);
+    float resultRadius = radius + getRadius();
+    if (distance < resultRadius * resultRadius)
+    {
+        return this;
+    }
+#endif
     return NULL;
 }
 

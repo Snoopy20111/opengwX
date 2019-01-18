@@ -8,7 +8,8 @@ namespace mathutils
 {
     float wrapRadians(float radians);
 
-    float calculate2dDistance(Point3d p1, Point3d p2);
+    float calculate2dDistance(const Point3d& p1, const Point3d& p2);
+    float calculate2dDistanceSquared(const Point3d& p1, const Point3d& p2);
 
     float calculate2dAngle(Point3d from, Point3d to);
 
@@ -26,7 +27,14 @@ namespace mathutils
 
     int randFromTo(int from, int to);
 
-    float frandFrom0To1();
+    //float frandFrom0To1();
+
+	constexpr float onePerRandMax = 1.0f / RAND_MAX;
+
+	inline float frandFrom0To1()
+    {
+		return rand() * onePerRandMax;
+    }
 
     inline float RadsToDegrees(float radians)
     {
