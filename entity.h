@@ -9,8 +9,6 @@
 
 #include "point3d.h"
 
-class game;
-
 class entity
 {
 public:
@@ -53,9 +51,8 @@ public:
     }EntityState;
 
     entity();
-	virtual ~entity() = default;
 
-    static entity* createEntity(EntityType _entity, const game& gameRef); // Static class factory
+    static entity* createEntity(EntityType _entity); // Static class factory
 
     EntityType getType() const { return mType; }
 
@@ -127,10 +124,10 @@ protected:
     Point3d mPos;
     Point3d mSpeed;
     Point3d mDrift;
-    float mAngle { 0.0f };
-    float mRotationRate { 0.0f };
+    float mAngle;
+    float mRotationRate;
     Point3d mScale;
-    float mRadius { 0.0f };
+    float mRadius;
     BOOL mEdgeBounce;
     BOOL mGridBound;
     vector::pen mPen;
@@ -144,7 +141,7 @@ protected:
     int mIndicateTime;
     float mStateTimer;
 
-    int mScoreValue { 0 };
+    int mScoreValue;
 
     int mGenId;
 

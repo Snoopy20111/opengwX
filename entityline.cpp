@@ -1,4 +1,4 @@
-#include "entityline.h"
+#include "entityLine.h"
 #include "game.h"
 
 entityLine::entityLine(void)

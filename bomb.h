@@ -1,7 +1,7 @@
 #ifndef BOMB_H
 #define BOMB_H
 
-#include "point3d.h"
+#include "Point3d.h"
 #include "vector.h"
 
 class bomb

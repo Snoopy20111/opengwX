@@ -10,7 +10,7 @@ public:
     sound();
     ~sound();
 
-    void loadTrack(const char *file, int track, float volume, bool loop=false);
+    void loadTrack(char *file, int track, float volume, bool loop=false);
     void playTrack(int track);
     void stopTrack(int track);
     void stopAllTracks();

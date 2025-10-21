@@ -1,13 +1,15 @@
 #include "stars.h"
 #include "game.h"
 
-stars::stars(const game& gameRef) : mGame(gameRef)
+
+
+stars::stars()
 {
     const float overscan = 700;
     const float leftEdge = 0-overscan;
     const float bottomEdge = 0-overscan;
-    const float rightEdge = (mGame.mGrid.extentX() + overscan);
-    const float topEdge = (mGame.mGrid.extentY() + overscan);
+    const float rightEdge = (theGame.mGrid.extentX() + overscan);
+    const float topEdge = (theGame.mGrid.extentY() + overscan);
 
     mStars = new STAR[NUM_STARS];
 
@@ -38,51 +40,51 @@ stars::stars(const game& gameRef) : mGame(gameRef)
         mStars[i].pos.x = mathutils::randFromTo(leftEdge, rightEdge);
         mStars[i].pos.y = mathutils::randFromTo(bottomEdge, topEdge);
         mStars[i].pos.z = z;
-        mStars[i].radius = ((mathutils::frandFrom0To1() * 0.5f) + 0.25f);
-        mStars[i].brightness = ((mathutils::frandFrom0To1() * 0.75f) + 0.25f);
-		mStars[i].twinkle = 1.0f;
+        mStars[i].radius = ((mathutils::frandFrom0To1()*.5) + .25);
+        mStars[i].brightness = ((mathutils::frandFrom0To1()*.75) + .25);
+
     }
 }
 
 stars::~stars()
 {
-    delete [] mStars;
+    delete mStars;
 }
 
 void stars::run()
 {
-    for (int i = 0; i < NUM_STARS; i++)
-    {
-        if (mathutils::frandFrom0To1() > 0.98f)
-        {
-            mStars[i].twinkle = .5f;
-        }
-        else
-        {
-            mStars[i].twinkle = 1.0f;
-        }
-	}
 }
 
 void stars::draw()
 {
-    constexpr float brightness = 1.0f; //game::mGrid.brightness;
+    float brightness = 1; //game::mGrid.brightness;
+    float twinkle = 1;
 
-/*
-    if (mGame.mGameMode == game::GAMEMODE_ATTRACT || mGame.mGameMode == game::GAMEMODE_CREDITED)
-        brightness = 1.0f;
+    if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
+        brightness = 1;
 
-    if (brightness <= 0.0f)
+    if (brightness <= 0)
         return;
-*/
-    glPointSize(4.0f);
+
+    glPointSize(4);
 
     glBegin(GL_POINTS);
 
-    for (int i = 0; i < NUM_STARS; i++)
+    for (int i=0; i<NUM_STARS; i++)
     {
-        glColor4f(1.0f, 1.0f, 1.0f, (mStars[i].radius + 0.5f) * brightness * mStars[i].brightness * mStars[i].twinkle);
-        glVertex3d(mStars[i].pos.x, mStars[i].pos.y, mStars[i].pos.z);
+        Point3d pt = mStars[i].pos;
+
+        if (mathutils::frandFrom0To1() * 100 > 98)
+        {
+            twinkle = .5;
+        }
+        else
+        {
+            twinkle = 1;
+        }
+
+        glColor4f(1.0f, 1.0f, 1.0f, (mStars[i].radius+.5) * brightness * mStars[i].brightness * twinkle);
+        glVertex3d(pt.x, pt.y, pt.z);
     }
 
     glEnd();

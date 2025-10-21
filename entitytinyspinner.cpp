@@ -1,15 +1,16 @@
-#include "entitytinyspinner.h"
+#include "entityTinySpinner.h"
 #include "game.h"
-#include "players.h"
 
-entityTinySpinner::entityTinySpinner(const game& gameRef)
-    : entitySpinner(gameRef), mGame(gameRef)
+
+entityTinySpinner::entityTinySpinner()
+    : entitySpinner()
 {
     mScale = 1;
     mRadius = 2.2;
 
     mScoreValue = 50;
 
+    mVirtualPos = Point3d(0,0,0);
     mAnimationIndex = 0;
 
     mType = ENTITY_TYPE_TINYSPINNER;
@@ -44,7 +45,7 @@ void entityTinySpinner::run()
     {
         // Seek the player
 
-        float angle = mathutils::calculate2dAngle(mPos, mGame.mPlayers->getPlayerClosestToPosition(mPos)->getPos());
+        float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.getPlayerClosestToPosition(mPos)->getPos());
         Point3d moveVector(1, 0, 0);
         moveVector = mathutils::rotate2dPoint(moveVector, angle);
         mSpeed += moveVector * .02;
@@ -60,10 +61,10 @@ void entityTinySpinner::run()
         mAngle = mAnimationIndex*2;
 
         if (mVirtualPos.x < 0) mVirtualPos.x = 0;
-        else if (mVirtualPos.x > theGame->mGrid.extentX()-1) mVirtualPos.x = theGame->mGrid.extentX()-1;
+        else if (mVirtualPos.x > theGame.mGrid.extentX()-1) mVirtualPos.x = theGame.mGrid.extentX()-1;
 
         if (mVirtualPos.y < 0) mVirtualPos.y = 0;
-        else if (mVirtualPos.y > theGame->mGrid.extentY()-1) mVirtualPos.y = theGame->mGrid.extentY()-1;
+        else if (mVirtualPos.y > theGame.mGrid.extentY()-1) mVirtualPos.y = theGame.mGrid.extentY()-1;
 
     }
     entity::run();

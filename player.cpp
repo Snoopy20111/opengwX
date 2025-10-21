@@ -1,8 +1,6 @@
 #include "player.h"
 #include "game.h"
 
-#include <cstdio>
-
 const int player::mMaxMissiles = 500;
 
 player::player()
@@ -84,7 +82,7 @@ void player::run()
     if (getEnabled())
     {
         // Read the trigger
-        if (theGame->mGameType == game::GAMETYPE_SINGLEPLAYER)
+        if (theGame.mGameType == game::GAMETYPE_SINGLEPLAYER)
         {
             bool trigger = game::mControls.getTriggerButton(mPlayerAssignment);
             if (trigger)
@@ -97,7 +95,7 @@ void player::run()
 
                     game::mBomb.startBomb(mPos, 1, 6, 2, 200, vector::pen(1,1,1,.3,4));
                     game::mSound.playTrack(SOUNDID_BOMB);
-                    theGame->startBomb();
+                    theGame.startBomb();
                 }
             }
             if (mBombInterimTimer>0)
@@ -542,7 +540,7 @@ void player::firePattern2(const Point3d& fireAngle, const Point3d& playerSpeed)
             float spread = .8;
             float missileAngle1 = (angle + spread);
             float missileAngle2 = (angle - spread);
-
+            
             {
                 Point3d missilePos;
                 Point3d missileSpeedVector(speed, 0, 0);
@@ -788,7 +786,7 @@ void player::destroyTransition()
 
     if (getNumLives() <= 1)
     {
-        theGame->endGame();
+        theGame.endGame();
     }
     else
         game::mSound.playTrack(SOUNDID_PLAYERHIT);
@@ -880,28 +878,28 @@ void player::addKillAtLocation(int points, Point3d pos)
 
 int player::getNumLives()
 {
-    if (theGame->numPlayers() == 1)
+    if (theGame.numPlayers() == 1)
         return mNumLives;
     else return game::m2PlayerNumLives;
 }
 
 int player::getNumBombs()
 {
-    if (theGame->numPlayers() == 1)
+    if (theGame.numPlayers() == 1)
         return mNumBombs;
     else return game::m2PlayerNumBombs;
 }
 
 void player::addLife()
 {
-    if (theGame->numPlayers() == 1)
+    if (theGame.numPlayers() == 1)
         ++mNumLives;
     else ++game::m2PlayerNumLives;
 }
 
 void player::takeLife()
 {
-    if (theGame->numPlayers() == 1)
+    if (theGame.numPlayers() == 1)
         --mNumLives;
     else --game::m2PlayerNumLives;
 
@@ -914,14 +912,14 @@ void player::takeLife()
 
 void player::addBomb()
 {
-    if (theGame->numPlayers() == 1)
+    if (theGame.numPlayers() == 1)
         ++mNumBombs;
     // No bombs on 2 player game
 }
 
 void player::takeBomb()
 {
-    if (theGame->numPlayers() == 1)
+    if (theGame.numPlayers() == 1)
         --mNumBombs;
     // No bombs on 2 player game
 }

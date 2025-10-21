@@ -3,12 +3,10 @@
 
 #include "entity.h"
 
-class game;
-
 class entityBlackHole : public entity
 {
 public:
-    entityBlackHole(const game& gameRef);
+    entityBlackHole();
 
     virtual void runTransition();
     virtual void run();
@@ -24,7 +22,7 @@ public:
     void feed(int points);
 
     const float getRadius() const;
-
+    
     BOOL mActivated;
     float mAnimationIndex;
     float mAnimationSpeed;
@@ -37,19 +35,17 @@ public:
 
     float mStrength;
 
-    int mFeedCount { 0 };
+    int mFeedCount;
 
-    int mPoints { 0 };
+    int mPoints;
 
 private:
     void drawRing();
 
-    float mHumSpeed { 0.0f };
-    float mHumSpeedTarget { 0.0f };
+    float mHumSpeed;
+    float mHumSpeedTarget;
     int mHumLoopSoundId;
     float mGridPullIndex;
-
-    const game& mGame;
 };
 
 #endif // ENTITYBLACKHOLE_H

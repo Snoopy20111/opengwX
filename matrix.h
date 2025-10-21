@@ -100,13 +100,6 @@ public:
         result->z = z;
     }
 
-    inline void TranslateVertex (Point3d& result) const
-    {
-        result.x = _matrix[3][0];
-        result.y = _matrix[3][1];
-        result.z = _matrix[3][2];
-    }
-
     inline void ProjectVertex (Point3d &point, const Point3d &vertex, float distance) const
     {
         // avoid divide by zero error...

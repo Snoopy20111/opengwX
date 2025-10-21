@@ -1,12 +1,10 @@
-#include "entityspinner.h"
-#include "entitytinyspinner.h"
+#include "entitySpinner.h"
+#include "entityTinySpinner.h"
 #include "game.h"
 #include "sincos.h"
-#include "players.h"
-#include "enemies.h"
 
-entitySpinner::entitySpinner(const game& gameRef)
-    : entity(), mGame(gameRef)
+entitySpinner::entitySpinner()
+    : entity()
 {
     mScale = 1.6;
     mRadius = 2.5;
@@ -51,7 +49,7 @@ void entitySpinner::run()
     {
         // Seek the player
 
-        float angle = mathutils::calculate2dAngle(mPos, mGame.mPlayers->getPlayerClosestToPosition(mPos)->getPos());
+        float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.getPlayerClosestToPosition(mPos)->getPos());
         Point3d moveVector(1, 0, 0);
         moveVector = mathutils::rotate2dPoint(moveVector, angle);
         mSpeed += moveVector * .2;
@@ -74,10 +72,10 @@ void entitySpinner::destroyTransition()
 
     // Spawn them at opposing right angles to the player
     Point3d spawnPoint(12,0,0);
-    float angleToPlayer = mathutils::calculate2dAngle(pos, mGame.mPlayers->mPlayer1->getPos());
+    float angleToPlayer = mathutils::calculate2dAngle(pos, game::mPlayers.mPlayer1->getPos());
     spawnPoint = mathutils::rotate2dPoint(spawnPoint, angleToPlayer + mathutils::DegreesToRads(90));
 
-    entityTinySpinner* miniSpinner = dynamic_cast<entityTinySpinner*>(mGame.mEnemies->getUnusedEnemyOfType(entity::ENTITY_TYPE_TINYSPINNER));
+    entityTinySpinner* miniSpinner = dynamic_cast<entityTinySpinner*>(game::mEnemies.getUnusedEnemyOfType(entity::ENTITY_TYPE_TINYSPINNER));
     if (miniSpinner)
     {
         miniSpinner->setPos(spawnPoint + pos);
@@ -87,7 +85,7 @@ void entitySpinner::destroyTransition()
 
     spawnPoint = mathutils::rotate2dPoint(spawnPoint, angleToPlayer - mathutils::DegreesToRads(90));
 
-    miniSpinner = dynamic_cast<entityTinySpinner*>(mGame.mEnemies->getUnusedEnemyOfType(entity::ENTITY_TYPE_TINYSPINNER));
+    miniSpinner = dynamic_cast<entityTinySpinner*>(game::mEnemies.getUnusedEnemyOfType(entity::ENTITY_TYPE_TINYSPINNER));
     if (miniSpinner)
     {
         miniSpinner->setPos(spawnPoint + pos);
@@ -120,4 +118,11 @@ void entitySpinner::spawnTransition()
     entity::spawnTransition();
     game::mSound.playTrack(SOUNDID_ENEMYSPAWN2);
 }
+
+
+
+
+
+
+
 

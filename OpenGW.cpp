@@ -1,22 +1,29 @@
+// OpenGW.cpp : Defines the entry point for the application.
+//
+
+#include "stdafx.h"
+#include <MMSYSTEM.H>
+
+#include "glew.h"
+#include "wglew.h"
+
 #include "defines.h"
+#include "OpenGW.h"
 #include "scene.h"
 #include "game.h"
 
 #include "blur.h"
 #include "sincos.h"
 
-#include <SDL.h>
-#include <GL/glu.h>
 
-#include <cstdio>
-#include <memory>
+#define filterWidth 5 
+#define filterHeight 5 
+#define imageWidth 320 
+#define imageHeight 240
 
-static const int displayWidth = 800;
-static const int displayHeight = 600;
-
-//declare image buffers
-static const int blurBufferWidth = 500;
-static const int blurBufferHeight = 250;
+//declare image buffers 
+const int blurBufferWidth = 500;
+const int blurBufferHeight = 250;
 
 typedef struct
 {
@@ -26,127 +33,368 @@ typedef struct
     unsigned char a;
 } ColorRGBA;
 
-static ColorRGBA blurBuffer[blurBufferWidth][blurBufferHeight];
+ColorRGBA blurBuffer[blurBufferWidth][blurBufferHeight];
 
-static SDL_Window* window;
-static SDL_GLContext context;
+#define MAX_LOADSTRING 100
 
-static void OGLCreate();
-static void OGLDestroy();
-static void OGLSize(int cx, int cy);
+// Global Variables:
+HINSTANCE hInst;								// current instance
+TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
+TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
-std::unique_ptr<scene> oglScene;
+// Forward declarations of functions included in this code module:
+ATOM				MyRegisterClass(HINSTANCE hInstance);
+BOOL				InitInstance(HINSTANCE, int);
+LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 
-static BOOL oglInited = FALSE;
+static void CALLBACK TimerFunction(UINT wTimerID, UINT msg, DWORD dwUser, DWORD dw1, DWORD dw2);
+
+
+void OGLCreate();
+void OGLDestroy();
+void OGLSize(int cx, int cy);
+void OGLPaint(HDC hDC);
+
+scene oglScene;
+
+BOOL oglInited = FALSE;
+
+
+HWND hWnd;
+HGLRC hRC;
+
+MMRESULT timerId;
 
 //our OpenGL texture handles
-static unsigned int texOffscreen;
+unsigned int texOffscreen;
 
-static void createOffscreens();
-static void drawOffscreens();
-static void run();
+void createOffscreens();
+void drawOffscreens();
+
+
 
 #define CONTEXT_PRIMARY 0
 #define CONTEXT_GLOW    1
 
-static int mWidth, mHeight;
+int mWidth, mHeight;
 
-static Uint32 lastTime;
-static Uint32 fpsTime;
+
+static DWORD lastTime;
+static DWORD fpsTime;
 static int frameCount;
 static int fps;
 
-const Uint8* keyboardState;
 
-static bool handleEvents()
+int APIENTRY _tWinMain(HINSTANCE hInstance,
+                     HINSTANCE hPrevInstance,
+                     LPTSTR    lpCmdLine,
+                     int       nCmdShow)
 {
-	SDL_Event e;
-	while (SDL_PollEvent(&e)) {
-		switch(e.type) {
-			case SDL_QUIT:
-				printf("Quit\n");
-				return false;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
+
+ 	// TODO: Place code here.
+	MSG msg;
+	HACCEL hAccelTable;
+
+	// Initialize global strings
+	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+	LoadString(hInstance, IDC_OPENGW, szWindowClass, MAX_LOADSTRING);
+	MyRegisterClass(hInstance);
+
+	// Perform application initialization:
+	if (!InitInstance (hInstance, nCmdShow))
+	{
+		return FALSE;
+	}
+
+	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_OPENGW));
+
+    // Seed random number table
+    srand(GetTickCount());
+
+    // Create sin/cos tables
+    make_sin_cos_tables();
+
+    OGLCreate();
+
+	// Main message loop:
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
 	}
 
-	keyboardState = SDL_GetKeyboardState(nullptr);
-	return true;
+    OGLDestroy();
+
+	return (int) msg.wParam;
 }
 
-int main(int argc, char** argv) {
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK) < 0) {
-		printf("SDL_Init failed: %s\n", SDL_GetError());
-		return 0;
+
+void CALLBACK TimerFunction(UINT wTimerID, UINT msg, DWORD dwUser, DWORD dw1, DWORD dw2)
+{
+    HDC hdc = ::GetDC(hWnd);
+    OGLPaint(hdc);
+    ::ReleaseDC(hWnd, hdc);
+}
+
+//
+//  FUNCTION: MyRegisterClass()
+//
+//  PURPOSE: Registers the window class.
+//
+//  COMMENTS:
+//
+//    This function and its usage are only necessary if you want this code
+//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
+//    function that was added to Windows 95. It is important to call this function
+//    so that the application will get 'well formed' small icons associated
+//    with it.
+//
+ATOM MyRegisterClass(HINSTANCE hInstance)
+{
+	WNDCLASSEX wcex;
+
+	wcex.cbSize = sizeof(WNDCLASSEX);
+
+	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc	= WndProc;
+	wcex.cbClsExtra		= 0;
+	wcex.cbWndExtra		= 0;
+	wcex.hInstance		= hInstance;
+	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_OPENGW));
+	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground	= NULL;
+	wcex.lpszMenuName	= NULL;
+	wcex.lpszClassName	= szWindowClass;
+	wcex.hIconSm		= NULL;//LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+	return RegisterClassEx(&wcex);
+}
+
+//
+//   FUNCTION: InitInstance(HINSTANCE, int)
+//
+//   PURPOSE: Saves instance handle and creates main window
+//
+//   COMMENTS:
+//
+//        In this function, we save the instance handle in a global variable and
+//        create and display the main program window.
+//
+//#define FULLSCREEN
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+{
+   hInst = hInstance; // Store instance handle in our global variable
+
+   float aspect = 9.0f/16.0f;
+
+   DWORD style = 0;
+
+#ifndef FULLSCREEN
+   style |= WS_OVERLAPPEDWINDOW;
+#endif
+
+   hWnd = CreateWindow(szWindowClass, szTitle, style,
+      20, 20, 720/aspect, 720, 0, NULL, NULL, hInstance, NULL);
+
+   if (!hWnd)
+   {
+      return FALSE;
+   }
+
+#ifdef FULLSCREEN
+   ::SetWindowLong(hWnd, GWL_STYLE, 0);
+   ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+#else
+   ShowWindow(hWnd, SW_SHOW);
+#endif
+
+   UpdateWindow(hWnd);
+
+   return TRUE;
+}
+
+//
+//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
+//
+//  PURPOSE:  Processes messages for the main window.
+//
+//  WM_COMMAND	- process the application menu
+//  WM_PAINT	- Paint the main window
+//  WM_DESTROY	- post a quit message and return
+//
+//
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	int wmId, wmEvent;
+	PAINTSTRUCT ps;
+	HDC hdc;
+
+	switch (message)
+	{
+    case WM_SIZE:
+        OGLSize(LOWORD(lParam), HIWORD(lParam));
+        break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-
-	Uint32 flags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL;
-	if (0) {
-		flags |= SDL_WINDOW_FULLSCREEN;
-	}
-
-	window = SDL_CreateWindow("OpenGL SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		displayWidth, displayHeight, flags);
-
-	if (window) {
-		srand(SDL_GetTicks());
-		make_sin_cos_tables();
-
-		oglScene.reset(new scene);
-
-		OGLCreate();
-
-		run();
-
-		OGLDestroy();
-
-		SDL_DestroyWindow(window);
-	}
-
-	SDL_Quit();
-
 	return 0;
 }
 
-static void OGLCreate()
+// Message handler for about box.
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	context = SDL_GL_CreateContext(window);
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return (INT_PTR)TRUE;
 
-	if (context == NULL) {
-		printf("SDL_GL_CreateContext failed: %s\n", SDL_GetError());
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		break;
 	}
+	return (INT_PTR)FALSE;
+}
 
-    OGLSize(displayWidth, displayHeight);
+// ***************************************************************************
+
+void OGLCreate()
+{
+    // Define pixel format
+	static	PIXELFORMATDESCRIPTOR pfd=							// pfd Tells Windows How We Want Things To Be
+	{
+		sizeof(PIXELFORMATDESCRIPTOR),							// Size Of This Pixel Format Descriptor
+		1,														// Version Number
+		PFD_DRAW_TO_WINDOW |									// Format Must Support Window
+		PFD_SUPPORT_OPENGL |									// Format Must Support OpenGL
+		PFD_DOUBLEBUFFER,										// Must Support Double Buffering
+		PFD_TYPE_RGBA,											// Request An RGBA Format
+		8,			    										// Select Our Color Depth
+		0, 0, 0, 0, 0, 0,										// Color Bits Ignored
+		0,														// Alpha Buffer
+		0,														// Shift Bit Ignored
+		0,														// No Accumulation Buffer
+		0, 0, 0, 0,												// Accumulation Bits Ignored
+		0,														// No Z-Buffer (Depth Buffer)  
+		0,														// No Stencil Buffer
+		0,														// No Auxiliary Buffer
+		PFD_MAIN_PLANE,											// Main Drawing Layer
+		0,														// Reserved
+		0, 0, 0													// Layer Masks Ignored
+	};
+
+
+    // Set pixel format
+    HDC hDC = GetDC(hWnd);
+    int nPixelFormat = ChoosePixelFormat(hDC, &pfd);
+    SetPixelFormat(hDC, nPixelFormat, &pfd);
+
+    // Create RC
+    hRC = wglCreateContext(hDC);
+    wglMakeCurrent(hDC, hRC);
+
+    // Init GLEW
+    {
+        GLenum err = glewInit();
+        if (GLEW_OK != err)
+        {
+            TCHAR s[256];
+            wsprintf(s, L"glewInit failed: %s\n", glewGetErrorString(err));
+            OutputDebugString(s);
+        }
+        else
+        {
+            TCHAR s[256];
+            wsprintf(s, L"Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
+            OutputDebugString(s);
+        }
+
+        if (!glewIsSupported("GL_EXT_framebuffer_object"))
+        {
+            OutputDebugString(L"GL_EXT_framebuffer_object is required\n");
+        }
+        else
+        {
+            OutputDebugString(L"YAY! GL_EXT_framebuffer_object OK\n");
+        }
+    }
+
+    // ***********************************************************************
+
+    // Size viewport
+    RECT rc;
+    GetClientRect(hWnd, &rc);
+    int width = rc.right-rc.left;
+    int height = rc.bottom-rc.top;
+    OGLSize(width, height);
+
 
     // Do stuff with the context here if needed...
     createOffscreens();
 
-	if (SDL_GL_SetSwapInterval(0) == -1) {
-		printf("SDL_GL_SetSwapInterval failed: %s\n", SDL_GetError());
-	}
+	// Set vblank syncing
+	wglSwapIntervalEXT(true);
 
-	if (SDL_GL_MakeCurrent(window, context) < 0) {
-		printf("SDL_GL_MakeCurrent failed: %s\n", SDL_GetError());
-	}
+
+    wglMakeCurrent(0, 0);
+
+    // Clean up
+    ReleaseDC(hWnd, hDC);
+
+
+    // create the timer
+    timerId = timeSetEvent(
+        1,//16,
+        0,//resolution,
+        TimerFunction,
+        (DWORD)NULL,
+        TIME_PERIODIC|TIME_KILL_SYNCHRONOUS);
+
 
     oglInited = TRUE;
+
 }
 
-static void OGLDestroy()
+// ***************************************************************************
+
+void OGLDestroy()
 {
     oglInited = FALSE;
+    timeKillEvent(timerId);
 
-	SDL_GL_MakeCurrent(nullptr, 0);
-	SDL_GL_DeleteContext(context);
+    HDC hDC = GetDC(hWnd);
+    wglMakeCurrent(hDC, hRC);
+    wglMakeCurrent(0, 0);
+    wglDeleteContext(hRC);
+    ReleaseDC(hWnd, hDC);
 }
 
-static void OGLSize(int cx, int cy)
+// ***************************************************************************
+
+void OGLSize(int cx, int cy)
 {
-	oglScene->size(cx, cy);
+	oglScene.size(cx, cy);
     mWidth = cx;
     mHeight = cy;
 }
 
-static void createOffscreens()
+
+// ***************************************************************************
+
+void createOffscreens()
 {
     // new array
     char* colorBits = new char[ blurBufferWidth * blurBufferHeight * 3 ];
@@ -165,20 +413,21 @@ static void createOffscreens()
     delete[] colorBits;
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
-static void drawOffscreens()
+void drawOffscreens()
 {
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT,(int*)viewport);
 
-    if (theGame->mSettings.mEnableGlow)
+    if (theGame.mSettings.mEnableGlow)
     {
         // Draw to the blur texture
         {
             glViewport(0, 0, blurBufferWidth, blurBufferHeight);
 
-            oglScene->draw(scene::RENDERPASS_BLUR);
+            oglScene.draw(scene::RENDERPASS_BLUR);
 
             // Transfer image to the blur texture
             glBindTexture(GL_TEXTURE_2D, texOffscreen);
@@ -189,9 +438,9 @@ static void drawOffscreens()
 
     // Draw the scene normally
     glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
-    oglScene->draw(scene::RENDERPASS_PRIMARY);
+    oglScene.draw(scene::RENDERPASS_PRIMARY);
 
-    if (theGame->mSettings.mEnableGlow)
+    if (theGame.mSettings.mEnableGlow)
     {
         ////////////////////////////////////////////////
         // Do blur
@@ -200,15 +449,16 @@ static void drawOffscreens()
         glBindTexture(GL_TEXTURE_2D, texOffscreen);
         glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
 
-		int blurRadius = 4;
-
         if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
         {
-			blurRadius = 8;
+            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 8);
+            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 8);
         }
-
-		superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, blurRadius);
-		superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, blurRadius);
+        else
+        {
+            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 4);
+            superFastBlur((unsigned char*)&blurBuffer[0][0], blurBufferWidth, blurBufferHeight, 4);
+        }
 
         // Bind the blur result back to our texture
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, blurBufferWidth, blurBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
@@ -249,50 +499,52 @@ static void drawOffscreens()
     }
 }
 
-static void updateFps(Uint32 now)
-{
-    ++frameCount;
 
-    lastTime = now;
-
-    if ((now - fpsTime) > 1000)
-    {
-        fpsTime = now;
-        fps = (fps + frameCount) / 2;
-        frameCount = 0;
-
-		char buf[32];
-		snprintf(buf, sizeof(buf), "OpenGW SDL2 - FPS %d", fps);
-		SDL_SetWindowTitle(window, buf);
-    }
-}
-
-static void run()
+void OGLPaint(HDC hDC)
 {
     if (!oglInited) return;
 
-	constexpr Uint32 logicRate = 60;
-	constexpr Uint32 logicPeriod = 1000 / logicRate;
+    static BOOL inpaint = FALSE;
+    if (inpaint) return;
+    inpaint = TRUE;
 
-	Uint32 lastLogicUpdate = SDL_GetTicks();
 
-	bool running = true;
+    oglScene.run();
 
-	while (running) {
-		const Uint32 now = SDL_GetTicks();
 
-		while ((now - lastLogicUpdate) > logicPeriod) {
-			lastLogicUpdate += logicPeriod;
-			if (!handleEvents()) {
-				running = false;
-			}
+    // ****************************************
 
-			oglScene->run();
-		}
+    ++frameCount;
 
-		drawOffscreens();
+    DWORD newTime = GetTickCount();
+    lastTime = newTime;
 
-		SDL_GL_SwapWindow(window);
-		updateFps(now);
-	}
+
+    if ((newTime - fpsTime) > 1000)
+    {
+        fpsTime = newTime;
+        fps = (fps + frameCount) / 2;
+        frameCount = 0;
+
+        wchar_t  s[256];
+        wsprintf(s, L"FPS = %d", fps);
+        ::SetWindowText(hWnd, s);
+
+    }
+
+    // ****************************************
+
+    wglMakeCurrent(hDC, hRC);
+
+
+
+    drawOffscreens();
+
+
+
+    SwapBuffers(hDC);
+    wglMakeCurrent(0, 0);
+
+    inpaint = FALSE;
 }
+

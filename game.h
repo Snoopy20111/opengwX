@@ -8,10 +8,14 @@
 #include "point3d.h"
 #include "grid.h"
 #include "particle.h"
+#include "camera.h"
 #include "attractor.h"
 #include "controls.h"
 #include "mathutils.h"
 #include "entity.h"
+#include "enemies.h"
+#include "stars.h"
+#include "players.h"
 #include "blackholes.h"
 #include "font.h"
 #include "spawner.h"
@@ -19,12 +23,6 @@
 #include "highscore.h"
 #include "settings.h"
 
-#include <memory>
-
-class camera;
-class stars;
-class players;
-class enemies;
 
 enum
 {
@@ -124,18 +122,17 @@ public:
 
     void startBomb();
 
-    int numPlayers() const;
+    int numPlayers();
 
     static sound mSound;
     static grid mGrid;
     static particle mParticles;
-    std::unique_ptr<camera> mCamera;
+    static camera mCamera;
     static attractor mAttractors;
     static controls mControls;
-    //static enemies mEnemies;
-    std::unique_ptr<enemies> mEnemies;
-    std::unique_ptr<stars> mStars;
-    std::unique_ptr<players> mPlayers; 
+    static enemies mEnemies;
+    static stars mStars;
+    static players mPlayers;
     static blackholes mBlackHoles;
     static spawner mSpawner;
     static bomb mBomb;
@@ -172,20 +169,20 @@ private:
     void drawPointDisplays();
     void clearPointDisplays();
 
-    float mMusicSpeed { 0.0f };
-    float mMusicSpeedTarget { 0.0f };
+    float mMusicSpeed;
+    float mMusicSpeedTarget;
 
-    int mGameOverTimer { 0 };
-    int mWeaponChangeTimer { 0 };
+    int mGameOverTimer;
+    int mWeaponChangeTimer;
 
     float mBrightness;
 
-    bool mDebounce { false };
+    bool mDebounce;
 
-    std::unique_ptr<entity> mAttractModeBlackHoles[4];
+    entity* mAttractModeBlackHoles[4];
+
 };
 
-//extern game theGame;
-extern std::unique_ptr<game> theGame;
+extern game theGame;
 
 #endif // GAME_H

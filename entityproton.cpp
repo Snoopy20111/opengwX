@@ -1,7 +1,6 @@
 #include "entityproton.h"
 #include "game.h"
 #include "sincos.h"
-#include "players.h"
 
 entityProton::entityProton(void)
 {
@@ -33,6 +32,8 @@ entityProton::entityProton(void)
         mModel.mVertexList[i] = Point3d(r*cos(angle), r*sin(angle));
     }
 
+    i = 0;
+
     mModel.mNumEdges = mModel.mNumVertex;
     mModel.mEdgeList = new model::Edge[mModel.mNumEdges];
 
@@ -50,7 +51,7 @@ void entityProton::run()
     {
         // Seek the player
 
-        float angle = mathutils::calculate2dAngle(mPos, theGame->mPlayers->getPlayerClosestToPosition(mPos)->getPos());
+        float angle = mathutils::calculate2dAngle(mPos, game::mPlayers.getPlayerClosestToPosition(mPos)->getPos());
         Point3d moveVector(1, 0, 0);
         moveVector = mathutils::rotate2dPoint(moveVector, angle);
         mSpeed += moveVector * .1;

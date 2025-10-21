@@ -2,13 +2,15 @@
 #define PLAYERS_H
 
 #include "player.h"
-
-class game;
+#include "entityPlayer1.h"
+#include "entityPlayer2.h"
+#include "entityPlayer3.h"
+#include "entityPlayer4.h"
 
 class players
 {
 public:
-    players(const game& gameRef);
+    players();
     ~players();
 
     void run();
@@ -21,8 +23,6 @@ public:
     static player* mPlayer2;
     static player* mPlayer3;
     static player* mPlayer4;
-
-    const game& mGame;
 };
 
 #endif // PLAYERS_H

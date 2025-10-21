@@ -1,6 +1,5 @@
 #include "entitysnake.h"
 #include "game.h"
-#include "enemies.h"
 
 #define NUM_SEGMENTS 23
 #define NUM_SEG_STREAM_ITEMS 5 // sets the spacing between segments
@@ -19,7 +18,7 @@ public:
     }SegmentStreamItem;
 
     float mTail;
-    entity* mParent { nullptr };
+    entity* mParent;
 
     entitySnakeSegment()
     {
@@ -52,7 +51,7 @@ public:
 		mModel.mEdgeList[i].from = 1; mModel.mEdgeList[i++].to = 2;
 		mModel.mEdgeList[i].from = 2; mModel.mEdgeList[i++].to = 0;
 
-        mSegmentStream.resize(NUM_SEG_STREAM_ITEMS);
+        mSegmentStream = new SegmentStreamItem[NUM_SEG_STREAM_ITEMS];
         for (int i=0; i<NUM_SEG_STREAM_ITEMS; i++)
         {
             mSegmentStream[i].pos = mPos;
@@ -207,7 +206,7 @@ public:
         game::mParticles.emitter(&pos, &angle, speed, spread, num, &pen, timeToLive, TRUE, TRUE, .98, TRUE);
 
         // Explode the object into line entities
-        theGame->mEnemies->explodeEntity(*this);
+        game::mEnemies.explodeEntity(*this);
     }
 
     void destroy()
@@ -220,7 +219,8 @@ public:
         // Do nothing and don't call the base class method (tail segments are invinsible)
     }
 
-    std::vector<SegmentStreamItem> mSegmentStream;
+    SegmentStreamItem* mSegmentStream;
+
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -279,8 +279,7 @@ entitySnake::entitySnake()
     mModel.mEdgeList[i].from = 13; mModel.mEdgeList[i++].to = 0;
 
     // Create the tail segments
-    mSegments.resize(NUM_SEGMENTS);
-
+    mSegments = new entitySnakeSegment[NUM_SEGMENTS];
     for (int i=0; i<NUM_SEGMENTS; i++)
     {
         mSegments[i].setState(ENTITY_STATE_INACTIVE);
@@ -480,11 +479,11 @@ void entitySnake::draw()
 			glBegin(GL_LINES);
 
             progress = 1-progress;
-
+			
             float a = progress;
             if (a<0) a = 0;
             if (a>1) a = 1;
-
+			
             pen.a = a;
 
             mModel.Identity();
@@ -492,7 +491,7 @@ void entitySnake::draw()
             mModel.Rotate(mAngle);
             mModel.Translate(trans);
             mModel.emit(pen);
-
+			
             // *********************************************
 
             progress = progress + .25;
@@ -553,7 +552,7 @@ void entitySnake::draw()
             mSegments[i].draw();
         }
     }
-
+    
 }
 
 void entitySnake::indicateTransition()
@@ -579,8 +578,8 @@ void entitySnake::updateTarget()
     const float margin = 15;
     const float leftEdge = margin;
     const float bottomEdge = margin;
-    const float rightEdge = (theGame->mGrid.extentX()-1)-margin;
-    const float topEdge = (theGame->mGrid.extentY()-1)-margin;
+    const float rightEdge = (theGame.mGrid.extentX()-1)-margin;
+    const float topEdge = (theGame.mGrid.extentY()-1)-margin;
 
     if (mTarget.x < leftEdge)
         mTarget.x = leftEdge;

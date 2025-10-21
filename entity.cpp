@@ -13,10 +13,8 @@
 #include "entitysnake.h"
 #include "entityblackhole.h"
 #include "entityrepulsor.h"
-#include "entityproton.h"
-#include "entityline.h"
-#include "players.h"
-#include "enemies.h"
+#include "entityProton.h"
+#include "entityLine.h"
 
 entity::entity()
     : mType(ENTITY_TYPE_UNDEF)
@@ -33,34 +31,34 @@ entity::entity()
 }
 
 // Static class factory
-entity* entity::createEntity(EntityType _entity, const game& gameRef)
+entity* entity::createEntity(EntityType _entity)
 {
     switch (_entity)
     {
         case ENTITY_TYPE_PLAYER1:
-            return new entityPlayer1(gameRef);
+            return new entityPlayer1();
         case ENTITY_TYPE_PLAYER2:
             return new entityPlayer2();
         case ENTITY_TYPE_PLAYER_MISSILE:
             return new entityPlayerMissile();
         case ENTITY_TYPE_GRUNT:
-            return new entityGrunt(gameRef);
+            return new entityGrunt();
         case ENTITY_TYPE_WANDERER:
             return new entityWanderer();
         case ENTITY_TYPE_WEAVER:
             return new entityWeaver();
         case ENTITY_TYPE_SPINNER:
-            return new entitySpinner(gameRef);
+            return new entitySpinner();
         case ENTITY_TYPE_TINYSPINNER:
-            return new entityTinySpinner(gameRef);
+            return new entityTinySpinner();
         case ENTITY_TYPE_MAYFLY:
             return new entityMayfly();
         case ENTITY_TYPE_SNAKE:
             return new entitySnake();
         case ENTITY_TYPE_BLACKHOLE:
-            return new entityBlackHole(gameRef);
+            return new entityBlackHole();
         case ENTITY_TYPE_REPULSOR:
-            return new entityRepulsor(gameRef);
+            return new entityRepulsor();
         case ENTITY_TYPE_PROTON:
             return new entityProton();
         case ENTITY_TYPE_LINE:
@@ -105,11 +103,11 @@ void entity::draw()
 			glBegin(GL_LINES);
 
             progress = 1-progress;
-
+			
             float a = progress;
             if (a<0) a = 0;
             if (a>1) a = 1;
-
+			
             pen.a = a;
 
             mModel.Identity();
@@ -117,7 +115,7 @@ void entity::draw()
             mModel.Rotate(mAngle);
             mModel.Translate(trans);
             mModel.emit(pen);
-
+			
             // *********************************************
 
             progress = progress + .25;
@@ -239,7 +237,7 @@ void entity::destroyTransition()
     ++mGenId;
 
     // Explode the object into line entities
-    theGame->mEnemies->explodeEntity(*this);
+    game::mEnemies.explodeEntity(*this);
 }
 
 void entity::destroy()
@@ -292,13 +290,13 @@ void entity::hit(entity* aEntity)
             {
                 // Add points and display them at the destruction point
                 if (missile->mPlayerSource == 0)
-                    theGame->mPlayers->mPlayer1->addKillAtLocation(mScoreValue, getPos());
+                    game::mPlayers.mPlayer1->addKillAtLocation(mScoreValue, getPos());
                 else if (missile->mPlayerSource == 1)
-                    theGame->mPlayers->mPlayer2->addKillAtLocation(mScoreValue, getPos());
+                    game::mPlayers.mPlayer2->addKillAtLocation(mScoreValue, getPos());
                 else if (missile->mPlayerSource == 2)
-                    theGame->mPlayers->mPlayer3->addKillAtLocation(mScoreValue, getPos());
+                    game::mPlayers.mPlayer3->addKillAtLocation(mScoreValue, getPos());
                 else if (missile->mPlayerSource == 3)
-                    theGame->mPlayers->mPlayer4->addKillAtLocation(mScoreValue, getPos());
+                    game::mPlayers.mPlayer4->addKillAtLocation(mScoreValue, getPos());
             }
 
             game::mSound.playTrack(SOUNDID_ENEMYHIT);
@@ -307,7 +305,7 @@ void entity::hit(entity* aEntity)
         {
             game::mSound.playTrack(SOUNDID_ENEMYHIT);
         }
-        else if ((aEntity && (aEntity->getType() == entity::ENTITY_TYPE_PLAYER1)) || (aEntity->getType() == entity::ENTITY_TYPE_PLAYER2))
+        else if (aEntity && (aEntity->getType() == entity::ENTITY_TYPE_PLAYER1) || (aEntity->getType() == entity::ENTITY_TYPE_PLAYER2))
         {
             game::mSound.playTrack(SOUNDID_ENEMYHIT);
         }
@@ -322,25 +320,19 @@ void entity::hit(entity* aEntity)
 
 entity* entity::hitTest(const Point3d& pos, float radius)
 {
-    Point3d ourPos(0.0f, 0.0f, 0.0f);
-    //this->getModel()->mMatrix.TransformVertex(ourPos, &ourPos);
-	getModel()->mMatrix.TranslateVertex(ourPos);
+    Point3d ourPos(0,0,0);
+    this->getModel()->mMatrix.TransformVertex(ourPos, &ourPos);
 
-#if 0
     float distance = mathutils::calculate2dDistance(pos, ourPos);
     float resultRadius = radius + getRadius();
     if (distance < resultRadius)
     {
         return this;
     }
-#else
-    float distance = mathutils::calculate2dDistanceSquared(pos, ourPos);
-    float resultRadius = radius + getRadius();
-    if (distance < resultRadius * resultRadius)
-    {
-        return this;
-    }
-#endif
     return NULL;
 }
+
+
+
+
 

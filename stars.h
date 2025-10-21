@@ -5,12 +5,10 @@
 
 #define NUM_STARS 8000
 
-class game;
-
 class stars
 {
 public:
-    stars(const game& gameRef);
+    stars();
     ~stars();
 
     void run();
@@ -21,11 +19,9 @@ public:
         Point3d pos;
         float radius;
         float brightness;
-		float twinkle;
-    } STAR;
+    }STAR;
 
     STAR* mStars;
-    const game& mGame;
 };
 
 #endif // STARS_H

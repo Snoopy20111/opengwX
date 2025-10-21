@@ -1,8 +1,8 @@
 #include "font.h"
 #include "game.h"
 #include "point3d.h"
-#include <cstdio>
-#include <cstdarg>
+#include <stdio.h>
+#include <stdarg.h>
 
 float AlphanumericsPrintVScale = 1.0f;
 
@@ -905,20 +905,23 @@ namespace font
         glColor4f(color->r, color->g, color->b, color->a);
         glBegin(GL_LINES);
 
+
         _topAscentOffset = 0;
         _bottomAscentOffset = 0;
+
 
         //
         // render the text
         //
 
-        //float		length=0;
+        float		length=0;
         char		text[512];
         va_list		ap;
 
         va_start(ap, fmt);
         vsprintf(text, fmt, ap);
         va_end(ap);
+
 
         // Initial alignment
         if (alignment == ALIGN_LEFT)
@@ -1192,6 +1195,7 @@ namespace font
         }
 
         glEnd();
+
     }
 
     static inline void drawText(float scale, Point3d* p, vector::pen* color, BOOL lower)
@@ -1217,11 +1221,13 @@ namespace font
             float endXOff = end.x + 1;
             float endYOff = end.y + 1;
 
+
             if (start.x > 0)
                 start.x += _topAscentOffset * (startXOff * startYOff);
 
             if (end.x > 0)
                 end.x += _topAscentOffset * (endXOff * endYOff);
+
 
             start.x *= scale * .65;
             start.y *= scale * AlphanumericsPrintVScale * (lower ? .6 : 1.0);
@@ -1241,6 +1247,7 @@ namespace font
 
             glVertex3d(start.x, start.y, 0);
             glVertex3d(end.x, end.y, 0);
+
         };
     }
 
@@ -1270,4 +1277,5 @@ namespace font
 
         return buffer;
     }
-} // font
+
+};

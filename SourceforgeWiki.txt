@@ -1,0 +1,40 @@
+Building the software
+
+Currently the project is only buildable via Visual Studio 2010
+
+Assuming you have VS 2010 installed, just open the .sln file and compile the software. Note that performance will be horrible on Debug builds.
+
+The game requires the "images" and "sounds" directories to be at the same level as the EXE. If you run the application by hitting SHIFT-F5 it will know where to find them, but if you want to run the EXE directly you'll have to copy the images and sounds directories into your Debug or Release build output directories.
+
+Additionally the following DLLs must be copied into the build directory if you want to run the EXE directly - glew32.dll and SDL.dll. They are currently in the source root directory so the application can find them when running the game from Visual Studio (same as the images and sounds directories).
+
+For obvious IP reasons I will not be hosting actual executable binaries here. If someone would like to host a build they made I'd be happy to include a link to to the webpage where it is hosted (not a direct link to the application though please)
+Running the software
+
+Requirements:
+
+    A fast gaming machine
+    A GOOD, modern graphics card (the faster the better) with OpenGL hardware support
+    At least one USB XBox controller. You can play the game using the keyboard arrow keys, the WASD keys, and spacebar to use "bombs", but it's pretty impossible to control the game that way. You'll obviously need additional XBox joysticks for additional players.
+
+To start a single player game press the 1 key. To start a two player game, press the 2 key. Currently 3 and 4 player games are not implemented yet.
+
+Take note of the requirement in "Building the software" for the various DLLs and resource directories.
+TODO
+
+    Spawning code needs serious help. The game gets too hard too quickly and then hits a plateau where you can basically play forever without dying. Right now the enemies spawn in ever increasing wave numbers but the game never allows another spawn wave to start until the previous one has been destroyed. In the real game, after a certain point the game starts to allow more and more simultaneous spawn waves at a time (and possibly unlimited)
+    The behavior of the Gravity Wells doesn't feel quite right yet to me. I'm also not sure about the scoring for destroying a Gravity Well.
+    Need to add support for the "Repulsor" enemy. They are so hard to get a good look at in the game I've never had enough info about them and their behavior. I need to add both the line information for the graphic, the animation of the repulsor waves emitted from the front, and the proper enemy behavior.
+    Need to add support for player 3 and 4 (waiting on buying another 2 xbox controllers!)
+    Need a "settings menu" key that brings up a settings menu. This should be hidden during normal operation of the game (unlike the original game) so that if the game were being operated in an arcade cabinet the settings could be altered only by pressing a hidden switch inside the cabinet, etc.
+    Need to figure out how to start multiplayer games. Right now hitting 1 starts a single player game and hitting 2 starts a two player game. I'd rather see something more arcade-like with "press start to join!" prompts for each player.
+    Performance is a huge concern. There should be a way, through the settings menu to pick a performance level that degrades/upgrades the game graphics etc to allow the game to run well on a wider range of machines. Obviously the hidden settings menu or a similar approach should be able to turn on and off various features that effect performance. Right now the only way to configure the options is via various #ifdef statements sprinkled throughout the code. You can currently search through the source code for "PERFORMANCE" comments to find the various pain points.
+    Look into breaking the grid run function into a worker thread. The original game does this, allowing the game and the grid to run on separate CPUs. This should help performance
+    Should probably put some effort into making the code more portable. ie - break out platform-specific calls into a separate platform module. Wrapping the OpenGL calls might be helpful as well in case someone wants to port the game to another graphics API
+    Need to have a way to handle the highscore list with multiplayer
+    The game currently DOES support a fullscreen mode (it's defined out at the moment) but running in fullscreen mode at non-native resolution isn't supported yet. Need to add that still.
+    Probably should switch all my sin() and cos() calls to a pre-generated lookup table. Probably the same with rand() (gotta see if that's really a bottleneck) and if possible other slow-ass trig functions like atan() (not sure that's possible - I did experiment with a super fast "approximation" atan function and the game was totally weird and inaccurate so that didn't work)
+
+Alternate versions
+
+The original version of this software had support for multiple non-rectangular levels like the Wii version of the game (complete with levels that had "holes" in them). At some point I decided I wanted to keep my version "pure" so I abandoned it but if you'd like to experiment with it the old source code is checked in here: https://sourceforge.net/p/opengw/code/HEAD/tree/branches/GWArcade/

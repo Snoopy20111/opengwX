@@ -2,13 +2,11 @@
 #include "game.h"
 #include "lodepng.h"
 
-//#include <cstdio>
-
 texture::texture(void)
 {
     mWidth = 0;
     mHeight = 0;
-    mTextureId = 0;
+    mTextureId = NULL;
     mLoaded = FALSE;
 }
 
@@ -28,13 +26,9 @@ void texture::load(const char* filename)
     // If there's an error, display it.
     if(error != 0)
     {
-#ifdef USE_SDL
-        printf("texture::load(%s) error: %s\n", filename, lodepng_error_text(error));
-#else
         TCHAR s[256];
         wsprintf(L"texture::load(%s) error: %s\n", (LPCWSTR)filename, (LPCWSTR)lodepng_error_text(error));
         OutputDebugString(s);
-#endif
         return;
     }
 

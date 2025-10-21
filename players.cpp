@@ -1,19 +1,14 @@
 #include "players.h"
-#include "entityPlayer1.h"
-#include "entityPlayer2.h"
-#include "entityPlayer3.h"
-#include "entityPlayer4.h"
 #include "game.h"
-#include "enemies.h"
 
 player* players::mPlayer1;
 player* players::mPlayer2;
 player* players::mPlayer3;
 player* players::mPlayer4;
 
-players::players(const game& gameRef) : mGame(gameRef)
+players::players()
 {
-    mPlayer1 = new entityPlayer1(gameRef);
+    mPlayer1 = new entityPlayer1;
     mPlayer1->setState(entity::ENTITY_STATE_INACTIVE);
 
     mPlayer2 = new entityPlayer2;
@@ -39,7 +34,7 @@ void players::run()
     for (int i=0; i<4; i++)
     {
         player* currentPlayer;
-
+        
         switch (i)
         {
             case 0:
@@ -78,7 +73,7 @@ void players::run()
                 //---------------------------------------------------------------------------------------
                 if (1) // Change to 0 to cheat for testing :-)
                 {
-                    entity* enemy = theGame->mEnemies->hitTestEnemiesAtPosition(currentPlayer->getPos(), currentPlayer->getRadius()*.75);
+                    entity* enemy = game::mEnemies.hitTestEnemiesAtPosition(currentPlayer->getPos(), currentPlayer->getRadius()*.75);
                     if (enemy)
                     {
                         enemy = enemy->getParent();
@@ -100,14 +95,14 @@ void players::run()
                             enemy->incGenId();
 
                             // Destroy all the other enemies
-                            if (mGame.numPlayers() == 1)
+                            if (theGame.numPlayers() == 1)
                             {
                                 for (int i=0; i<NUM_ENEMIES; i++)
                                 {
-                                    if ((theGame->mEnemies->mEnemies[i]->getState() != entity::ENTITY_STATE_INACTIVE) && (theGame->mEnemies->mEnemies[i] != enemy))
+                                    if ((game::mEnemies.mEnemies[i]->getState() != entity::ENTITY_STATE_INACTIVE) && (game::mEnemies.mEnemies[i] != enemy))
                                     {
-                                        theGame->mEnemies->mEnemies[i]->hit(NULL);
-                                        theGame->mEnemies->mEnemies[i]->incGenId();
+                                        game::mEnemies.mEnemies[i]->hit(NULL);
+                                        game::mEnemies.mEnemies[i]->incGenId();
                                     }
                                 }
                             }
@@ -138,7 +133,7 @@ void players::draw()
 player* players::getPlayerClosestToPosition(const Point3d& point)
 {
     // The enemies use this function to determine which player to chase (mostly in the case of a non-single player game) :-)
-    if (mGame.numPlayers() == 1)
+    if (theGame.numPlayers() == 1)
     {
         return mPlayer1;
     }
@@ -151,19 +146,19 @@ player* players::getPlayerClosestToPosition(const Point3d& point)
 
         if (mPlayer1->getEnabled())
         {
-            distancePlayer1 = mathutils::calculate2dDistance(point, mGame.mPlayers->mPlayer1->getPos());
+            distancePlayer1 = mathutils::calculate2dDistance(point, game::mPlayers.mPlayer1->getPos());
         }
         if (mPlayer2->getEnabled())
         {
-            distancePlayer2 = mathutils::calculate2dDistance(point, mGame.mPlayers->mPlayer2->getPos());
+            distancePlayer2 = mathutils::calculate2dDistance(point, game::mPlayers.mPlayer2->getPos());
         }
         if (mPlayer3->getEnabled())
         {
-            distancePlayer3 = mathutils::calculate2dDistance(point, mGame.mPlayers->mPlayer3->getPos());
+            distancePlayer3 = mathutils::calculate2dDistance(point, game::mPlayers.mPlayer3->getPos());
         }
         if (mPlayer4->getEnabled())
         {
-            distancePlayer4 = mathutils::calculate2dDistance(point, mGame.mPlayers->mPlayer4->getPos());
+            distancePlayer4 = mathutils::calculate2dDistance(point, game::mPlayers.mPlayer4->getPos());
         }
 
         float minDistance = 999999;
@@ -172,22 +167,22 @@ player* players::getPlayerClosestToPosition(const Point3d& point)
         if (distancePlayer1 < minDistance)
         {
             minDistance = distancePlayer1;
-            closePlayer = mGame.mPlayers->mPlayer1;
+            closePlayer = game::mPlayers.mPlayer1;
         }
         if (distancePlayer2 < minDistance)
         {
             minDistance = distancePlayer2;
-            closePlayer = mGame.mPlayers->mPlayer2;
+            closePlayer = game::mPlayers.mPlayer2;
         }
         if (distancePlayer3 < minDistance)
         {
             minDistance = distancePlayer3;
-            closePlayer = mGame.mPlayers->mPlayer3;
+            closePlayer = game::mPlayers.mPlayer3;
         }
         if (distancePlayer4 < minDistance)
         {
-            //minDistance = distancePlayer4;
-            closePlayer = mGame.mPlayers->mPlayer4;
+            minDistance = distancePlayer4;
+            closePlayer = game::mPlayers.mPlayer4;
         }
 
         return closePlayer ? closePlayer : mPlayer1; // just in case

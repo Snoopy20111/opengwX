@@ -4,6 +4,7 @@
 #include "model.h"
 #include "texture.h"
 
+
 class scene
 {
 public:
@@ -30,9 +31,9 @@ public:
 
 
 private:
-	float mWidth { 0.0f };
-	float mHeight { 0.0f };
-    float mAspect { 0.0f };
+	float mWidth;
+	float mHeight;
+    float mAspect;
 
     void drawCredits();
     void drawNumBombs();

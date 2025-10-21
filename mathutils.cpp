@@ -1,18 +1,17 @@
 #include "mathutils.h"
 #include "sincos.h"
 
-#include <cstdlib>
 
 namespace mathutils
 {
     float wrapRadians(float radians)
     {
         radians = fmodf(radians, RADIAN);
-        if (radians < 0.0f) radians += RADIAN;
+        if (radians < 0.0) radians += RADIAN;
         return radians;
     }
 
-    float calculate2dDistance(const Point3d& p1, const Point3d& p2)
+    float calculate2dDistance(Point3d p1, Point3d p2)
     {
         float x1 = p1.x;
         float y1 = p1.y;
@@ -22,20 +21,6 @@ namespace mathutils
         float dy = x1 - x2;
         float dz = y1 - y2;
         float distance = sqrt((dz*dz) + (dy*dy));
-
-        return distance;
-    }
-
-    float calculate2dDistanceSquared(const Point3d& p1, const Point3d& p2)
-    {
-        float x1 = p1.x;
-        float y1 = p1.y;
-        float x2 = p2.x;
-        float y2 = p2.y;
-
-        float dy = x1 - x2;
-        float dz = y1 - y2;
-        float distance = (dz*dz) + (dy*dy);
 
         return distance;
     }
@@ -145,15 +130,10 @@ namespace mathutils
         return (int) ((frandFrom0To1()*(range+1))+from);
     }
 
-#if 0
-	constexpr float onePerRandMax = 1.0f / RAND_MAX;
-
-	float frandFrom0To1()
+    float frandFrom0To1()
     {
-        //return (float)rand()/RAND_MAX;
-		return rand() * onePerRandMax;
+        return (float)rand()/RAND_MAX;
     }
-#endif
 
 	//  Globals which should be set before calling this function:
 	//
@@ -190,7 +170,7 @@ namespace mathutils
                 continue;
             }
 
-			if (((from.y < testPoint.y && to.y >= testPoint.y) || (to.y < testPoint.y && from.y >= testPoint.y)) && (from.x <= testPoint.x || to.x <= testPoint.x))
+			if ((from.y < testPoint.y && to.y >= testPoint.y || to.y < testPoint.y && from.y >= testPoint.y) && (from.x <= testPoint.x || to.x <= testPoint.x))
 			{
 				oddNodes ^= (from.x + (testPoint.y-from.y) / (to.y - from.y) * (to.x - from.x) < testPoint.x);
 			}
@@ -206,11 +186,11 @@ namespace mathutils
     {
         Point3d lineDiffVect = lineTo - lineFrom;
         float length = calculate2dDistance(Point3d(0,0,0), lineDiffVect);
-
+ 
         const Point3d lineToPointVect = testPoint - lineFrom;
         const float dotProduct = Point3d::dot(lineDiffVect, lineToPointVect);
         const float percAlongLine = dotProduct / (length*length);
-
+ 
         // If point is outside of the line segment, clamp it to one end or another
         if (percAlongLine < 0.0f)
         {
@@ -228,11 +208,11 @@ namespace mathutils
     {
         Point3d lineDiffVect = lineTo - lineFrom;
         float length = calculate2dDistance(Point3d(0,0,0), lineDiffVect);
-
+ 
         const Point3d lineToPointVect = testPoint - lineFrom;
         const float dotProduct = Point3d::dot(lineDiffVect, lineToPointVect);
         const float percAlongLine = dotProduct / (length*length);
-
+ 
         // If point is outside of the line segment, clamp it to one end or another
         if (percAlongLine < 0.0f)
         {

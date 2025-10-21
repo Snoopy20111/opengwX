@@ -19,8 +19,8 @@ namespace vector
     class vector
     {
         public:
-          vector() { }
-          vector(const Point3d& p1, const Point3d& p2) : from(p1), to(p2) { }
+          vector() {;}
+          vector(const Point3d& p1, const Point3d& p2) { from = p1; to = p2; }
           Point3d from, to;
     };
 

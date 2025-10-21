@@ -1,14 +1,12 @@
 #ifndef ENTITYTINYSPINNER_H
 #define ENTITYTINYSPINNER_H
 
-#include "entityspinner.h"
-
-class game;
+#include "entitySpinner.h"
 
 class entityTinySpinner : public entitySpinner
 {
 public:
-    entityTinySpinner(const game& gameRef);
+    entityTinySpinner();
 
     virtual void run();
     virtual void spawnTransition();
@@ -23,10 +21,10 @@ public:
     void setInitialSpeed(const Point3d& speed) { mInitialSpeed = speed; }
 
 private:
-    Point3d mVirtualPos { 0, 0, 0 };
+    Point3d mVirtualPos;
+    float mAnimationIndex;
     Point3d mInitialSpeed;
 
-    const game& mGame;
 };
 
 #endif // ENTITYTINYSPINNER_H

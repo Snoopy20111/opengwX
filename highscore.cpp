@@ -1,13 +1,8 @@
 #include "highscore.h"
 #include "game.h"
-#include "players.h"
-
-#include <cstdio>
 
 extern scene oglScene;
 extern vector::pen defaultFontPen;
-
-static constexpr char LAST = '\0';
 
 static char charList[] =
 {
@@ -48,7 +43,7 @@ static char charList[] =
 	'9',
 	'0',
 	' ',
-	LAST,
+	NULL,
 };
 
 
@@ -61,7 +56,7 @@ highscore::highscore(void)
 	}
 
 	mLastLetter = 0;
-	for (int i=0; charList[i] != LAST; i++)
+	for (int i=0; charList[i] != NULL; i++)
 	{
 		++mLastLetter;
 	}
@@ -94,7 +89,7 @@ bool highscore::isHighScore(int score)
 
 void highscore::init()
 {
-	mScore = theGame->mPlayers->mPlayer1->mScore;
+	mScore = game::mPlayers.mPlayer1->mScore;
 	mEditCurrentPos = 0;
 	strcpy(mEditName, "   ");
 }

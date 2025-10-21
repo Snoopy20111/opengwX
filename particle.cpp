@@ -1,11 +1,6 @@
 #include "particle.h"
 #include "game.h"
-#include "entityblackhole.h"
-#include "enemies.h"
-
-#include <atomic>
-#include <mutex>
-#include <cstdio>
+#include "entityBlackHole.h"
 
 #define VIRTUAL_SCREEN_WIDTH 800 // FIX ME
 #define VIRTUAL_SCREEN_HEIGHT 600 // FIX ME
@@ -14,26 +9,32 @@
 #define _MIN_DISTANCE .001
 #define _MAX_DISTANCE 800
 
+
+static BOOL renderParticles = TRUE;
+static float brightness = 1.0f;
+static float particleLineRadius = 3;
+
+
 static SDL_Thread* mRunThread = NULL;
-static std::atomic_bool mRunFlag { false };
+static bool mRunFlag = false;
+
 
 particle::PARTICLE* particle::mParticles = NULL;
 int particle::mNumParticles = 0;
 int particle::mIndex = 0;
 
-static std::mutex m;
 
 static int runThread(void *ptr)
 {
+    int x,y;
+
     while(1)
     {
         while (!mRunFlag)
         {
-            SDL_Delay(1);
+            Sleep(1);
         };
         mRunFlag = false;
-
-        std::unique_lock<std::mutex> lock(m);
 
         int i;
         if (particle::mParticles)
@@ -46,7 +47,8 @@ static int runThread(void *ptr)
 
                     particle::PARTICLE* particle = &particle::mParticles[i];
 
-                    if (--particle->timeToLive < 0)
+                    --particle->timeToLive;
+                    if (particle->timeToLive <= 0)
                     {
                         // This particle died
                         particle->timeToLive = 0;
@@ -54,6 +56,7 @@ static int runThread(void *ptr)
                     else
                     {
                         // Evaluate against attractors
+                        Point3d ppoint = particle->posStream[0];
                         if (particle->gravity)
                         {
                             Point3d speed = game::mAttractors.evaluateParticle(particle);
@@ -64,9 +67,9 @@ static int runThread(void *ptr)
                         // Evaluate against black holes
                         for (int i=0; i<NUM_ENEMIES; i++)
                         {
-                            if ((theGame->mEnemies->mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (theGame->mEnemies->mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
+                            if ((game::mEnemies.mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (game::mEnemies.mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
                             {
-                                entityBlackHole* blackHole = static_cast<entityBlackHole*>(theGame->mEnemies->mEnemies[i]);
+                                entityBlackHole* blackHole = static_cast<entityBlackHole*>(game::mEnemies.mEnemies[i]);
                                 if (blackHole->mActivated)
                                 {
                                     if (mathutils::calculate2dDistance(particle->posStream[0], blackHole->getPos()) < blackHole->getRadius()*1.01)
@@ -82,7 +85,7 @@ static int runThread(void *ptr)
                         // Add drag
                         particle->speedX *= particle->drag;
                         particle->speedY *= particle->drag;
-
+                
                         Point3d speedClamp(particle->speedX, particle->speedY, 0);
                         speedClamp = mathutils::clamp2dVector(speedClamp, 2);
                         particle->speedX = speedClamp.x;
@@ -141,15 +144,12 @@ particle::particle()
     }
 
     // Thread stuff
-    mRunThread = SDL_CreateThread(runThread, "runThread", NULL);
+    mRunThread = SDL_CreateThread(runThread, "runThread");
     if (!mRunThread)
     {
-#ifdef USE_SDL
-		printf("Couldn't create particle run thread: %s\n", SDL_GetError());
-#else
         OutputDebugString(L"Couldn't create particle run thread\n");
-#endif
     }
+
 }
 
 particle::~particle()
@@ -161,10 +161,11 @@ particle::~particle()
             mParticles[i].timeToLive = 0;
         }
 
-        delete [] mParticles;
+        delete mParticles;
     }
     mParticles = NULL;
 }
+
 
 void particle::emitter(Point3d* position, Point3d* angle, float speed, float spread, int num, vector::pen* color, int timeToLive,
                        BOOL gravity, BOOL gridBound, float drag, BOOL glowPass)
@@ -190,13 +191,17 @@ void particle::emitter(Point3d* position, Point3d* angle, float speed, float spr
         assignParticle(position,
                        speedVector.x, speedVector.y, speedVector.z,
                        timeToLive, color, gravity, gridBound, drag, glowPass);
+
     }
 }
+
 
 void particle::assignParticle(Point3d* position,
                               float aSpeedX, float aSpeedY, float aSpeedZ,
                               int aTime, vector::pen* aColor, BOOL gravity, BOOL gridBound, float drag, BOOL glowPass)
 {
+    int i;
+
     PARTICLE* particle = &mParticles[mIndex++];
     if (mIndex >= mNumParticles) mIndex = 0;
 
@@ -223,18 +228,19 @@ void particle::assignParticle(Point3d* position,
         particle->speedZ = aSpeedZ;
         particle->color = *aColor;
         particle->timeToLive = aTime * mathutils::frandFrom0To1();
-        particle->fadeStep = particle->timeToLive ? 1.0 / particle->timeToLive : 1.0f;
+        particle->fadeStep = 1.0 / particle->timeToLive;
         particle->gravity = gravity;
         particle->gridBound = gridBound;
         particle->drag = drag;
         particle->glowPass = glowPass;
         particle->hitGrid = false;
     }
+
 }
+
 
 void particle::draw()
 {
-    std::unique_lock<std::mutex> lock(m);
     if (mParticles)
     {
         for (int i=0; i<mNumParticles; i++)
@@ -244,24 +250,27 @@ void particle::draw()
                 // This particle is active
                 PARTICLE* particle = &mParticles[i];
 
+                float a = particle->color.a;
                 float speedNormal = mathutils::calculate2dDistance(Point3d(0,0,0), Point3d(particle->speedX, particle->speedY, particle->speedZ));
-                float a = particle->color.a * (speedNormal * 0.8f);
+                a = a * (speedNormal * .8);
 
-                if (a < 0.05f)
+                if (a < .05)
                 {
                     // This particle died
                     particle->timeToLive = 0;
                     continue;
                 }
 
-                float width = speedNormal * 8.0f;
-                if (width > 4.0f) width = 4.0f;
-                else if (width < 2.0f) width = 2.0f;
+                float width = speedNormal * 8;
+                if (width > 4) width = 4;
+                else if (width < 1) width = 1;
 
                 if (scene::mPass == scene::RENDERPASS_BLUR)
                 {
-                    width *= 4.0f;
+                    width *= 4;
                 }
+
+                if (width < 2) width = 2;
 
                 glLineWidth(width);
 
@@ -272,36 +281,43 @@ void particle::draw()
 
                 glBegin(GL_LINES);
 
-				float aa = (a > 1.0f) ? 1.0f : a;
-
-                for (int p=0; (p < NUM_POS_STREAM_ITEMS - 1) && (aa > 0.0f); p++)
+                float aa = a;
+                if (aa > 1) aa = 1;
+                for (int p=0; p<NUM_POS_STREAM_ITEMS-1; p++)
                 {
-                    //glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
+                    if (aa <= 0) break;
 
-                    const Point3d& from = particle->posStream[p];
-                    const Point3d& to = particle->posStream[p + 1];
+                    glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
+
+                    Point3d from = particle->posStream[p];
+                    Point3d to = particle->posStream[p+1];
+
+                    if ((from.x == to.x) && (from.y == to.y))
+                    {
+                        to.x += .1;
+                        to.y += .1;
+                    }
 
                     glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
                     glVertex3d(from.x, from.y, 0);
-                    aa -= 0.1f;
+                    aa-=.1;
 
                     glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
+                    glVertex3d(to.x, to.y, 0);
+                    aa-=.1;
 
-                    if ((from.x == to.x) && (from.y == to.y))
-					{
-						glVertex3d(to.x + 0.1f, to.y + 0.1f, 0);
-					} else {
-						glVertex3d(to.x, to.y, 0);
-					}
-
-                    aa -= 0.1f;
                 }
 
         	    glEnd();
+
             }
         }
+
+
     }
+
 }
+
 
 void particle::run()
 {
@@ -310,8 +326,6 @@ void particle::run()
 
 void particle::killAll()
 {
-    std::unique_lock<std::mutex> lock(m);
-
     if (mParticles)
     {
         for (int i=0; i<mNumParticles; i++)
@@ -320,3 +334,7 @@ void particle::killAll()
         }
     }
 }
+
+
+
+

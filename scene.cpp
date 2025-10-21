@@ -1,16 +1,9 @@
 #include "scene.h"
 #include "game.h"
 #include "menuSelectGameType.h"
-#include "players.h"
 
 #include "game.h"
-
-#include <GL/glu.h>
-
-#include <cstdio>
-#include <memory>
-
-std::unique_ptr<game> theGame;
+game theGame;
 
 int scene::mPass;
 bool scene::mEnableGridGlow = true;
@@ -25,8 +18,6 @@ vector::pen defaultFontPen(0, 1, 0, .6, 3);
 
 scene::scene()
 {
-	theGame.reset(new game);
-
 	mAttractModeTimer = 0;
 	mShowHighScores = FALSE;
 
@@ -67,7 +58,7 @@ scene::scene()
 
 void scene::run()
 {
-	theGame->run();
+	theGame.run();
 }
 
 void scene::draw(int pass)
@@ -104,7 +95,7 @@ void scene::draw(int pass)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-		theGame->draw(pass);
+		theGame.draw(pass);
 
 		glDisable(GL_BLEND);
 
@@ -130,6 +121,7 @@ void scene::draw(int pass)
         glVertex2d(1.0, top);
         glVertex2d(-1.0, top);
         glEnd();
+
 
         glColor4f(0, 1, 0, .1);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -177,6 +169,7 @@ void scene::draw(int pass)
         glVertex2d(1.0, top);
         glVertex2d(-1.0, top);
         glEnd();
+
 
         glColor4f(0, 1, 0, .1);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -283,6 +276,7 @@ void scene::draw(int pass)
 				if (game::mGameMode == game::GAMEMODE_CREDITED)
 				{
 					drawCredits();
+
 /*
 					static int flashTimer = 0;
 					++flashTimer;
@@ -318,6 +312,7 @@ void scene::draw(int pass)
 							font::AlphanumericsPrint(font::ALIGN_CENTER, .025, 0, -.2, &pen, "Press 1, 2, 3, or 4 Player Start");
 					}
 */
+
 				}
 				else
 				{
@@ -380,6 +375,7 @@ void scene::draw(int pass)
 
 		glDisable2D();
     }
+
 }
 
 void scene::drawCredits()
@@ -410,7 +406,7 @@ void scene::drawCredits()
 void scene::drawNumLives()
 {
     int overflow = 0;
-    int num = theGame->mPlayers->mPlayer1->getNumLives();
+    int num = game::mPlayers.mPlayer1->getNumLives();
     if (num > 5)
     {
         overflow = num;
@@ -422,11 +418,11 @@ void scene::drawNumLives()
 		vector::pen pen(defaultFontPen, .75, 10);
         float scale = .017;
 
-        theGame->mPlayers->mPlayer1->getModel()->Identity();
-        theGame->mPlayers->mPlayer1->getModel()->Scale(Point3d(scale, scale*mAspect, 0));
-        theGame->mPlayers->mPlayer1->getModel()->Rotate(0);
-        theGame->mPlayers->mPlayer1->getModel()->Translate(Point3d(-.12 + (.04*i), .9, 0));
-        theGame->mPlayers->mPlayer1->getModel()->draw(pen);
+        game::mPlayers.mPlayer1->getModel()->Identity();
+        game::mPlayers.mPlayer1->getModel()->Scale(Point3d(scale, scale*mAspect, 0));
+        game::mPlayers.mPlayer1->getModel()->Rotate(0);
+        game::mPlayers.mPlayer1->getModel()->Translate(Point3d(-.12 + (.04*i), .9, 0));
+        game::mPlayers.mPlayer1->getModel()->draw(pen);
     }
 
     if (overflow > 0)
@@ -442,12 +438,12 @@ void scene::drawNumLives()
 
 void scene::drawNumBombs()
 {
-    if (theGame->mGameType == game::GAMETYPE_SINGLEPLAYER)
+    if (theGame.mGameType == game::GAMETYPE_SINGLEPLAYER)
     {
         // 1 player display
 
         int overflow = 0;
-        int num = theGame->mPlayers->mPlayer1->getNumBombs();
+        int num = game::mPlayers.mPlayer1->getNumBombs();
         if (num > 5)
         {
             overflow = num;
@@ -484,23 +480,23 @@ void scene::drawNumBombs()
 
 void scene::drawScores()
 {
-    BOOL gameover = (theGame->mGameMode != game::GAMEMODE_PLAYING);
+    BOOL gameover = (game::mGameMode != game::GAMEMODE_PLAYING);
 
-    if (theGame->mGameType == game::GAMETYPE_SINGLEPLAYER)
+    if (theGame.mGameType == game::GAMETYPE_SINGLEPLAYER)
     {
         // 1 player display
 
         // Player 1 score display
         {
             char format[512];
-            sprintf(format, "%d", theGame->mPlayers->mPlayer1->mScore);
+            sprintf(format, "%d", game::mPlayers.mPlayer1->mScore);
             char* s = font::formatStringWithCommas(format);
 
             vector::pen pen = defaultFontPen;
             if (gameover)
                 font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score");
             else
-                font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", theGame->mPlayers->mPlayer1->mMultiplier);
+                font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", game::mPlayers.mPlayer1->mMultiplier);
 		    font::AlphanumericsPrint(font::ALIGN_LEFT, .02, -.94, .82, &pen, s);
 
 		    pen.a=.1;
@@ -508,7 +504,7 @@ void scene::drawScores()
             if (gameover)
                 font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score");
             else
-            font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", theGame->mPlayers->mPlayer1->mMultiplier);
+            font::AlphanumericsPrint(font::ALIGN_LEFT, .016, -.94, .9, &pen, "Score x%d", game::mPlayers.mPlayer1->mMultiplier);
 		    font::AlphanumericsPrint(font::ALIGN_LEFT, .02, -.94, .82, &pen, s);
         }
     }
@@ -523,19 +519,19 @@ void scene::drawScores()
             switch(i)
             {
                 case 0:
-                    player = theGame->mPlayers->mPlayer1;
+                    player = game::mPlayers.mPlayer1;
                     pos = Point3d(-.7, .9, 0);
                     break;
                 case 1:
-                    player = theGame->mPlayers->mPlayer2;
+                    player = game::mPlayers.mPlayer2;
                     pos = Point3d(.3, .9, 0);
                     break;
                 case 2:
-                    player = theGame->mPlayers->mPlayer3;
+                    player = game::mPlayers.mPlayer3;
                     pos = Point3d(-.7, -.9, 0);
                     break;
                 case 3:
-                    player = theGame->mPlayers->mPlayer4;
+                    player = game::mPlayers.mPlayer4;
                     pos = Point3d(.3, -.9, 0);
                     break;
             }
@@ -580,17 +576,21 @@ void scene::glEnable2D()
 	vPort[2] = 0;
 	vPort[3] = VIRTUAL_SCREEN_WIDTH;
 
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
+
 
 	glOrtho(vPort[0], vPort[0]+vPort[2], vPort[1]+vPort[3], vPort[1], -1, 1);
 
 	glViewport(0, 0, mWidth, mHeight);
 
+
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
+
 }
 
 void scene::glDisable2D()
@@ -614,3 +614,4 @@ void scene::showHighScores()
 	mAttractModeTimer = -200;
 	mShowHighScores = TRUE;
 }
+

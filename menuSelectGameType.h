@@ -4,6 +4,7 @@
 
 #include "defines.h"
 #include "scene.h"
+#include "game.h"
 
 class menuSelectGameType
 {
@@ -13,6 +14,7 @@ public:
     static void draw();
 
     static int selection;
+
 };
 
 #endif // MENU_SELECT_GAME_TYPE_H

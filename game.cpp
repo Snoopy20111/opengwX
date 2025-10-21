@@ -1,18 +1,15 @@
 #include "game.h"
-#include "camera.h"
-#include "stars.h"
-#include "players.h"
-#include "enemies.h"
-
 #include "menuSelectGameType.h"
-
-#include <cstdio>
 
 // Statics
 sound game::mSound;
 particle game::mParticles;
+camera game::mCamera;
 attractor game::mAttractors;
 controls game::mControls;
+enemies game::mEnemies;
+stars game::mStars;
+players game::mPlayers;
 blackholes game::mBlackHoles;
 spawner game::mSpawner;
 bomb game::mBomb;
@@ -100,8 +97,7 @@ game::game()
 
     mBrightness = 0;
 
-    mCamera.reset(new camera(*this));
-    mCamera->center();
+    mCamera.center();
 
     mPointDisplays = new PointDisplay[NUM_POINT_DISPLAYS];
     for (int i=0; i<NUM_POINT_DISPLAYS; i++)
@@ -112,14 +108,15 @@ game::game()
     // Tag 4 black holes for attract mode
     for (int i=0; i<4; i++)
     {
-        mAttractModeBlackHoles[i].reset(new entity());
-        mAttractModeBlackHoles[i]->setPos(Point3d(mathutils::frandFrom0To1() * mGrid.extentX(), mathutils::frandFrom0To1() * mGrid.extentY(), 0));
+        mAttractModeBlackHoles[i] = new entity();
+        mAttractModeBlackHoles[i]->setPos(Point3d(mathutils::frandFrom0To1() *theGame.mGrid.extentX(), mathutils::frandFrom0To1() * theGame.mGrid.extentY(), 0));
         mAttractModeBlackHoles[i]->setEdgeBounce(FALSE);
 
         static float heading=mathutils::frandFrom0To1() * (2*PI);
         if ((mathutils::frandFrom0To1() * 40) < 1)
         {
             // Pick a random direction
+            const float variation = 1.5;
             heading += mathutils::frandFrom0To1() * (2*PI);
         }
 
@@ -131,15 +128,11 @@ game::game()
     mGameMode = GAMEMODE_ATTRACT;
 
     mSound.playTrack(SOUNDID_MENU_MUSICLOOP);
-
-    mStars.reset(new stars(*this));
-    mPlayers.reset(new players(*this));
-    mEnemies.reset(new enemies(*this));
 }
 
 game::~game()
 {
-    delete [] mPointDisplays;
+    delete mPointDisplays;
 }
 
 void game::run()
@@ -184,13 +177,13 @@ void game::run()
     }
 
     // Run the camera
-    mCamera->run();
+    mCamera.run();
 
     // Run the point displays
     runPointDisplays();
 
     // Run the enemies
-    mEnemies->run();
+    mEnemies.run();
 
     switch(mGameMode)
     {
@@ -255,32 +248,32 @@ void game::run()
             {
                 if ((numPlayers() > 1) && (m2PlayerNumLives > 0))
                 {
-                    if (mControls.getStartButton(0) && !mPlayers->mPlayer1->mJoined)
+                    if (mControls.getStartButton(0) && !mPlayers.mPlayer1->mJoined)
                     {
-                        mPlayers->mPlayer1->takeLife();
-                        mPlayers->mPlayer1->initPlayerForGame();
+                        mPlayers.mPlayer1->takeLife();
+                        mPlayers.mPlayer1->initPlayerForGame();
                     }
-                    if (mControls.getStartButton(1) && !mPlayers->mPlayer2->mJoined)
+                    if (mControls.getStartButton(1) && !mPlayers.mPlayer2->mJoined)
                     {
-                        mPlayers->mPlayer2->takeLife();
-                        mPlayers->mPlayer2->initPlayerForGame();
+                        mPlayers.mPlayer2->takeLife();
+                        mPlayers.mPlayer2->initPlayerForGame();
                     }
-                    if (mControls.getStartButton(2) && !mPlayers->mPlayer3->mJoined)
+                    if (mControls.getStartButton(2) && !mPlayers.mPlayer3->mJoined)
                     {
-                        mPlayers->mPlayer3->takeLife();
-                        mPlayers->mPlayer3->initPlayerForGame();
+                        mPlayers.mPlayer3->takeLife();
+                        mPlayers.mPlayer3->initPlayerForGame();
                     }
-                    if (mControls.getStartButton(3) && !mPlayers->mPlayer4->mJoined)
+                    if (mControls.getStartButton(3) && !mPlayers.mPlayer4->mJoined)
                     {
-                        mPlayers->mPlayer4->takeLife();
-                        mPlayers->mPlayer4->initPlayerForGame();
+                        mPlayers.mPlayer4->takeLife();
+                        mPlayers.mPlayer4->initPlayerForGame();
                     }
                 }
 
-                mCamera->followPlayer();
-                mStars->run();
+                mCamera.followPlayer();
+                mStars.run();
                 mBlackHoles.run();
-                mPlayers->run();
+                mPlayers.run();
                 mBomb.run();
                 mSpawner.run();
 
@@ -295,22 +288,22 @@ void game::run()
                 mMusicSpeedTarget = 1;
 
                 // Slow the music down when someone is respawning
-                if (mPlayers->mPlayer1->mJoined && (mPlayers->mPlayer1->getState() == entity::ENTITY_STATE_DESTROYED))
+                if (this->mPlayers.mPlayer1->mJoined && (game::mPlayers.mPlayer1->getState() == entity::ENTITY_STATE_DESTROYED))
                 {
                     mMusicSpeedTarget = 0;
                     mMusicSpeed = .5;
                 }
-                if (mPlayers->mPlayer2->mJoined && (game::mPlayers->mPlayer2->getState() == entity::ENTITY_STATE_DESTROYED))
+                if (this->mPlayers.mPlayer2->mJoined && (game::mPlayers.mPlayer2->getState() == entity::ENTITY_STATE_DESTROYED))
                 {
                     mMusicSpeedTarget = 0;
                     mMusicSpeed = .5;
                 }
-                if (mPlayers->mPlayer3->mJoined && (mPlayers->mPlayer3->getState() == entity::ENTITY_STATE_DESTROYED))
+                if (this->mPlayers.mPlayer3->mJoined && (game::mPlayers.mPlayer3->getState() == entity::ENTITY_STATE_DESTROYED))
                 {
                     mMusicSpeedTarget = 0;
                     mMusicSpeed = .5;
                 }
-                if (mPlayers->mPlayer4->mJoined && (mPlayers->mPlayer4->getState() == entity::ENTITY_STATE_DESTROYED))
+                if (this->mPlayers.mPlayer4->mJoined && (game::mPlayers.mPlayer4->getState() == entity::ENTITY_STATE_DESTROYED))
                 {
                     mMusicSpeedTarget = 0;
                     mMusicSpeed = .5;
@@ -336,7 +329,7 @@ void game::run()
 			mHighscore.run();
 			break;
         case GAMEMODE_HIGHSCORES_CHECK:
-			if (mHighscore.isHighScore(mPlayers->mPlayer1->mScore) == true)
+			if (mHighscore.isHighScore(mPlayers.mPlayer1->mScore) == true)
 			{
 				mGameMode = GAMEMODE_HIGHSCORES;
 				mHighscore.init();
@@ -366,7 +359,7 @@ void game::run()
                 else // TODO - MULTIPLAYER HIGH SCORES?????
 */
                 mGameMode = GAMEMODE_ATTRACT;
-                mCamera->mCurrentZoom = 1;
+                mCamera.mCurrentZoom = 1;
             }
             break;
     }
@@ -396,7 +389,7 @@ void game::run()
             game::mSound.playTrack(SOUNDID_GRAVITYWELLEXPLODE);
         }
 
-        mCamera->center();
+        mCamera.center();
 
         // Run the game selection menu
         if (mGameMode == GAMEMODE_CHOOSE_GAMETYPE)
@@ -413,7 +406,7 @@ void game::run()
         {
             mAttractModeBlackHoles[i]->setState(entity::ENTITY_STATE_RUNNING);
             mAttractModeBlackHoles[i]->run();
-
+            
             Point3d pos = mAttractModeBlackHoles[i]->getPos();
 
             attractor::Attractor* att = game::mAttractors.getAttractor();
@@ -458,11 +451,12 @@ void game::run()
                 mAttractModeBlackHoles[j]->setDrift(speed);
             }
 
-            //float heading;
+            float heading;
             if ((mathutils::frandFrom0To1() * 40) < 1)
             {
                 // Pick a random direction
-                //heading + mathutils::frandFrom0To1() * (2*PI);
+                const float variation = 1.5;
+                heading + mathutils::frandFrom0To1() * (2*PI);
             }
 
             // Change direction when we hit the grid edges
@@ -475,6 +469,7 @@ void game::run()
             const float rightEdge = (sizex - 2)-1;
             const float topEdge = (sizey - 2)-1;
 
+            BOOL hitEdge = FALSE;
             if (mPos.x <= leftEdge)
             {
                 mSpeed.x = -mSpeed.x;
@@ -498,6 +493,7 @@ void game::run()
 
             mAttractModeBlackHoles[i]->setDrift(mSpeed);
             mAttractModeBlackHoles[i]->setPos(mPos);
+
         }
 
         if (mGameMode != GAMEMODE_CHOOSE_GAMETYPE)
@@ -552,7 +548,7 @@ void game::draw(int pass)
 {
     // The camera
     {
-        glTranslatef(-mCamera->mCurrentPos.x, -mCamera->mCurrentPos.y, -mCamera->mCurrentPos.z);
+        glTranslatef(-mCamera.mCurrentPos.x, -mCamera.mCurrentPos.y, -mCamera.mCurrentPos.z);
     }
 
     {
@@ -619,7 +615,7 @@ void game::draw(int pass)
                     glEnable(GL_MULTISAMPLE);
                 }
 
-                mEnemies->draw();
+                mEnemies.draw();
 
                 if (mSettings.mEnemySmoothing)
                 {
@@ -629,7 +625,7 @@ void game::draw(int pass)
             }
             else
             {
-                mEnemies->draw();
+                mEnemies.draw();
             }
         }
 
@@ -647,7 +643,7 @@ void game::draw(int pass)
                     glEnable(GL_MULTISAMPLE);
                 }
 
-                mPlayers->draw();
+                mPlayers.draw();
 
                 if (mSettings.mPlayerSmoothing)
                 {
@@ -657,7 +653,7 @@ void game::draw(int pass)
             }
             else
             {
-                mPlayers->draw();
+                mPlayers.draw();
             }
         }
         else if (mGameMode == GAMEMODE_CHOOSE_GAMETYPE)
@@ -674,7 +670,7 @@ void game::draw(int pass)
                 glEnable(GL_MULTISAMPLE);
             }
 
-            mStars->draw();
+            mStars.draw();
 
             if (mSettings.mStarSmoothing)
             {
@@ -708,6 +704,7 @@ void game::draw(int pass)
                 drawPointDisplays();
             }
         }
+
 	}
 }
 
@@ -717,8 +714,8 @@ void game::startGame(GameType gameType)
 
     mBrightness = -2; // we fade in the grid on start game
 
-    mCamera->center();
-    mCamera->mCurrentZoom = 0;
+    mCamera.center();
+    mCamera.mCurrentZoom = 0;
 
     mLevel = 0;
 
@@ -727,21 +724,21 @@ void game::startGame(GameType gameType)
     mSpawner.init();
 
     // Fire up the players
-    if (mPlayers->mPlayer1->mJoined)
+    if (this->mPlayers.mPlayer1->mJoined)
     {
-        mPlayers->mPlayer1->initPlayerForGame();
+        this->mPlayers.mPlayer1->initPlayerForGame();
     }
-    if (mPlayers->mPlayer2->mJoined)
+    if (this->mPlayers.mPlayer2->mJoined)
     {
-        mPlayers->mPlayer2->initPlayerForGame();
+        this->mPlayers.mPlayer2->initPlayerForGame();
     }
-    if (mPlayers->mPlayer3->mJoined)
+    if (this->mPlayers.mPlayer3->mJoined)
     {
-        mPlayers->mPlayer3->initPlayerForGame();
+        this->mPlayers.mPlayer3->initPlayerForGame();
     }
-    if (mPlayers->mPlayer4->mJoined)
+    if (this->mPlayers.mPlayer4->mJoined)
     {
-        mPlayers->mPlayer4->initPlayerForGame();
+        this->mPlayers.mPlayer4->initPlayerForGame();
     }
 
     if (numPlayers() > 1)
@@ -780,19 +777,19 @@ void game::endGame()
     mSound.playTrack(SOUNDID_MENU_MUSICLOOP);
 
     // Kill all players
-    mPlayers->mPlayer1->setState(entity::ENTITY_STATE_INACTIVE);
-    mPlayers->mPlayer2->setState(entity::ENTITY_STATE_INACTIVE);
-    mPlayers->mPlayer3->setState(entity::ENTITY_STATE_INACTIVE);
-    mPlayers->mPlayer4->setState(entity::ENTITY_STATE_INACTIVE);
+    mPlayers.mPlayer1->setState(entity::ENTITY_STATE_INACTIVE);
+    mPlayers.mPlayer2->setState(entity::ENTITY_STATE_INACTIVE);
+    mPlayers.mPlayer3->setState(entity::ENTITY_STATE_INACTIVE);
+    mPlayers.mPlayer4->setState(entity::ENTITY_STATE_INACTIVE);
 
-    mPlayers->mPlayer1->deinitPlayerForGame();
-    mPlayers->mPlayer2->deinitPlayerForGame();
-    mPlayers->mPlayer3->deinitPlayerForGame();
-    mPlayers->mPlayer4->deinitPlayerForGame();
+    mPlayers.mPlayer1->deinitPlayerForGame();
+    mPlayers.mPlayer2->deinitPlayerForGame();
+    mPlayers.mPlayer3->deinitPlayerForGame();
+    mPlayers.mPlayer4->deinitPlayerForGame();
 
     // Kill all enemies
-    mEnemies->disableAllEnemies();
-    mEnemies->disableAllLines();
+    mEnemies.disableAllEnemies();
+    mEnemies.disableAllLines();
 
     // Kill all attractors
     mAttractors.clearAll();
@@ -864,26 +861,28 @@ void game::clearPointDisplays()
     }
 }
 
-int game::numPlayers() const
+int game::numPlayers()
 {
     int numPlayers = 0;
 
-    if (mPlayers->mPlayer1->mJoined)
+    if (mPlayers.mPlayer1->mJoined)
     {
         ++numPlayers;
     }
-    if (mPlayers->mPlayer2->mJoined)
+    if (mPlayers.mPlayer2->mJoined)
     {
         ++numPlayers;
     }
-    if (mPlayers->mPlayer3->mJoined)
+    if (mPlayers.mPlayer3->mJoined)
     {
         ++numPlayers;
     }
-    if (mPlayers->mPlayer4->mJoined)
+    if (mPlayers.mPlayer4->mJoined)
     {
         ++numPlayers;
     }
 
     return numPlayers;
 }
+
+

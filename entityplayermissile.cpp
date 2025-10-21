@@ -2,8 +2,7 @@
 #include "game.h"
 #include "entityblackhole.h"
 #include "entityrepulsor.h"
-#include "players.h"
-#include "enemies.h"
+
 
 entityPlayerMissile::entityPlayerMissile()
     : entity()
@@ -11,6 +10,7 @@ entityPlayerMissile::entityPlayerMissile()
     mScale = .16;
     mRadius = 1;
 
+    mType = 0;
     mPlayerSource = 1;
 
     mScoreValue = 0;
@@ -45,9 +45,9 @@ void entityPlayerMissile::run()
     // Check for repulsors that may effect us
     for (int i=0; i<NUM_ENEMIES; i++)
     {
-        if ((theGame->mEnemies->mEnemies[i]->getType() == entity::ENTITY_TYPE_REPULSOR) && (theGame->mEnemies->mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
+        if ((game::mEnemies.mEnemies[i]->getType() == entity::ENTITY_TYPE_REPULSOR) && (game::mEnemies.mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
         {
-            entityRepulsor* repulsor = static_cast<entityRepulsor*>(theGame->mEnemies->mEnemies[i]);
+            entityRepulsor* repulsor = static_cast<entityRepulsor*>(game::mEnemies.mEnemies[i]);
             if (repulsor)
             {
                 repulsor->repelEntity(this);
@@ -59,9 +59,9 @@ void entityPlayerMissile::run()
     bool warped = false;
     for (int i=0; i<NUM_ENEMIES; i++)
     {
-        if ((theGame->mEnemies->mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (theGame->mEnemies->mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
+        if ((game::mEnemies.mEnemies[i]->getType() == entity::ENTITY_TYPE_BLACKHOLE) && (game::mEnemies.mEnemies[i]->getState() == entity::ENTITY_STATE_RUNNING))
         {
-            entityBlackHole* blackHole = static_cast<entityBlackHole*>(theGame->mEnemies->mEnemies[i]);
+            entityBlackHole* blackHole = static_cast<entityBlackHole*>(game::mEnemies.mEnemies[i]);
             if (blackHole->mActivated)
             {
                 float distance = mathutils::calculate2dDistance(mPos, blackHole->getPos());
@@ -118,7 +118,7 @@ void entityPlayerMissile::run()
 
             Point3d pos((mPos.x * amount1) + (mLastPos.x * amount2), (mPos.y * amount1) + (mLastPos.y * amount2), 0);
 
-            entity* enemy = theGame->mEnemies->hitTestEnemiesAtPosition(pos, getRadius(), true);
+            entity* enemy = game::mEnemies.hitTestEnemiesAtPosition(pos, getRadius(), true);
             if (enemy)
             {
                 // We hit an enemy - destroy it and ourselves
@@ -217,16 +217,16 @@ void entityPlayerMissile::draw()
         switch (mPlayerSource)
         {
             case 0:
-                mPen = theGame->mPlayers->mPlayer1->getMissilesPen();
+                mPen = game::mPlayers.mPlayer1->getMissilesPen();
                 break;
             case 1:
-                mPen = theGame->mPlayers->mPlayer2->getMissilesPen();
+                mPen = game::mPlayers.mPlayer2->getMissilesPen();
                 break;
             case 2:
-                mPen = theGame->mPlayers->mPlayer3->getMissilesPen();
+                mPen = game::mPlayers.mPlayer3->getMissilesPen();
                 break;
             case 3:
-                mPen = theGame->mPlayers->mPlayer4->getMissilesPen();
+                mPen = game::mPlayers.mPlayer4->getMissilesPen();
                 break;
         }
 

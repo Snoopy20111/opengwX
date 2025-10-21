@@ -15,8 +15,8 @@ model::model()
 
 model::~model()
 {
-	delete [] mVertexList;
-	delete [] mEdgeList;
+	delete mVertexList;
+	delete mEdgeList;
 }
 
 void model::draw(const vector::pen& pen)

@@ -10,8 +10,6 @@ static float cos_table[NUM_ENTRIES];
 
 static float inc = RADIAN/NUM_ENTRIES;
 
-constexpr float entriesPerRadian = NUM_ENTRIES / RADIAN;
-
 void make_sin_cos_tables()
 {
     // calculate sine lookup table
@@ -34,13 +32,13 @@ void make_sin_cos_tables()
 float get_sin(float i)
 {
     i = mathutils::wrapRadians(i);
-    //i = i/RADIAN;
-    return sin_table[(int)(i * entriesPerRadian)];
+    i = i/RADIAN;
+    return sin_table[(int)(i*NUM_ENTRIES)];
 }
 
 float get_cos(float i)
 {
     i = mathutils::wrapRadians(i);
-    //i = i/RADIAN;
-    return cos_table[(int)(i * entriesPerRadian)];
+    i = i/RADIAN;
+    return cos_table[(int)(i*NUM_ENTRIES)];
 }
