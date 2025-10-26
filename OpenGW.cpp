@@ -2,10 +2,6 @@
 //
 
 #include "stdafx.h"
-#include <MMSYSTEM.H>
-
-#include "glew.h"
-#include "wglew.h"
 
 #include "defines.h"
 #include "OpenGW.h"

@@ -41,7 +41,7 @@ public:
     void run();
 
     void emitter(Point3d* position, Point3d* angle, float speed, float spread, int num, vector::pen* color, int timeToLive,
-        BOOL gravity=TRUE, BOOL gridBound=TRUE, float drag=.93, BOOL glowPass=TRUE);
+        BOOL gravity = TRUE, BOOL gridBound = TRUE, float drag = .93, BOOL glowPass = TRUE);
 
     void killAll();
 
