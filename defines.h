@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "targetver.h"
-
 // C RunTime Header Files
 #include <stdlib.h>
 #include <malloc.h>
