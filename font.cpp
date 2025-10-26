@@ -900,9 +900,9 @@ namespace font
         if (fmt == NULL)
             return;
 
-        glLineWidth(color->lineRadius);
-        glColor4f(color->r, color->g, color->b, color->a);
-        glBegin(GL_LINES);
+        //glLineWidth(color->lineRadius);
+        //glColor4f(color->r, color->g, color->b, color->a);
+        //glBegin(GL_LINES);
 
 
         _topAscentOffset = 0;
@@ -1193,7 +1193,7 @@ namespace font
             }
         }
 
-        glEnd();
+        //glEnd();
 
     }
 
@@ -1244,8 +1244,8 @@ namespace font
             end.x += cursorX;
             end.y += cursorY;
 
-            glVertex3d(start.x, start.y, 0);
-            glVertex3d(end.x, end.y, 0);
+            //glVertex3d(start.x, start.y, 0);
+            //glVertex3d(end.x, end.y, 0);
 
         };
     }

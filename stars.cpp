@@ -66,9 +66,9 @@ void stars::draw()
     if (brightness <= 0)
         return;
 
-    glPointSize(4);
+    //glPointSize(4);
 
-    glBegin(GL_POINTS);
+    //glBegin(GL_POINTS);
 
     for (int i=0; i<NUM_STARS; i++)
     {
@@ -83,10 +83,10 @@ void stars::draw()
             twinkle = 1;
         }
 
-        glColor4f(1.0f, 1.0f, 1.0f, (mStars[i].radius+.5) * brightness * mStars[i].brightness * twinkle);
-        glVertex3d(pt.x, pt.y, pt.z);
+        //glColor4f(1.0f, 1.0f, 1.0f, (mStars[i].radius+.5) * brightness * mStars[i].brightness * twinkle);
+        //glVertex3d(pt.x, pt.y, pt.z);
     }
 
-    glEnd();
+    //glEnd();
 }
 

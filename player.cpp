@@ -325,14 +325,14 @@ void player::draw()
             float delta_theta = 0.05;
             float r = 2.5;
 
-            glColor4f(mPen.r, mPen.g, mPen.b, mPen.a);
+            //glColor4f(mPen.r, mPen.g, mPen.b, mPen.a);
 
-            glBegin(GL_LINE_LOOP);
+            //glBegin(GL_LINE_LOOP);
 
-            for (float angle = 0; angle < 2*PI; angle += delta_theta )
-                glVertex3f( mPos.x + (r*get_cos(angle)), mPos.y + (r*get_sin(angle)), 0 );
+            //for (float angle = 0; angle < 2*PI; angle += delta_theta )
+            //    glVertex3f( mPos.x + (r*get_cos(angle)), mPos.y + (r*get_sin(angle)), 0 );
 
-            glEnd();
+            //glEnd();
         }
     }
 

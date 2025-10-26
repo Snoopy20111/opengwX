@@ -7,6 +7,7 @@
 
 #include "grid.h"
 #include "game.h"
+#include "stdafx.h"
 
 
 // The Grid
@@ -21,12 +22,14 @@ const int grid::resolution_y = ((22*4)+1);
 
 typedef struct
 {
-	GLfloat x, y, z;
+	//GLfloat x, y, z;
+    float x, y, z;
 }Vertex3f;
 
 typedef struct
 {
-	GLfloat r, g, b, a;
+	//GLfloat r, g, b, a;
+    float r, g, b, a;
 }Color4f;
 
 static Vertex3f*        gridVertexArrayX;
@@ -326,7 +329,7 @@ void grid::draw()
 {
     if (brightness <= .05) return;
 
-    glLineWidth(5);
+    //glLineWidth(5);
 
     unsigned int idxVertex = 0;
 
@@ -372,7 +375,8 @@ void grid::draw()
             ++idxVertex;
         }
     }
-
+    //Draw Grid
+    /*
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
@@ -403,10 +407,11 @@ void grid::draw()
     glVertex3f(0, grid::resolution_y-1, 0 );
 
     glEnd();
+    */
 
     // If the brightness has been lowered, cover the grid with a semi transparent scrim
     // since all our grid colors are locked.
-
+    /*
     if (brightness < .99)
     {
         glColor4f(0, 0, 0, 1-brightness);
@@ -424,7 +429,7 @@ void grid::draw()
 
 	    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
-
+    */
 }
 
 bool grid::hitTest(const Point3d& pos, float radius, Point3d* hitPos/*=0*/, Point3d* speed/*=0*/)
@@ -433,10 +438,10 @@ bool grid::hitTest(const Point3d& pos, float radius, Point3d* hitPos/*=0*/, Poin
 
 	if (hitPos) *hitPos = pos;
 
-    float left = 0 + radius;
-    float bottom = 0 + radius;
-    float right = resolution_x - radius;
-    float top = resolution_y - radius;
+    const float left = 0 + radius;
+    const float bottom = 0 + radius;
+    const float right = resolution_x - radius;
+    const float top = resolution_y - radius;
 
     if (pos.x < left)
     {

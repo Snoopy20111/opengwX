@@ -18,8 +18,8 @@
 #define imageHeight 240
 
 //declare image buffers 
-const int blurBufferWidth = 500;
-const int blurBufferHeight = 250;
+constexpr int blurBufferWidth = 500;
+constexpr int blurBufferHeight = 250;
 
 typedef struct
 {
@@ -33,34 +33,30 @@ ColorRGBA blurBuffer[blurBufferWidth][blurBufferHeight];
 
 #define MAX_LOADSTRING 100
 
-// Global Variables:
-HINSTANCE hInst;								// current instance
-TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
-TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
+//-----------------------------------------------------------------------------
+// Global variables
+//-----------------------------------------------------------------------------
+LPDIRECT3D8             g_pD3D = NULL; // Used to create the D3DDevice
+LPDIRECT3DDEVICE8       g_pd3dDevice = NULL; // Our rendering device
+LPDIRECT3DVERTEXBUFFER8 g_pVB = NULL; // Buffer to hold vertices
 
-// Forward declarations of functions included in this code module:
-ATOM				MyRegisterClass(HINSTANCE hInstance);
-BOOL				InitInstance(HINSTANCE, int);
-LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+// A structure for our custom vertex type
+struct CUSTOMVERTEX
+{
+    FLOAT x, y, z; // The vertex position
+    DWORD color;   // The vertex color
+};
 
-static void CALLBACK TimerFunction(UINT wTimerID, UINT msg, DWORD dwUser, DWORD dw1, DWORD dw2);
+// Our custom FVF, which describes our custom vertex structure
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE)
 
+FLOAT fSecsPerTick;
+LARGE_INTEGER qwTime, qwLastTime, qwElapsedTime, qwAppTime, qwElapsedAppTime;
+FLOAT fTime, fElapsedTime, fAppTime, fElapsedAppTime;
 
-void OGLCreate();
-void OGLDestroy();
-void OGLSize(int cx, int cy);
-void OGLPaint(HDC hDC);
-
+/////////////////////////////////////////////////////////////////////////////////////////
 scene oglScene;
-
 BOOL oglInited = FALSE;
-
-
-HWND hWnd;
-HGLRC hRC;
-
-MMRESULT timerId;
 
 //our OpenGL texture handles
 unsigned int texOffscreen;
@@ -68,372 +64,78 @@ unsigned int texOffscreen;
 void createOffscreens();
 void drawOffscreens();
 
-
-
 #define CONTEXT_PRIMARY 0
 #define CONTEXT_GLOW    1
 
 int mWidth, mHeight;
-
 
 static DWORD lastTime;
 static DWORD fpsTime;
 static int frameCount;
 static int fps;
 
-
-int APIENTRY _tWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
-{
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-
- 	// TODO: Place code here.
-	MSG msg;
-	HACCEL hAccelTable;
-
-	// Initialize global strings
-	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadString(hInstance, IDC_OPENGW, szWindowClass, MAX_LOADSTRING);
-	MyRegisterClass(hInstance);
-
-	// Perform application initialization:
-	if (!InitInstance (hInstance, nCmdShow))
-	{
-		return FALSE;
-	}
-
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_OPENGW));
-
-    // Seed random number table
-    srand(GetTickCount());
-
-    // Create sin/cos tables
-    make_sin_cos_tables();
-
-    OGLCreate();
-
-	// Main message loop:
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-	}
-
-    OGLDestroy();
-
-	return (int) msg.wParam;
-}
-
-
-void CALLBACK TimerFunction(UINT wTimerID, UINT msg, DWORD dwUser, DWORD dw1, DWORD dw2)
-{
-    HDC hdc = ::GetDC(hWnd);
-    OGLPaint(hdc);
-    ::ReleaseDC(hWnd, hdc);
-}
-
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
-//  COMMENTS:
-//
-//    This function and its usage are only necessary if you want this code
-//    to be compatible with Win32 systems prior to the 'RegisterClassEx'
-//    function that was added to Windows 95. It is important to call this function
-//    so that the application will get 'well formed' small icons associated
-//    with it.
-//
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-	WNDCLASSEX wcex;
-
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.cbClsExtra		= 0;
-	wcex.cbWndExtra		= 0;
-	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_OPENGW));
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= NULL;
-	wcex.lpszMenuName	= NULL;
-	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= NULL;//LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-	return RegisterClassEx(&wcex);
-}
-
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
-//#define FULLSCREEN
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   hInst = hInstance; // Store instance handle in our global variable
-
-   float aspect = 9.0f/16.0f;
-
-   DWORD style = 0;
-
-#ifndef FULLSCREEN
-   style |= WS_OVERLAPPEDWINDOW;
-#endif
-
-   hWnd = CreateWindow(szWindowClass, szTitle, style,
-      20, 20, 720/aspect, 720, 0, NULL, NULL, hInstance, NULL);
-
-   if (!hWnd)
-   {
-      return FALSE;
-   }
-
-#ifdef FULLSCREEN
-   ::SetWindowLong(hWnd, GWL_STYLE, 0);
-   ShowWindow(hWnd, SW_SHOWMAXIMIZED);
-#else
-   ShowWindow(hWnd, SW_SHOW);
-#endif
-
-   UpdateWindow(hWnd);
-
-   return TRUE;
-}
-
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_COMMAND	- process the application menu
-//  WM_PAINT	- Paint the main window
-//  WM_DESTROY	- post a quit message and return
-//
-//
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	int wmId, wmEvent;
-	PAINTSTRUCT ps;
-	HDC hdc;
-
-	switch (message)
-	{
-    case WM_SIZE:
-        OGLSize(LOWORD(lParam), HIWORD(lParam));
-        break;
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		break;
-	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
-	}
-	return 0;
-}
-
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
-}
-
-// ***************************************************************************
-
-void OGLCreate()
-{
-    // Define pixel format
-	static	PIXELFORMATDESCRIPTOR pfd=							// pfd Tells Windows How We Want Things To Be
-	{
-		sizeof(PIXELFORMATDESCRIPTOR),							// Size Of This Pixel Format Descriptor
-		1,														// Version Number
-		PFD_DRAW_TO_WINDOW |									// Format Must Support Window
-		PFD_SUPPORT_OPENGL |									// Format Must Support OpenGL
-		PFD_DOUBLEBUFFER,										// Must Support Double Buffering
-		PFD_TYPE_RGBA,											// Request An RGBA Format
-		8,			    										// Select Our Color Depth
-		0, 0, 0, 0, 0, 0,										// Color Bits Ignored
-		0,														// Alpha Buffer
-		0,														// Shift Bit Ignored
-		0,														// No Accumulation Buffer
-		0, 0, 0, 0,												// Accumulation Bits Ignored
-		0,														// No Z-Buffer (Depth Buffer)  
-		0,														// No Stencil Buffer
-		0,														// No Auxiliary Buffer
-		PFD_MAIN_PLANE,											// Main Drawing Layer
-		0,														// Reserved
-		0, 0, 0													// Layer Masks Ignored
-	};
-
-
-    // Set pixel format
-    HDC hDC = GetDC(hWnd);
-    int nPixelFormat = ChoosePixelFormat(hDC, &pfd);
-    SetPixelFormat(hDC, nPixelFormat, &pfd);
-
-    // Create RC
-    hRC = wglCreateContext(hDC);
-    wglMakeCurrent(hDC, hRC);
-
-    // Init GLEW
-    {
-        GLenum err = glewInit();
-        if (GLEW_OK != err)
-        {
-            TCHAR s[256];
-            wsprintf(s, L"glewInit failed: %s\n", glewGetErrorString(err));
-            OutputDebugString(s);
-        }
-        else
-        {
-            TCHAR s[256];
-            wsprintf(s, L"Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-            OutputDebugString(s);
-        }
-
-        if (!glewIsSupported("GL_EXT_framebuffer_object"))
-        {
-            OutputDebugString(L"GL_EXT_framebuffer_object is required\n");
-        }
-        else
-        {
-            OutputDebugString(L"YAY! GL_EXT_framebuffer_object OK\n");
-        }
-    }
-
-    // ***********************************************************************
-
-    // Size viewport
-    RECT rc;
-    GetClientRect(hWnd, &rc);
-    int width = rc.right-rc.left;
-    int height = rc.bottom-rc.top;
-    OGLSize(width, height);
-
-
-    // Do stuff with the context here if needed...
-    createOffscreens();
-
-	// Set vblank syncing
-	wglSwapIntervalEXT(true);
-
-
-    wglMakeCurrent(0, 0);
-
-    // Clean up
-    ReleaseDC(hWnd, hDC);
-
-
-    // create the timer
-    timerId = timeSetEvent(
-        1,//16,
-        0,//resolution,
-        TimerFunction,
-        (DWORD)NULL,
-        TIME_PERIODIC|TIME_KILL_SYNCHRONOUS);
-
-
-    oglInited = TRUE;
-
-}
-
-// ***************************************************************************
+/////////////////////////////////////////////////////////////////////////////////////////
 
 void OGLDestroy()
 {
     oglInited = FALSE;
-    timeKillEvent(timerId);
-
-    HDC hDC = GetDC(hWnd);
-    wglMakeCurrent(hDC, hRC);
-    wglMakeCurrent(0, 0);
-    wglDeleteContext(hRC);
-    ReleaseDC(hWnd, hDC);
+    // Other destruct stuff
 }
 
 // ***************************************************************************
 
 void OGLSize(int cx, int cy)
 {
-	oglScene.size(cx, cy);
+    oglScene.size(cx, cy);
     mWidth = cx;
     mHeight = cy;
 }
-
 
 // ***************************************************************************
 
 void createOffscreens()
 {
     // new array
-    char* colorBits = new char[ blurBufferWidth * blurBufferHeight * 3 ];
+    char* colorBits = new char[blurBufferWidth * blurBufferHeight * 3];
 
     // texture creation..
-    glGenTextures(1, &texOffscreen);
-    glBindTexture(GL_TEXTURE_2D, texOffscreen);
+    //glGenTextures(1, &texOffscreen);
+    //glBindTexture(GL_TEXTURE_2D, texOffscreen);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, blurBufferWidth, blurBufferHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, colorBits);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, blurBufferWidth, blurBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, colorBits);
+    //glTexImage2D(GL_TEXTURE_2D, 0, 3, blurBufferWidth, blurBufferHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, colorBits);
+    //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, blurBufferWidth, blurBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, colorBits);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // clean up
     delete[] colorBits;
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    //glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 
 void drawOffscreens()
 {
     int viewport[4];
-    glGetIntegerv(GL_VIEWPORT,(int*)viewport);
+    //glGetIntegerv(GL_VIEWPORT,(int*)viewport);
 
     if (theGame.mSettings.mEnableGlow)
     {
         // Draw to the blur texture
         {
-            glViewport(0, 0, blurBufferWidth, blurBufferHeight);
-
+            //glViewport(0, 0, blurBufferWidth, blurBufferHeight);
             oglScene.draw(scene::RENDERPASS_BLUR);
 
             // Transfer image to the blur texture
-            glBindTexture(GL_TEXTURE_2D, texOffscreen);
-            glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, blurBufferWidth, blurBufferHeight, 0);
-            glBindTexture(GL_TEXTURE_2D, 0);
+            //glBindTexture(GL_TEXTURE_2D, texOffscreen);
+            //glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, blurBufferWidth, blurBufferHeight, 0);
+            //glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 
     // Draw the scene normally
-    glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
+    //glViewport(viewport[0],viewport[1],viewport[2],viewport[3]);
     oglScene.draw(scene::RENDERPASS_PRIMARY);
 
     if (theGame.mSettings.mEnableGlow)
@@ -442,8 +144,8 @@ void drawOffscreens()
         // Do blur
 
         // Bind the blur texture and copy the screen bits to it
-        glBindTexture(GL_TEXTURE_2D, texOffscreen);
-        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
+        //glBindTexture(GL_TEXTURE_2D, texOffscreen);
+        //glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
 
         if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
         {
@@ -457,64 +159,223 @@ void drawOffscreens()
         }
 
         // Bind the blur result back to our texture
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, blurBufferWidth, blurBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
+        //glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, blurBufferWidth, blurBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, blurBuffer);
 
         ////////////////////////////////////////////////
         // Draw the blur texture on top of the existing scene
 
-	    // Glowy blending effect
-	    glDisable(GL_DEPTH_TEST);
-	    glEnable(GL_BLEND);
-	    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        // Glowy blending effect
+        //glDisable(GL_DEPTH_TEST);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-        glEnable( GL_TEXTURE_2D );
-        glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+        //glEnable( GL_TEXTURE_2D );
+        //glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 
-        if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
+        /*if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
             glColor4f(1, 1, 1, 1);
         else
-            glColor4f(1, 1, 1, 1);
+            glColor4f(1, 1, 1, 1);*/
 
-        // Draw it on the screen
-        glBegin( GL_QUADS );
-        glTexCoord2d(0.0,0.0); glVertex2d(-1.0, -1.0);
-        glTexCoord2d(1.0,0.0); glVertex2d(1.0, -1.0);
-        glTexCoord2d(1.0,1.0); glVertex2d(1.0, 1.0);
-        glTexCoord2d(0.0,1.0); glVertex2d(-1.0, 1.0);
-        if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
-        {
+            // Draw it on the screen
+            /*
+            glBegin(GL_QUADS);
             glTexCoord2d(0.0,0.0); glVertex2d(-1.0, -1.0);
             glTexCoord2d(1.0,0.0); glVertex2d(1.0, -1.0);
             glTexCoord2d(1.0,1.0); glVertex2d(1.0, 1.0);
             glTexCoord2d(0.0,1.0); glVertex2d(-1.0, 1.0);
-        }
-        glEnd();
+            if (game::mGameMode == game::GAMEMODE_ATTRACT || game::mGameMode == game::GAMEMODE_CREDITED)
+            {
+                glTexCoord2d(0.0,0.0); glVertex2d(-1.0, -1.0);
+                glTexCoord2d(1.0,0.0); glVertex2d(1.0, -1.0);
+                glTexCoord2d(1.0,1.0); glVertex2d(1.0, 1.0);
+                glTexCoord2d(0.0,1.0); glVertex2d(-1.0, 1.0);
+            }
+            glEnd();
 
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glDisable( GL_TEXTURE_2D );
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDisable( GL_TEXTURE_2D );
+            */
     }
 }
 
+// ***************************************************************************
 
-void OGLPaint(HDC hDC)
+VOID InitTime()
 {
-    if (!oglInited) return;
+    // Get the frequency of the timer
+    LARGE_INTEGER qwTicksPerSec;
+    QueryPerformanceFrequency(&qwTicksPerSec);
+    fSecsPerTick = 1.0f / (FLOAT)qwTicksPerSec.QuadPart;
 
+    // Save the start time
+    QueryPerformanceCounter(&qwTime);
+    qwLastTime.QuadPart = qwTime.QuadPart;
+
+    qwAppTime.QuadPart = 0;
+    qwElapsedTime.QuadPart = 0;
+    qwElapsedAppTime.QuadPart = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Name: InitD3D()
+// Desc: Initializes Direct3D
+//-----------------------------------------------------------------------------
+HRESULT InitD3D()
+{
+    // Create the D3D object.
+    if (NULL == (g_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
+        return E_FAIL;
+
+    // Set up the structure used to create the D3DDevice.
+    D3DPRESENT_PARAMETERS d3dpp;
+    ZeroMemory(&d3dpp, sizeof(d3dpp));
+    d3dpp.BackBufferWidth = 640;
+    d3dpp.BackBufferHeight = 480;
+    d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
+    d3dpp.BackBufferCount = 1;
+    d3dpp.EnableAutoDepthStencil = TRUE;
+    d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE_OR_IMMEDIATE;
+
+    // Create the Direct3D device.
+    if (FAILED(g_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
+        D3DCREATE_HARDWARE_VERTEXPROCESSING,
+        &d3dpp, &g_pd3dDevice)))
+        return E_FAIL;
+
+    // Set the projection matrix
+    D3DXMATRIX matProj;
+    D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4, 4.0f / 3.0f, 1.0f, 200.0f);
+    g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
+
+    // Set the view matrix
+    D3DXVECTOR3 vEyePt = D3DXVECTOR3(0.0f, 0.0f, -7.0f);
+    D3DXVECTOR3 vLookatPt = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    D3DXVECTOR3 vUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+    D3DXMATRIX  matView;
+    D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUp);
+    g_pd3dDevice->SetTransform(D3DTS_VIEW, &matView);
+
+    return S_OK;
+}
+
+//-----------------------------------------------------------------------------
+// Name: InitVB()
+// Desc: Creates a vertex buffer and fills it with our vertices. The vertex
+//       buffer is basically just a chunk of memory that holds vertices. After
+//       creating it, we must Lock()/Unlock() it to fill it.
+//-----------------------------------------------------------------------------
+HRESULT InitVB()
+{
+    // Initialize three vertices for rendering a triangle
+    CUSTOMVERTEX g_Vertices[] =
+    {
+        {  0.0f, -1.1547f, 0.0f, 0xffffff00 }, // x, y, z, color
+        { -1.0f,  0.5777f, 0.0f, 0xff00ff00 },
+        {  1.0f,  0.5777f, 0.0f, 0xffff0000 },
+    };
+
+    // Create the vertex buffer. Here we are allocating enough memory
+    // (from the default pool) to hold all our 3 custom vertices. We also
+    // specify the FVF, so the vertex buffer knows what data it contains.
+    if (FAILED(g_pd3dDevice->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
+        D3DUSAGE_WRITEONLY,
+        D3DFVF_CUSTOMVERTEX,
+        D3DPOOL_MANAGED, &g_pVB)))
+        return E_FAIL;
+
+    // Now we fill the vertex buffer. To do this, we need to Lock() the VB to
+    // gain access to the vertices. This mechanism is required because the
+    // vertex buffer may still be in use by the GPU. This can happen if the
+    // CPU gets ahead of the GPU. The GPU could still be rendering the previous
+    // frame.
+
+    CUSTOMVERTEX* pVertices;
+    if (FAILED(g_pVB->Lock(0, 0, (BYTE**)&pVertices, 0)))
+        return E_FAIL;
+    memcpy(pVertices, g_Vertices, 3 * sizeof(CUSTOMVERTEX));
+    g_pVB->Unlock();
+
+    return S_OK;
+}
+
+VOID UpdateTime()
+{
+
+    QueryPerformanceCounter(&qwTime);
+    qwElapsedTime.QuadPart = qwTime.QuadPart - qwLastTime.QuadPart;
+    qwLastTime.QuadPart = qwTime.QuadPart;
+    qwElapsedAppTime.QuadPart = qwElapsedTime.QuadPart;
+    qwAppTime.QuadPart += qwElapsedAppTime.QuadPart;
+
+    // Store the current time values as floating point
+    fTime = fSecsPerTick * ((FLOAT)(qwTime.QuadPart));
+    fElapsedTime = fSecsPerTick * ((FLOAT)(qwElapsedTime.QuadPart));
+    fAppTime = fSecsPerTick * ((FLOAT)(qwAppTime.QuadPart));
+    fElapsedAppTime = fSecsPerTick * ((FLOAT)(qwElapsedAppTime.QuadPart));
+}
+
+//-----------------------------------------------------------------------------
+// Name: Update()
+// Desc: Updates the world for the next frame
+//-----------------------------------------------------------------------------
+VOID Update()
+{
+    D3DXMATRIX matRotate;
+    D3DXMATRIX matWorld;
+    g_pd3dDevice->GetTransform(D3DTS_WORLD, &matWorld);
+    FLOAT fZRotate = -fElapsedTime * D3DX_PI * 0.5f;
+    D3DXMatrixRotationYawPitchRoll(&matRotate, 0.0f, 0.0f, fZRotate);
+    D3DXMatrixMultiply(&matWorld, &matWorld, &matRotate);
+    g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+}
+
+//-----------------------------------------------------------------------------
+// Name: Render()
+// Desc: Draws the scene
+//-----------------------------------------------------------------------------
+VOID Render()
+{
+    // Clear the backbuffer to a black color
+    g_pd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
+        D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0L);
+
+    // Begin the scene
+    g_pd3dDevice->BeginScene();
+
+    // Draw the triangles in the vertex buffer. This is broken into a few
+    // steps. We are passing the vertices down a "stream", so first we need
+    // to specify the source of that stream, which is our vertex buffer. Then
+    // we need to let D3D know what vertex shader to use. Full, custom vertex
+    // shaders are an advanced topic, but in many cases the vertex shader is
+    // just the FVF, so that D3D knows what type of vertices we are dealing
+    // with. Finally, we call DrawPrimitive() which does the actual rendering
+    // of our geometry (in this case, just one triangle).
+    g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    g_pd3dDevice->SetStreamSource(0, g_pVB, sizeof(CUSTOMVERTEX));
+    g_pd3dDevice->SetVertexShader(D3DFVF_CUSTOMVERTEX);
+
+    //Draw
+    //g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+    
+
+    if (!oglInited) return;
     static BOOL inpaint = FALSE;
     if (inpaint) return;
     inpaint = TRUE;
 
-
     oglScene.run();
 
-
     // ****************************************
-
+    // FPS Counter
+    // Will reimplement when I know how to draw text
+    /*
     ++frameCount;
 
     DWORD newTime = GetTickCount();
     lastTime = newTime;
-
 
     if ((newTime - fpsTime) > 1000)
     {
@@ -525,22 +386,66 @@ void OGLPaint(HDC hDC)
         wchar_t  s[256];
         wsprintf(s, L"FPS = %d", fps);
         ::SetWindowText(hWnd, s);
-
     }
-
+    */
     // ****************************************
-
-    wglMakeCurrent(hDC, hRC);
-
-
-
     drawOffscreens();
 
-
-
-    SwapBuffers(hDC);
-    wglMakeCurrent(0, 0);
-
     inpaint = FALSE;
+
+    // End the scene
+    g_pd3dDevice->EndScene();
+
+    OGLDestroy();
 }
 
+// ***************************************************************************
+
+void OGLCreate()
+{
+    // Size viewport
+    RECT rc{ 0, 0, 640, 480 };      // Replace with SDL or DirectX function?
+    const int width = rc.right - rc.left;
+    const int height = rc.bottom - rc.top;
+    OGLSize(width, height);
+
+    createOffscreens();
+
+    oglInited = TRUE;
+}
+
+//-----------------------------------------------------------------------------
+// Name: main()
+// Desc: The application's entry point
+//-----------------------------------------------------------------------------
+void __cdecl main()
+{
+    // Initialize Direct3D
+    if (FAILED(InitD3D()))
+        return;
+
+    // Initialize the vertex buffer
+    InitVB();
+
+    InitTime();
+
+    // Seed random number table
+    srand(GetTickCount());
+
+    // Create sin/cos tables
+    make_sin_cos_tables();
+
+    OGLCreate();
+
+    while (TRUE)
+    {
+        // What time is it?
+        UpdateTime();
+        // Update the world
+        Update();
+        // Render the scene
+        Render();
+        // Present the backbuffer contents to the display
+        g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
+    }
+}

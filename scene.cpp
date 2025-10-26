@@ -2,14 +2,10 @@
 #include "game.h"
 #include "menuSelectGameType.h"
 
-#include "game.h"
 game theGame;
 
 int scene::mPass;
 bool scene::mEnableGridGlow = true;
-
-void glEnable2D();
-void glDisable2D();
 
 #define VIRTUAL_SCREEN_WIDTH 800
 #define VIRTUAL_SCREEN_HEIGHT 600
@@ -77,10 +73,11 @@ void scene::draw(int pass)
     rainbowPen.a = 1;
     rainbowPen.lineRadius = 3;
 
-	glClearColor(0,0,0,1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0,0,0,1.0f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	{
+        /*
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
@@ -103,10 +100,12 @@ void scene::draw(int pass)
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
+        */
 	}
 
 	if ((game::mGameMode == game::GAMEMODE_HIGHSCORES_CHECK) || (game::mGameMode == game::GAMEMODE_HIGHSCORES))
 	{
+        /*
         float top = .8;
         float bottom = -.8;
 
@@ -148,11 +147,13 @@ void scene::draw(int pass)
             glVertex2d(1.0, bottom-.005);
             glEnd();
 		}
+        */
 	}
     else if ((game::mGameMode == game::GAMEMODE_ATTRACT)
         || (game::mGameMode == game::GAMEMODE_CREDITED)
         /*|| (game::mGameMode == game::GAMEMODE_HIGHSCORES)*/)
     {
+        /*
         float top = .65;
         float bottom = -.4;
 //        float top = 1;
@@ -221,12 +222,13 @@ void scene::draw(int pass)
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 			}
         }
+        */
     }
 
     if (pass == RENDERPASS_PRIMARY)
 	{
 		glEnable2D();
-
+        /*
 		// Glowy blending effect
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
@@ -234,6 +236,7 @@ void scene::draw(int pass)
 
         glEnable(GL_LINE_SMOOTH);
         glEnable(GL_MULTISAMPLE);
+        */
 
 		if ((game::mGameMode != game::GAMEMODE_HIGHSCORES) && (game::mGameMode != game::GAMEMODE_CHOOSE_GAMETYPE))
 			drawScores();
@@ -370,8 +373,8 @@ void scene::draw(int pass)
             drawNumBombs();
         }
 
-        glDisable(GL_MULTISAMPLE);
-        glDisable(GL_LINE_SMOOTH);
+        //glDisable(GL_MULTISAMPLE);
+        //glDisable(GL_LINE_SMOOTH);
 
 		glDisable2D();
     }
@@ -576,7 +579,7 @@ void scene::glEnable2D()
 	vPort[2] = 0;
 	vPort[3] = VIRTUAL_SCREEN_WIDTH;
 
-
+    /*
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -590,15 +593,17 @@ void scene::glEnable2D()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-
+    */
 }
 
 void scene::glDisable2D()
 {
+    /*
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+    */
 }
 
 void scene::showHighScores()

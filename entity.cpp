@@ -99,8 +99,8 @@ void entity::draw()
 
             // *********************************************
 
-		    glLineWidth(pen.lineRadius*.3);
-			glBegin(GL_LINES);
+		    //glLineWidth(pen.lineRadius*.3);
+			//glBegin(GL_LINES);
 
             progress = 1-progress;
 			
@@ -156,7 +156,7 @@ void entity::draw()
             mModel.Scale(scale);
             mModel.Translate(trans);
 
-			glEnd();
+			//glEnd();
         }
 
         mModel.draw(pen);

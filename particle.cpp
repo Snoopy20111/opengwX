@@ -272,14 +272,14 @@ void particle::draw()
 
                 if (width < 2) width = 2;
 
-                glLineWidth(width);
+                //glLineWidth(width);
 
                 // This is SO inefficient
                 // I really should be doing all the particles in one GL_LINES block but the
                 // width of the lines needs to change per-particle, and you can't do a call to
                 // glLineWidth() inside a GL_LINES block :-(
 
-                glBegin(GL_LINES);
+                //glBegin(GL_LINES);
 
                 float aa = a;
                 if (aa > 1) aa = 1;
@@ -287,7 +287,7 @@ void particle::draw()
                 {
                     if (aa <= 0) break;
 
-                    glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
+                    //glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
 
                     Point3d from = particle->posStream[p];
                     Point3d to = particle->posStream[p+1];
@@ -298,17 +298,17 @@ void particle::draw()
                         to.y += .1;
                     }
 
-                    glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
-                    glVertex3d(from.x, from.y, 0);
+                    //glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
+                    //glVertex3d(from.x, from.y, 0);
                     aa-=.1;
 
-                    glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
-                    glVertex3d(to.x, to.y, 0);
+                    //glColor4f(particle->color.r, particle->color.g, particle->color.b, aa); // RGBA
+                    //glVertex3d(to.x, to.y, 0);
                     aa-=.1;
 
                 }
 
-        	    glEnd();
+        	    //glEnd();
 
             }
         }

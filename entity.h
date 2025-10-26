@@ -7,8 +7,6 @@
 #include "vector.h"
 #include "model.h"
 
-#include "point3d.h"
-
 class entity
 {
 public:

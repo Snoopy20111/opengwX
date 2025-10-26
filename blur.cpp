@@ -1,4 +1,5 @@
 #include "blur.h"
+#include <New.h>
 
 // Super Fast Blur v1.1
 // by Mario Klingemann <http://incubator.quasimondo.com>
@@ -16,18 +17,18 @@ void superFastBlur(unsigned char *pix, int w, int h, int radius)
 {
     if (radius<1) return;
 
-    int wm=w-1;
-    int hm=h-1;
-    int wh=w*h;
-    int div=radius+radius+1;
-    unsigned char *r=new unsigned char[wh];
-    unsigned char *g=new unsigned char[wh];
-    unsigned char *b=new unsigned char[wh];
-    int rsum,gsum,bsum,x,y,i,p,p1,p2,yp,yi,yw;
+    int wm = w-1;
+    int hm = h-1;
+    int wh = w*h;
+    int div = radius+radius+1;
+    unsigned char *r = new unsigned char[wh];
+    unsigned char *g = new unsigned char[wh];
+    unsigned char *b = new unsigned char[wh];
+    int rsum, gsum, bsum, x, y, i, p, p1, p2, yp, yi, yw;
     int *vMIN = new int[max(w,h)];
     int *vMAX = new int[max(w,h)];
 
-    unsigned char *dv=new unsigned char[256*div];
+    unsigned char *dv = new unsigned char[256*div];
     for (i=0;i<256*div;i++) dv[i]=(i/div);
 
     yw=yi=0;
@@ -100,11 +101,11 @@ void superFastBlur(unsigned char *pix, int w, int h, int radius)
         }
     }
 
-    delete r;
-    delete g;
-    delete b;
+    delete[] r;
+    delete[] g;
+    delete[] b;
 
-    delete vMIN;
-    delete vMAX;
-    delete dv;
+    delete[] vMIN;
+    delete[] vMAX;
+    delete[] dv;
 }

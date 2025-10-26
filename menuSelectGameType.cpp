@@ -256,15 +256,15 @@ void menuSelectGameType::draw()
     angle3 += .05;
     angle4 += .052;
 
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_MULTISAMPLE);
+    //glEnable(GL_LINE_SMOOTH);
+    //glEnable(GL_MULTISAMPLE);
 
     Point3d pos;
     pos.x = theGame.mGrid.extentX() / 2;
     pos.y = theGame.mGrid.extentY() / 2;
     pos.z = 0;
 
-    glLineWidth(4);
+    //glLineWidth(4);
 
     // Single player
 
@@ -277,13 +277,13 @@ void menuSelectGameType::draw()
         pen.g = 1;
         pen.b = 1;
         pen.a = .5;
-        glBegin(GL_LINES);
+        //glBegin(GL_LINES);
         theGame.mPlayers.mPlayer1->getModel()->Identity();
         theGame.mPlayers.mPlayer1->getModel()->Scale(4);
         theGame.mPlayers.mPlayer1->getModel()->Rotate((sin(angle0)*.5) * player1Amount);
         theGame.mPlayers.mPlayer1->getModel()->Translate(pos);
         theGame.mPlayers.mPlayer1->getModel()->emit(pen);
-        glEnd();
+        //glEnd();
     }
 
 
@@ -302,13 +302,13 @@ void menuSelectGameType::draw()
     {
         vector::pen pen = vector::pen(1, .3, .3, 1, 12); // HACK - find a better way to get this color :-(
         if (!theGame.mPlayers.mPlayer1->mJoined) pen.a *= .25;
-        glBegin(GL_LINES);
+        //glBegin(GL_LINES);
         theGame.mPlayers.mPlayer1->getModel()->Identity();
         theGame.mPlayers.mPlayer1->getModel()->Scale(4);
         theGame.mPlayers.mPlayer1->getModel()->Rotate((sin(angle1)*.5) * mpPlayer1Amount);
         theGame.mPlayers.mPlayer1->getModel()->Translate(pos);
         theGame.mPlayers.mPlayer1->getModel()->emit(pen);
-        glEnd();
+        //glEnd();
     }
 
     // PLAYER 2
@@ -319,13 +319,13 @@ void menuSelectGameType::draw()
     {
         vector::pen pen = theGame.mPlayers.mPlayer2->getPen();
         if (!theGame.mPlayers.mPlayer2->mJoined) pen.a *= .25;
-        glBegin(GL_LINES);
+        //glBegin(GL_LINES);
         theGame.mPlayers.mPlayer2->getModel()->Identity();
         theGame.mPlayers.mPlayer2->getModel()->Scale(.25);
         theGame.mPlayers.mPlayer2->getModel()->Rotate((sin(angle2)*.5) * mpPlayer2Amount);
         theGame.mPlayers.mPlayer2->getModel()->Translate(pos);
         theGame.mPlayers.mPlayer2->getModel()->emit(pen);
-        glEnd();
+        //glEnd();
     }
 
     // PLAYER 3
@@ -336,13 +336,13 @@ void menuSelectGameType::draw()
     {
         vector::pen pen = theGame.mPlayers.mPlayer3->getPen();
         if (!theGame.mPlayers.mPlayer3->mJoined) pen.a *= .25;
-        glBegin(GL_LINES);
+        //glBegin(GL_LINES);
         theGame.mPlayers.mPlayer3->getModel()->Identity();
         theGame.mPlayers.mPlayer3->getModel()->Scale(.25);
         theGame.mPlayers.mPlayer3->getModel()->Rotate((sin(angle3)*.5) * mpPlayer3Amount);
         theGame.mPlayers.mPlayer3->getModel()->Translate(pos);
         theGame.mPlayers.mPlayer3->getModel()->emit(pen);
-        glEnd();
+        //glEnd();
     }
 
     // PLAYER 4
@@ -353,43 +353,43 @@ void menuSelectGameType::draw()
     {
         vector::pen pen = theGame.mPlayers.mPlayer4->getPen();
         if (!theGame.mPlayers.mPlayer4->mJoined) pen.a *= .25;
-        glBegin(GL_LINES);
+        //glBegin(GL_LINES);
         theGame.mPlayers.mPlayer4->getModel()->Identity();
         theGame.mPlayers.mPlayer4->getModel()->Scale(.25);
         theGame.mPlayers.mPlayer4->getModel()->Rotate((sin(angle4)*.5) * mpPlayer4Amount);
         theGame.mPlayers.mPlayer4->getModel()->Translate(pos);
         theGame.mPlayers.mPlayer4->getModel()->emit(pen);
-        glEnd();
+        //glEnd();
     }
 
     // Single player selection rectangle
     if (selection == 0)
     {
-        glColor4f(1,1,1,.5);
-        glLineWidth(4);
+        //glColor4f(1,1,1,.5);
+        //glLineWidth(4);
 
-        glBegin(GL_LINE_LOOP);
+        //glBegin(GL_LINE_LOOP);
 
         Point3d p1((theGame.mGrid.extentX() / 2)-10, (theGame.mGrid.extentY() / 2)+25, 0);
         Point3d p2((theGame.mGrid.extentX() / 2)+10, (theGame.mGrid.extentY() / 2)+25, 0);
         Point3d p3((theGame.mGrid.extentX() / 2)+10, (theGame.mGrid.extentY() / 2)+7, 0);
         Point3d p4((theGame.mGrid.extentX() / 2)-10, (theGame.mGrid.extentY() / 2)+7, 0);
 
-        glVertex3f(p1.x, p1.y, 0 );
-        glVertex3f(p2.x, p2.y, 0 );
-        glVertex3f(p3.x, p3.y, 0 );
-        glVertex3f(p4.x, p4.y, 0 );
+        //glVertex3f(p1.x, p1.y, 0 );
+        //glVertex3f(p2.x, p2.y, 0 );
+        //glVertex3f(p3.x, p3.y, 0 );
+        //glVertex3f(p4.x, p4.y, 0 );
 
-        glEnd();
+        //glEnd();
     }
 
     // Multi player selection rectangle
     if (selection == 1)
     {
-        glColor4f(1,1,1,1);
-        glLineWidth(4);
+        //glColor4f(1,1,1,1);
+        //glLineWidth(4);
 
-        glBegin(GL_LINE_LOOP);
+        //glBegin(GL_LINE_LOOP);
 
         Point3d p1((theGame.mGrid.extentX() / 2)+40, (theGame.mGrid.extentY() / 2)-7, 0);
         Point3d p2((theGame.mGrid.extentX() / 2)-40, (theGame.mGrid.extentY() / 2)-7, 0);
@@ -420,6 +420,7 @@ void menuSelectGameType::draw()
 
         Point3d p16((theGame.mGrid.extentX() / 2)+40, (theGame.mGrid.extentY() / 2)-25, 0);
 
+        /*
         glVertex3f(p1.x, p1.y, 0 );
         glVertex3f(p2.x, p2.y, 0 );
         glVertex3f(p3.x, p3.y, 0 );
@@ -438,8 +439,9 @@ void menuSelectGameType::draw()
         glVertex3f(p16.x, p16.y, 0 );
 
         glEnd();
+        */
     }
 
-    glDisable(GL_MULTISAMPLE);
-    glDisable(GL_LINE_SMOOTH);
+    //glDisable(GL_MULTISAMPLE);
+    //glDisable(GL_LINE_SMOOTH);
 }

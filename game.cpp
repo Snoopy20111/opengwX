@@ -548,7 +548,7 @@ void game::draw(int pass)
 {
     // The camera
     {
-        glTranslatef(-mCamera.mCurrentPos.x, -mCamera.mCurrentPos.y, -mCamera.mCurrentPos.z);
+        //glTranslatef(-mCamera.mCurrentPos.x, -mCamera.mCurrentPos.y, -mCamera.mCurrentPos.z);
     }
 
     {
@@ -561,18 +561,18 @@ void game::draw(int pass)
         {
             if (mSettings.mGridSmoothing)
             {
-                glEnable(GL_LINE_SMOOTH);
-                glEnable(GL_MULTISAMPLE);
+                //glEnable(GL_LINE_SMOOTH);
+                //glEnable(GL_MULTISAMPLE);
             }
 
-            glLineWidth(6);
+            //glLineWidth(6);
             mGrid.brightness = mBrightness;
             mGrid.draw();
 
             if (mSettings.mGridSmoothing)
             {
-                glDisable(GL_MULTISAMPLE);
-                glDisable(GL_LINE_SMOOTH);
+                //glDisable(GL_MULTISAMPLE);
+                //glDisable(GL_LINE_SMOOTH);
             }
         }
 
@@ -581,46 +581,46 @@ void game::draw(int pass)
         {
             if (mSettings.mParticleSmoothing)
             {
-                glEnable(GL_LINE_SMOOTH);
-                glEnable(GL_MULTISAMPLE);
+                //glEnable(GL_LINE_SMOOTH);
+                //glEnable(GL_MULTISAMPLE);
             }
 
-            glLineWidth(4);
+            //glLineWidth(4);
 
             mParticles.draw();
 
             if (mSettings.mParticleSmoothing)
             {
-                glDisable(GL_MULTISAMPLE);
-                glDisable(GL_LINE_SMOOTH);
+                //glDisable(GL_MULTISAMPLE);
+                //glDisable(GL_LINE_SMOOTH);
             }
         }
         else
         {
 #ifdef PARTICLE_GLOW
-            glLineWidth(10);
+            //glLineWidth(10);
             mParticles.draw();
 #endif
         }
 
         // Enemies
         {
-            glLineWidth(4);
+            //glLineWidth(4);
 
             if (pass == scene::RENDERPASS_PRIMARY)
             {
                 if (mSettings.mEnemySmoothing)
                 {
-                    glEnable(GL_LINE_SMOOTH);
-                    glEnable(GL_MULTISAMPLE);
+                    //glEnable(GL_LINE_SMOOTH);
+                    //glEnable(GL_MULTISAMPLE);
                 }
 
                 mEnemies.draw();
 
                 if (mSettings.mEnemySmoothing)
                 {
-                    glDisable(GL_MULTISAMPLE);
-                    glDisable(GL_LINE_SMOOTH);
+                    //glDisable(GL_MULTISAMPLE);
+                    //glDisable(GL_LINE_SMOOTH);
                 }
             }
             else
@@ -632,23 +632,23 @@ void game::draw(int pass)
         // Players
         if (mGameMode == GAMEMODE_PLAYING)
         {
-            glLineWidth(4);
-            glPointSize(4/2);
+            //glLineWidth(4);
+            //glPointSize(4/2);
 
             if (pass == scene::RENDERPASS_PRIMARY)
             {
                 if (mSettings.mPlayerSmoothing)
                 {
-                    glEnable(GL_LINE_SMOOTH);
-                    glEnable(GL_MULTISAMPLE);
+                    //glEnable(GL_LINE_SMOOTH);
+                    //glEnable(GL_MULTISAMPLE);
                 }
 
                 mPlayers.draw();
 
                 if (mSettings.mPlayerSmoothing)
                 {
-                    glDisable(GL_MULTISAMPLE);
-                    glDisable(GL_LINE_SMOOTH);
+                    //glDisable(GL_MULTISAMPLE);
+                    //glDisable(GL_LINE_SMOOTH);
                 }
             }
             else
@@ -666,38 +666,38 @@ void game::draw(int pass)
         {
             if (mSettings.mStarSmoothing)
             {
-                glEnable(GL_POINT_SMOOTH);
-                glEnable(GL_MULTISAMPLE);
+                //glEnable(GL_POINT_SMOOTH);
+                //glEnable(GL_MULTISAMPLE);
             }
 
             mStars.draw();
 
             if (mSettings.mStarSmoothing)
             {
-                glDisable(GL_MULTISAMPLE);
-                glDisable(GL_POINT_SMOOTH);
+                //glDisable(GL_MULTISAMPLE);
+                //glDisable(GL_POINT_SMOOTH);
             }
         }
 
         // Bombs
         {
-            glLineWidth(4);
+            //glLineWidth(4);
             mBomb.draw();
         }
 
         // Point displays
         {
-            glLineWidth(4);
+            //glLineWidth(4);
 
             if (pass == scene::RENDERPASS_PRIMARY)
             {
-                glEnable(GL_LINE_SMOOTH);
-                glEnable(GL_MULTISAMPLE);
+                //glEnable(GL_LINE_SMOOTH);
+                //glEnable(GL_MULTISAMPLE);
 
                 drawPointDisplays();
 
-                glDisable(GL_MULTISAMPLE);
-                glDisable(GL_LINE_SMOOTH);
+                //glDisable(GL_MULTISAMPLE);
+                //glDisable(GL_LINE_SMOOTH);
             }
             else
             {

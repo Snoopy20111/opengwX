@@ -22,12 +22,14 @@ public:
 private:
 
     // Keyboard
+    /*
     Point3d readKeyboardLeftStick(int player);
     Point3d readKeyboardRightStick(int player);
     bool readKeyboardTrigger(int player);
     bool readKeyboardStart(int player);
     bool readKeyboardBack(int player);
     bool readKeyboardPause(int player);
+    */
 
     // XBox controller
     Point3d readXBoxControllerLeftStick(int player);

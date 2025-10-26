@@ -72,8 +72,8 @@ void entityMayfly::draw()
 
             // *********************************************
 
-		    glLineWidth(pen.lineRadius*.3);
-			glBegin(GL_LINES);
+		    //glLineWidth(pen.lineRadius*.3);
+			//glBegin(GL_LINES);
 
             progress = 1-progress;
 			
@@ -129,7 +129,7 @@ void entityMayfly::draw()
             mModel.Scale(scale);
             mModel.Translate(trans);
 
-			glEnd();
+			//glEnd();
         }
 
         mModel.draw(pen);

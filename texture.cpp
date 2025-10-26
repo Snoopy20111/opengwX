@@ -32,6 +32,7 @@ void texture::load(const char* filename)
         return;
     }
 
+    /*
     glGenTextures(1, &mTextureId);
     glBindTexture(GL_TEXTURE_2D, mTextureId);
     glTexImage2D(GL_TEXTURE_2D, 0, 4, mWidth, mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
@@ -42,10 +43,12 @@ void texture::load(const char* filename)
     glBindTexture(GL_TEXTURE_2D, 0);
 
     image.clear();
+    */
 }
 
 void texture::draw(float x, float y, float width, float height)
 {
+    /*
     // Glowy blending effect
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -74,17 +77,22 @@ void texture::draw(float x, float y, float width, float height)
 
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    */
 }
 
 void texture::bind()
 {
+    /*
     glEnable( GL_TEXTURE_2D );
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
     glBindTexture(GL_TEXTURE_2D, mTextureId);
+    */
 }
 
 void texture::unbind()
 {
+    /*
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+    */
 }

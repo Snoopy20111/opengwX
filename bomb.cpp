@@ -1,5 +1,6 @@
 #include "bomb.h"
 #include "game.h"
+#include <New.h>
 
 bomb::bomb(void)
 {
@@ -24,7 +25,7 @@ bomb::~bomb(void)
             mRings[i].timeToLive = 0;
         }
 
-        delete mRings;
+        delete[] mRings;
     }
     mRings = NULL;
 }
@@ -97,9 +98,9 @@ void bomb::draw()
                 ring->pen.a = 1;
             }
 
-            glLineWidth(ring->pen.lineRadius);
-            glColor4f(ring->pen.r, ring->pen.g, ring->pen.b, ring->pen.a);
-            glBegin(GL_LINES);
+            //glLineWidth(ring->pen.lineRadius);
+            //glColor4f(ring->pen.r, ring->pen.g, ring->pen.b, ring->pen.a);
+            //glBegin(GL_LINES);
 
             for (float a=0; a<360; a+=.5)
             {
@@ -114,11 +115,11 @@ void bomb::draw()
                 from += ring->pos;
                 to += ring->pos;
 
-                glVertex3d(from.x, from.y, 0);
-                glVertex3d(to.x, to.y, 0);
+                //glVertex3d(from.x, from.y, 0);
+                //glVertex3d(to.x, to.y, 0);
             }
 
-            glEnd();
+            //glEnd();
 
         }
     }

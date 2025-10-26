@@ -591,6 +591,7 @@ void entityBlackHole::drawRing()
 
     if ((mState != entity::ENTITY_STATE_SPAWNING) && (scene::mPass != scene::RENDERPASS_PRIMARY))
     {
+        /*
 	    glDisable(GL_BLEND);
 	    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
@@ -619,6 +620,7 @@ void entityBlackHole::drawRing()
 
 	    glEnable(GL_BLEND);
 	    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+        */
     }
 
     float c =(get_sin(mAnimationIndex)*mAnimationDepth);
@@ -627,11 +629,11 @@ void entityBlackHole::drawRing()
     {
         if (scene::mPass == scene::RENDERPASS_PRIMARY)
         {
-            glColor4f(1,1,1,1);
+            //glColor4f(1,1,1,1);
         }
         else
         {
-            glColor4f(mPen.r, .25, .25, 1);
+            //glColor4f(mPen.r, .25, .25, 1);
         }
     }
     else if (mState != entity::ENTITY_STATE_SPAWNING)
@@ -640,46 +642,46 @@ void entityBlackHole::drawRing()
 
         if (scene::mPass == scene::RENDERPASS_PRIMARY)
         {
-            glColor4f(mPen.r, mPen.g, mPen.b, (mPen.a*c)+.5);
+            //glColor4f(mPen.r, mPen.g, mPen.b, (mPen.a*c)+.5);
         }
         else
         {
-            glColor4f(mPen.r, .25, .25, 1);
+            //glColor4f(mPen.r, .25, .25, 1);
         }
     }
     else
     {
-        glColor4f(mPen.r, mPen.g, mPen.b, mPen.a);
+        //glColor4f(mPen.r, mPen.g, mPen.b, mPen.a);
     }
 
     if (activated && (mState != entity::ENTITY_STATE_SPAWNING))
     {
-        glLineWidth(mPen.lineRadius);
+        //glLineWidth(mPen.lineRadius);
     }
     else
     {
-        glLineWidth(mPen.lineRadius);
+        //glLineWidth(mPen.lineRadius);
     }
 
     if (!theGame.mSettings.mEnemySmoothing)
     {
-        glEnable(GL_LINE_SMOOTH);
-        glEnable(GL_MULTISAMPLE);
+        //glEnable(GL_LINE_SMOOTH);
+        //glEnable(GL_MULTISAMPLE);
     }
 
-    glBegin(GL_LINE_LOOP);
+    //glBegin(GL_LINE_LOOP);
 
     for (float angle = 0; angle < 2*PI; angle += delta_theta )
     {
-        glVertex3f( mPos.x + (r*get_cos(angle)), mPos.y + (r*get_sin(angle)), 0 );
+        //glVertex3f( mPos.x + (r*get_cos(angle)), mPos.y + (r*get_sin(angle)), 0 );
     }
 
-    glEnd();
+    //glEnd();
 
     if (!theGame.mSettings.mEnemySmoothing)
     {
-        glDisable(GL_MULTISAMPLE);
-        glDisable(GL_LINE_SMOOTH);
+        //glDisable(GL_MULTISAMPLE);
+        //glDisable(GL_LINE_SMOOTH);
     }
 }
 

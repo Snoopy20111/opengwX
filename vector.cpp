@@ -1,5 +1,6 @@
 #include "vector.h"
 #include "mathutils.h"
+#include "stdafx.h"
 
 
 static const float thicknessConstant = .0165;
@@ -10,7 +11,7 @@ namespace vector
     // The idea was to texture map the triangle strip with a glow texture so I'd
     // have nice glowy vectors without having to use the current buffer blur function
     // but I never got it looking as good as the buffer blur approach.
-    void drawVector(const Point3d& from, const Point3d& to, const pen& penStyle)
+    /*void drawVector(const Point3d& from, const Point3d& to, const pen& penStyle)
     {
         float lineWidth = penStyle.lineRadius * thicknessConstant;
 
@@ -88,7 +89,7 @@ namespace vector
 
         // Set the color
         glColor4f(penStyle.r, penStyle.g, penStyle.b, penStyle.a);
-
+        D3DCOLOR_COLORVALUE(penStyle.r, penStyle.g, penStyle.b, penStyle.a)
 
         glBegin(GL_TRIANGLE_STRIP);
 
@@ -125,7 +126,7 @@ namespace vector
         glVertex3f(p8.x, p8.y, 0);
 
         glEnd();
-    }
+    }*/
 
 
     void extendVector(Point3d* from, Point3d* to, double amount)

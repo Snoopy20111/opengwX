@@ -23,14 +23,14 @@ void model::draw(const vector::pen& pen)
 {
     if (mIsLineLoop)
     {
-        glColor4f(pen.r, pen.g, pen.b, pen.a);
-        glLineWidth(pen.lineRadius*.3);
+        //glColor4f(pen.r, pen.g, pen.b, pen.a);
+        //glLineWidth(pen.lineRadius*.3);
 
-        glBegin(GL_LINE_STRIP);
+        //glBegin(GL_LINE_STRIP);
 
         Point3d from = mVertexList[mEdgeList[0].from];
         mMatrix.TransformVertex(from, &from);
-        glVertex3f(from.x, from.y, 0 );
+        //glVertex3f(from.x, from.y, 0 );
 
         for (int i=1; i<mNumEdges; i++)
         {
@@ -38,17 +38,17 @@ void model::draw(const vector::pen& pen)
 
             mMatrix.TransformVertex(to, &to);
 
-            glVertex3f(to.x, to.y, 0 );
+            //glVertex3f(to.x, to.y, 0 );
         }
 
-        glEnd();
+        //glEnd();
     }
     else
     {
-        glColor4f(pen.r, pen.g, pen.b, pen.a);
-        glLineWidth(pen.lineRadius*.3);
+        //glColor4f(pen.r, pen.g, pen.b, pen.a);
+        //glLineWidth(pen.lineRadius*.3);
 
-        glBegin(GL_LINES);
+        //glBegin(GL_LINES);
 
         for (int i=0; i<mNumEdges; i++)
         {
@@ -58,17 +58,17 @@ void model::draw(const vector::pen& pen)
             mMatrix.TransformVertex(from, &from);
             mMatrix.TransformVertex(to, &to);
 
-            glVertex3f(from.x, from.y, 0 );
-            glVertex3f(to.x, to.y, 0 );
+            //glVertex3f(from.x, from.y, 0 );
+            //glVertex3f(to.x, to.y, 0 );
         }
 
-        glEnd();
+        //glEnd();
     }
 }
 
 void model::emit(const vector::pen& pen)
 {
-    glColor4f(pen.r, pen.g, pen.b, pen.a);
+    //glColor4f(pen.r, pen.g, pen.b, pen.a);
 
     for (int i=0; i<mNumEdges; i++)
     {
@@ -78,8 +78,8 @@ void model::emit(const vector::pen& pen)
         mMatrix.TransformVertex(from, &from);
         mMatrix.TransformVertex(to, &to);
 
-        glVertex3f(from.x, from.y, 0 );
-        glVertex3f(to.x, to.y, 0 );
+        //glVertex3f(from.x, from.y, 0 );
+        //glVertex3f(to.x, to.y, 0 );
     }
 
 }

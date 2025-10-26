@@ -70,32 +70,38 @@ controls::~controls()
 
 Point3d controls::getLeftStick(int player)
 {
-    return readKeyboardLeftStick(player) + readXBoxControllerLeftStick(player);
+    return readXBoxControllerLeftStick(player);
+    //return readKeyboardLeftStick(player) + readXBoxControllerLeftStick(player);
 }
 
 Point3d controls::getRightStick(int player)
 {
-    return readKeyboardRightStick(player) + readXBoxControllerRightStick(player);
+    return readXBoxControllerRightStick(player);
+    //return readKeyboardRightStick(player) + readXBoxControllerRightStick(player);
 }
 
 bool controls::getTriggerButton(int player)
 {
-    return readKeyboardTrigger(player) || readXBoxControllerTrigger(player);
+    return readXBoxControllerTrigger(player);
+    //return readKeyboardTrigger(player) || readXBoxControllerTrigger(player);
 }
 
 bool controls::getStartButton(int player)
 {
-    return readKeyboardStart(player) || readXBoxStart(player);
+    return readXBoxStart(player);
+    //return readKeyboardStart(player) || readXBoxStart(player);
 }
 
 bool controls::getBackButton(int player)
 {
-    return readKeyboardBack(player) || readXBoxBack(player);
+    return readXBoxBack(player);
+    //return readKeyboardBack(player) || readXBoxBack(player);
 }
 
 bool controls::getPauseButton(int player)
 {
-    return readKeyboardPause(player) || readXBoxPause(player);
+    return readXBoxPause(player);
+    //return readKeyboardPause(player) || readXBoxPause(player);
 }
 
 //
