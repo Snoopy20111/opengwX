@@ -1,0 +1,9 @@
+Build instructions
+
+Requirements:
+	- RXDK installed
+
+1) Open and Build RXDK-SDL2x (Debug and/or Release)
+2) Open and Build OpenGWX
+3) Copy the created folder(s) to your Xbox via whatever method
+4) Run it!
