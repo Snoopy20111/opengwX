@@ -101,7 +101,8 @@ bool controls::getPauseButton(int player)
 //
 // Keyboard controller
 //
-Point3d controls::readKeyboardLeftStick(int player)
+// Note: for later, figure out how to read keyboard input on the Xbox? Or just delete all this
+/*Point3d controls::readKeyboardLeftStick(int player)
 {
     bool up = (::GetAsyncKeyState('W') & 0x8000);
     bool down = (::GetAsyncKeyState('S') & 0x8000);
@@ -172,7 +173,7 @@ bool controls::readKeyboardBack(int player)
 bool controls::readKeyboardPause(int player)
 {
     return (::GetAsyncKeyState('P') & 0x8000);
-}
+}*/
 
 
 //
