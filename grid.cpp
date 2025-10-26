@@ -301,7 +301,7 @@ grid::grid()
     }
 
     // Thread stuff
-    mRunThread = SDL_CreateThread(runThread, "runThread");
+    mRunThread = SDL_CreateThread(runThread, "runThread", NULL);
     if (!mRunThread)
     {
         OutputDebugString(L"Couldn't create grid run thread\n");

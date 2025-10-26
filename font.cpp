@@ -1,7 +1,6 @@
 #include "font.h"
 #include "game.h"
 #include "point3d.h"
-#include <stdio.h>
 #include <stdarg.h>
 
 float AlphanumericsPrintVScale = 1.0f;

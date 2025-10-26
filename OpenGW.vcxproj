@@ -66,11 +66,11 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>user32.lib;Winmm.lib;Gdi32.lib;opengl32.lib;glu32.lib;SDL.lib;SDLmain.lib;glew32.lib</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;Winmm.lib;Gdi32.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>.\SDL\lib\x86;.\GLEW\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\SDL\lib\x86;.\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -91,13 +91,13 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>user32.lib;Winmm.lib;Gdi32.lib;opengl32.lib;glu32.lib;SDL.lib;SDLmain.lib;glew32.lib</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;Winmm.lib;Gdi32.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>.\SDL\lib\x86;.\GLEW\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\SDL\lib\x86;.\GLEW\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>

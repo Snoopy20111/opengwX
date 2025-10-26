@@ -22,6 +22,7 @@
 #include "bomb.h"
 #include "highscore.h"
 #include "settings.h"
+#include <stdio.h>
 
 
 enum
