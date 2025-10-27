@@ -78,7 +78,7 @@
       <AdditionalIncludeDirectories>.\RXDK-SDL2x\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>XBOX;_XBOX;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -89,14 +89,15 @@
       <ConformanceMode>false</ConformanceMode>
       <SDLCheck>false</SDLCheck>
       <ControlFlowGuard>false</ControlFlowGuard>
-      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/arch:SSE /Zc:sizedDealloc- /Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;libcpmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;dsoundd.lib;xkbd.lib;libsdl2x.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;libcmtd.lib;libcpmtd.lib;xapilibd.lib;d3d8d.lib;d3dx8d.lib;dsoundd.lib;xkbd.lib;xgraphicsd.lib;libsdl2x.lib;libSDL2x_image.lib;libSDL2x_mixer.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>.\RXDK-SDL2x\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\RXDK-SDL2x\Debug;.\RXDK-SDL2x\libSDL2x_image\Debug;.\RXDK-SDL2x\libSDL2x_mixer\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateMapFile>true</GenerateMapFile>
       <FixedBaseAddress>false</FixedBaseAddress>
@@ -127,18 +128,19 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/arch:SSE /Zc:sizedDealloc- /Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <SDLCheck>false</SDLCheck>
       <ControlFlowGuard>false</ControlFlowGuard>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;dsound.lib;xkbd.lib;libsdl2x.lib</AdditionalDependencies>
+      <AdditionalDependencies>xboxkrnl.lib;libcmt.lib;libcpmt.lib;xapilib.lib;d3d8.lib;d3dx8.lib;dsound.lib;xkbd.lib;xgraphics.lib;libsdl2x.lib;libSDL2x_image.lib;libSDL2x_mixer.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>.\RXDK-SDL2x\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\RXDK-SDL2x\Release;.\RXDK-SDL2x\libSDL2x_image\Release;.\RXDK-SDL2x\libSDL2x_mixer\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <Profile>false</Profile>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateMapFile>true</GenerateMapFile>
