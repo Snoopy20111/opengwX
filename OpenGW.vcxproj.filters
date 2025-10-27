@@ -301,14 +301,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="OpenGW.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="OpenGW.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>
