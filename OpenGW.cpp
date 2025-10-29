@@ -323,13 +323,13 @@ VOID UpdateTime()
 //-----------------------------------------------------------------------------
 VOID Update()
 {
-    D3DXMATRIX matRotate;
-    D3DXMATRIX matWorld;
-    g_pd3dDevice->GetTransform(D3DTS_WORLD, &matWorld);
-    FLOAT fZRotate = -fElapsedTime * D3DX_PI * 0.5f;
-    D3DXMatrixRotationYawPitchRoll(&matRotate, 0.0f, 0.0f, fZRotate);
-    D3DXMatrixMultiply(&matWorld, &matWorld, &matRotate);
-    g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+    //D3DXMATRIX matRotate;
+    //D3DXMATRIX matWorld;
+    //g_pd3dDevice->GetTransform(D3DTS_WORLD, &matWorld);
+    //FLOAT fZRotate = -fElapsedTime * D3DX_PI * 0.5f;
+    //D3DXMatrixRotationYawPitchRoll(&matRotate, 0.0f, 0.0f, fZRotate);
+    //D3DXMatrixMultiply(&matWorld, &matWorld, &matRotate);
+    //g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 }
 
 //-----------------------------------------------------------------------------
@@ -338,9 +338,12 @@ VOID Update()
 //-----------------------------------------------------------------------------
 VOID Render()
 {
-    // Clear the backbuffer to a black color
+    //Calculate background color
+    const float blue = get_sin(fElapsedAppTime) + 1 * 255 * 0.5f;
+
+    // Clear the backbuffer to a blue color
     g_pd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
-        D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0L);
+        D3DCOLOR_XRGB(0, 0, static_cast<int>(blue)), 1.0f, 0L);
 
     // Begin the scene
     g_pd3dDevice->BeginScene();

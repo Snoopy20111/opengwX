@@ -155,8 +155,8 @@
 "$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
 MKDIR "$(OutDir)Build\$(ProjectName)"
 COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)Build\$(ProjectName)\default.xbe"
-XCOPY /I /E /S /Y /F "$(ProjectDir)sounds\" "$(OutDir)Build\$(ProjectName)"
-XCOPY /I /E /S /Y /F "$(ProjectDir)images\" "$(OutDir)Build\$(ProjectName)"
+XCOPY /Y /F /I /S /E "$(ProjectDir)sounds\" "$(OutDir)Build\$(ProjectName)\sounds"
+XCOPY /Y /F /I /S /E "$(ProjectDir)images\" "$(OutDir)Build\$(ProjectName)\images"
 MKDIR "$(OutDir)XISO"
 "$(RXDK_LIBS)bin\xdvdfs.exe" pack "$(OutDir)Build\$(ProjectName)" "$(OutDir)XISO\$(ProjectName).iso"</Command>
     </PostBuildEvent>
