@@ -110,7 +110,7 @@ void camera::followPlayer()
                 if (playerA == playerB) continue;
                 if (playerB->getState() != entity::ENTITY_STATE_INACTIVE)
                 {
-                    float abDistance = mathutils::calculate2dDistance(playerA->getPos(), playerB->getPos());
+                    const float abDistance = mathutils::calculate2dDistance(playerA->getPos(), playerB->getPos());
                     if (abDistance > playerDistance)
                         playerDistance = abDistance;
                 }

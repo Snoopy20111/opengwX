@@ -116,7 +116,7 @@ game::game()
         if ((mathutils::frandFrom0To1() * 40) < 1)
         {
             // Pick a random direction
-            const float variation = 1.5;
+            constexpr float variation = 1.5;
             heading += mathutils::frandFrom0To1() * (2*PI);
         }
 

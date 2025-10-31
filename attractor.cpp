@@ -74,5 +74,3 @@ Point3d attractor::evaluateParticle(particle::PARTICLE* p)
 
     return speed;
 }
-
-

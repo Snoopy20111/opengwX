@@ -12,10 +12,10 @@
 #include "sincos.h"
 
 
-#define filterWidth 5 
-#define filterHeight 5 
-#define imageWidth 320 
-#define imageHeight 240
+constexpr auto filterWidth = 5;
+constexpr auto filterHeight = 5;
+constexpr auto imageWidth = 320;
+constexpr auto imageHeight = 240;
 
 //declare image buffers 
 constexpr int blurBufferWidth = 500;
@@ -31,7 +31,7 @@ typedef struct
 
 ColorRGBA blurBuffer[blurBufferWidth][blurBufferHeight];
 
-#define MAX_LOADSTRING 100
+constexpr auto MAX_LOADSTRING = 100;
 
 //-----------------------------------------------------------------------------
 // Global variables
@@ -64,8 +64,8 @@ unsigned int texOffscreen;
 void createOffscreens();
 void drawOffscreens();
 
-#define CONTEXT_PRIMARY 0
-#define CONTEXT_GLOW    1
+constexpr auto CONTEXT_PRIMARY = 0;
+constexpr auto CONTEXT_GLOW = 1;
 
 int mWidth, mHeight;
 
@@ -79,7 +79,7 @@ static int fps;
 void OGLDestroy()
 {
     oglInited = FALSE;
-    // Other destruct stuff
+    // Other destruct stuff?
 }
 
 // ***************************************************************************
@@ -206,7 +206,7 @@ VOID InitTime()
     // Get the frequency of the timer
     LARGE_INTEGER qwTicksPerSec;
     QueryPerformanceFrequency(&qwTicksPerSec);
-    fSecsPerTick = 1.0f / (FLOAT)qwTicksPerSec.QuadPart;
+    fSecsPerTick = 1.0f / static_cast<FLOAT>(qwTicksPerSec.QuadPart);
 
     // Save the start time
     QueryPerformanceCounter(&qwTime);
@@ -270,7 +270,7 @@ HRESULT InitD3D()
 HRESULT InitVB()
 {
     // Initialize three vertices for rendering a triangle
-    CUSTOMVERTEX g_Vertices[] =
+    const CUSTOMVERTEX g_Vertices[] =
     {
         {  0.0f, -1.1547f, 0.0f, 0xffffff00 }, // x, y, z, color
         { -1.0f,  0.5777f, 0.0f, 0xff00ff00 },
@@ -303,7 +303,6 @@ HRESULT InitVB()
 
 VOID UpdateTime()
 {
-
     QueryPerformanceCounter(&qwTime);
     qwElapsedTime.QuadPart = qwTime.QuadPart - qwLastTime.QuadPart;
     qwLastTime.QuadPart = qwTime.QuadPart;
@@ -311,10 +310,10 @@ VOID UpdateTime()
     qwAppTime.QuadPart += qwElapsedAppTime.QuadPart;
 
     // Store the current time values as floating point
-    fTime = fSecsPerTick * ((FLOAT)(qwTime.QuadPart));
-    fElapsedTime = fSecsPerTick * ((FLOAT)(qwElapsedTime.QuadPart));
-    fAppTime = fSecsPerTick * ((FLOAT)(qwAppTime.QuadPart));
-    fElapsedAppTime = fSecsPerTick * ((FLOAT)(qwElapsedAppTime.QuadPart));
+    fTime = fSecsPerTick * (static_cast<FLOAT>(qwTime.QuadPart));
+    fElapsedTime = fSecsPerTick * (static_cast<FLOAT>(qwElapsedTime.QuadPart));
+    fAppTime = fSecsPerTick * (static_cast<FLOAT>(qwAppTime.QuadPart));
+    fElapsedAppTime = fSecsPerTick * (static_cast<FLOAT>(qwElapsedAppTime.QuadPart));
 }
 
 //-----------------------------------------------------------------------------
@@ -323,13 +322,13 @@ VOID UpdateTime()
 //-----------------------------------------------------------------------------
 VOID Update()
 {
-    //D3DXMATRIX matRotate;
-    //D3DXMATRIX matWorld;
-    //g_pd3dDevice->GetTransform(D3DTS_WORLD, &matWorld);
-    //FLOAT fZRotate = -fElapsedTime * D3DX_PI * 0.5f;
-    //D3DXMatrixRotationYawPitchRoll(&matRotate, 0.0f, 0.0f, fZRotate);
-    //D3DXMatrixMultiply(&matWorld, &matWorld, &matRotate);
-    //g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+    D3DXMATRIX matRotate;
+    D3DXMATRIX matWorld;
+    g_pd3dDevice->GetTransform(D3DTS_WORLD, &matWorld);
+    const FLOAT fZRotate = -fElapsedTime * D3DX_PI * 0.5f;
+    D3DXMatrixRotationYawPitchRoll(&matRotate, 0.0f, 0.0f, fZRotate);
+    D3DXMatrixMultiply(&matWorld, &matWorld, &matRotate);
+    g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 }
 
 //-----------------------------------------------------------------------------
@@ -339,7 +338,7 @@ VOID Update()
 VOID Render()
 {
     //Calculate background color
-    const float blue = get_sin(fElapsedAppTime) + 1 * 255 * 0.5f;
+    const float blue = (get_sin(fElapsedAppTime) + 1) * 255 * 0.5f;
 
     // Clear the backbuffer to a blue color
     g_pd3dDevice->Clear(0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
@@ -361,7 +360,7 @@ VOID Render()
     g_pd3dDevice->SetVertexShader(D3DFVF_CUSTOMVERTEX);
 
     //Draw
-    //g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+    g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
     
 
     if (!oglInited) return;
@@ -427,16 +426,11 @@ void __cdecl main()
     if (FAILED(InitD3D()))
         return;
 
-    // Initialize the vertex buffer
-    InitVB();
-
-    InitTime();
-
-    // Seed random number table
-    srand(GetTickCount());
-
-    // Create sin/cos tables
-    make_sin_cos_tables();
+    
+    InitVB();                       // Initialize the vertex buffer
+    InitTime();                     // Initialize timers
+    srand(GetTickCount());          // Seed random number table
+    make_sin_cos_tables();          // Create sin/cos tables
 
     OGLCreate();
 

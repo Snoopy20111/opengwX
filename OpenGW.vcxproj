@@ -106,7 +106,15 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>"$(RXDK_LIBS)bin\patchsubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E</Command>
+      <Command>"$(RXDK_LIBS)bin\patchsubsystem.exe" -i="$(OutDir)$(TargetFileName)" -s=0x000E
+"$(RXDK_LIBS)bin\imagebld.exe" /in:"$(OutDir)$(TargetFileName)" /out:"$(OutDir)$(TargetName).xbe" /nologo /stack:65536 /debug /nolibwarn
+MKDIR "$(OutDir)Build\$(ProjectName)"
+COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)Build\$(ProjectName)\default.xbe"
+XCOPY /Y /F /I /S /E "$(ProjectDir)sounds\" "$(OutDir)Build\$(ProjectName)\sounds"
+XCOPY /Y /F /I /S /E "$(ProjectDir)images\" "$(OutDir)Build\$(ProjectName)\images"
+IF EXIST "$(OutDir)Build\$(ProjectName)\images\*.psd" DEL /Q "$(OutDir)Build\$(ProjectName)\images\*.psd"
+MKDIR "$(OutDir)XISO"
+"$(RXDK_LIBS)bin\xdvdfs.exe" pack "$(OutDir)Build\$(ProjectName)" "$(OutDir)XISO\$(ProjectName).iso"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Creating Xbox Image...</Message>
@@ -157,6 +165,7 @@ MKDIR "$(OutDir)Build\$(ProjectName)"
 COPY /Y "$(OutDir)$(TargetName).xbe" "$(OutDir)Build\$(ProjectName)\default.xbe"
 XCOPY /Y /F /I /S /E "$(ProjectDir)sounds\" "$(OutDir)Build\$(ProjectName)\sounds"
 XCOPY /Y /F /I /S /E "$(ProjectDir)images\" "$(OutDir)Build\$(ProjectName)\images"
+IF EXIST "$(OutDir)Build\$(ProjectName)\images\*.psd" DEL /Q "$(OutDir)Build\$(ProjectName)\images\*.psd"
 MKDIR "$(OutDir)XISO"
 "$(RXDK_LIBS)bin\xdvdfs.exe" pack "$(OutDir)Build\$(ProjectName)" "$(OutDir)XISO\$(ProjectName).iso"</Command>
     </PostBuildEvent>

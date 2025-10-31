@@ -2,8 +2,8 @@
 #include "game.h"
 
 
-#define SAMPLE_SIZE 512
-#define NUM_TRACKS  200
+constexpr auto SAMPLE_SIZE = 512;
+constexpr auto NUM_TRACKS = 200;
 
 sound::TRACK* sound::mTracks;
 float* sound::mLeftSamples;
@@ -67,9 +67,9 @@ void sound::bufferCallback(void *unused, Uint8 *stream, int len)
 
     int i, s;
 
-	const int max_audioval = ((1<<(16-1))-1);
-	const int min_audioval = -(1<<(16-1));
-    const int max_int_val = (1<<16);
+	constexpr int max_audioval = ((1<<(16-1))-1);
+	constexpr int min_audioval = -(1<<(16-1));
+    constexpr int max_int_val = (1<<16);
 
     // Fill the input buffers
 
@@ -90,11 +90,11 @@ void sound::bufferCallback(void *unused, Uint8 *stream, int len)
                 if (s&1)
                 {
                     // Right channel
-                    float fPos = track->pos;
-                    float iPos = (int)fPos;
+                    const float fPos = track->pos;
+                    const float iPos = (int)fPos;
 
-                    float v1 = (data[(int)iPos] * (track->vol/2));
-                    float fval = (v1 / max_int_val);
+                    const float v1 = (data[(int)iPos] * (track->vol/2));
+                    const float fval = (v1 / max_int_val);
 
 
                     mRightSamples[rIndex] += fval;
@@ -103,11 +103,11 @@ void sound::bufferCallback(void *unused, Uint8 *stream, int len)
                 else
                 {
                     // Left channel
-                    float fPos = track->pos;
-                    float iPos = (int)fPos;
+                    const float fPos = track->pos;
+                    const float iPos = (int)fPos;
 
-                    float v1 = (data[(int)iPos] * (track->vol/2));
-                    float fval = (v1 / max_int_val);
+                    const float v1 = (data[(int)iPos] * (track->vol/2));
+                    const float fval = (v1 / max_int_val);
 
                     mLeftSamples[lIndex] += fval;
                     ++lIndex;
@@ -135,10 +135,10 @@ void sound::bufferCallback(void *unused, Uint8 *stream, int len)
     }
 
     // Fill the output buffer
-    for (int i=0, b=0; i<len/2; i++)
+    for (int j=0, b=0; j<len/2; j++)
     {
-        Sint16 left = (mLeftSamples[i]) * (max_int_val);
-        Sint16 right = (mRightSamples[i]) * (max_int_val);
+        Sint16 left = (mLeftSamples[j]) * (max_int_val);
+        Sint16 right = (mRightSamples[j]) * (max_int_val);
         buf[b++] = left;
         buf[b++] = right;
     }

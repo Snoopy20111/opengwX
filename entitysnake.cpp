@@ -280,18 +280,18 @@ entitySnake::entitySnake()
 
     // Create the tail segments
     mSegments = new entitySnakeSegment[NUM_SEGMENTS];
-    for (int i=0; i<NUM_SEGMENTS; i++)
+    for (int j=0; j<NUM_SEGMENTS; j++)
     {
-        mSegments[i].setState(ENTITY_STATE_INACTIVE);
+        mSegments[j].setState(ENTITY_STATE_INACTIVE);
 
         entitySnakeSegment::SegmentStreamItem item;
         item.pos = mPos;
         item.angle = mAngle;
-        mSegments[i].setStreamHead(item);
-        Point3d scale((1-((float)i/NUM_SEGMENTS)) * 2, 1.4, 1);
+        mSegments[j].setStreamHead(item);
+        Point3d scale((1-((float)j/NUM_SEGMENTS)) * 2, 1.4, 1);
         if (scale.x > 1.1) scale.x = 1.1;
-        mSegments[i].setScale(scale);
-        mSegments[i].setParent(this);
+        mSegments[j].setScale(scale);
+        mSegments[j].setParent(this);
     }
 }
 

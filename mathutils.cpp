@@ -13,16 +13,15 @@ namespace mathutils
 
     float calculate2dDistance(Point3d p1, Point3d p2)
     {
-        float x1 = p1.x;
-        float y1 = p1.y;
-        float x2 = p2.x;
-        float y2 = p2.y;
+        const float x1 = p1.x;
+        const float y1 = p1.y;
+        const float x2 = p2.x;
+        const float y2 = p2.y;
 
-        float dy = x1 - x2;
-        float dz = y1 - y2;
-        float distance = sqrt((dz*dz) + (dy*dy));
+        const float dy = x1 - x2;
+        const float dz = y1 - y2;
 
-        return distance;
+        return sqrt((dz * dz) + (dy * dy));
     }
 
     float calculate2dAngle(Point3d from, Point3d to)

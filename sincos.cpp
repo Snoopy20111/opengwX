@@ -3,12 +3,12 @@
 #include "sincos.h"
 #include "mathutils.h"
 
-#define NUM_ENTRIES	(2046)
+constexpr int NUM_ENTRIES = (2046);
 
 static float sin_table[NUM_ENTRIES];
 static float cos_table[NUM_ENTRIES];
 
-static float inc = RADIAN/NUM_ENTRIES;
+constexpr float inc = RADIAN/NUM_ENTRIES;
 
 void make_sin_cos_tables()
 {
