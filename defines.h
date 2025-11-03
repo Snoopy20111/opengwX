@@ -12,7 +12,6 @@
 // D3D and Xbox Header
 #include "stdafx.h"
 
-constexpr float PI = (3.14159);
-constexpr float RADIAN = (PI * 2);
+constexpr float D3DX_TAU = 2 * D3DX_PI;
 
 #endif // DEFINES_H

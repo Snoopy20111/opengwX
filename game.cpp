@@ -112,12 +112,12 @@ game::game()
         mAttractModeBlackHoles[i]->setPos(Point3d(mathutils::frandFrom0To1() *theGame.mGrid.extentX(), mathutils::frandFrom0To1() * theGame.mGrid.extentY(), 0));
         mAttractModeBlackHoles[i]->setEdgeBounce(FALSE);
 
-        static float heading=mathutils::frandFrom0To1() * (2*PI);
+        static float heading=mathutils::frandFrom0To1() * (D3DX_TAU);
         if ((mathutils::frandFrom0To1() * 40) < 1)
         {
             // Pick a random direction
             constexpr float variation = 1.5;
-            heading += mathutils::frandFrom0To1() * (2*PI);
+            heading += mathutils::frandFrom0To1() * (D3DX_TAU);
         }
 
         Point3d speedVector = Point3d(1,0,0);
@@ -456,7 +456,7 @@ void game::run()
             {
                 // Pick a random direction
                 const float variation = 1.5;
-                heading + mathutils::frandFrom0To1() * (2*PI);
+                heading + mathutils::frandFrom0To1() * (D3DX_TAU);
             }
 
             // Change direction when we hit the grid edges
@@ -512,14 +512,14 @@ void game::run()
                 {
                     Point3d angle(0, 0, 0);
                     float speed = mathutils::frandFrom0To1() * 4;
-                    float spread = (2*PI);
+                    float spread = (D3DX_TAU);
                     int num = 50;
                     int timeToLive = 500;
                     vector::pen pen;
 
-                    pen.r = get_sin(colorTimer+((2*PI)/1));
-                    pen.g = get_sin(colorTimer+((2*PI)/2));
-                    pen.b = get_sin(colorTimer+((2*PI)/3));
+                    pen.r = get_sin(colorTimer+(D3DX_TAU/1));
+                    pen.g = get_sin(colorTimer+(D3DX_TAU/2));
+                    pen.b = get_sin(colorTimer+(D3DX_TAU/3));
 
                     if (pen.r < 0) pen.r = 0;
                     if (pen.g < 0) pen.g = 0;

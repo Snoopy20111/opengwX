@@ -8,7 +8,7 @@ class entitySnakeSegment;
 class entitySnake : public entity
 {
 public:
-    entitySnake();
+    entitySnake() noexcept;
 
     virtual void runTransition();
     virtual void run();

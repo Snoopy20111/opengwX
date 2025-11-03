@@ -19,7 +19,7 @@ public:
 
     virtual void draw();
 
-    void feed(int points);
+    void feed(int points) noexcept;
 
     const float getRadius() const;
     

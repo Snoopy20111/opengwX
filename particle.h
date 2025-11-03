@@ -5,7 +5,7 @@
 #include "vector.h"
 #include "mathutils.h"
 
-#define NUM_POS_STREAM_ITEMS 6
+constexpr int NUM_POS_STREAM_ITEMS = 6;
 
 class particle
 {
@@ -40,7 +40,7 @@ public:
     void draw();
     void run();
 
-    void emitter(Point3d* position, Point3d* angle, float speed, float spread, int num, vector::pen* color, int timeToLive,
+    void emitter(Point3d* position, const Point3d* angle, float speed, float spread, int num, vector::pen* color, int timeToLive,
         BOOL gravity = TRUE, BOOL gridBound = TRUE, float drag = .93, BOOL glowPass = TRUE);
 
     void killAll();

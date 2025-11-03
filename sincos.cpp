@@ -8,7 +8,7 @@ constexpr int NUM_ENTRIES = (2046);
 static float sin_table[NUM_ENTRIES];
 static float cos_table[NUM_ENTRIES];
 
-constexpr float inc = RADIAN/NUM_ENTRIES;
+constexpr float inc = D3DX_TAU / NUM_ENTRIES;
 
 void make_sin_cos_tables()
 {
@@ -32,13 +32,13 @@ void make_sin_cos_tables()
 float get_sin(float i)
 {
     i = mathutils::wrapRadians(i);
-    i = i/RADIAN;
+    i = i / D3DX_TAU;
     return sin_table[(int)(i*NUM_ENTRIES)];
 }
 
 float get_cos(float i)
 {
     i = mathutils::wrapRadians(i);
-    i = i/RADIAN;
+    i = i / D3DX_TAU;
     return cos_table[(int)(i*NUM_ENTRIES)];
 }

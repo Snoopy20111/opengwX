@@ -67,9 +67,9 @@ void scene::draw(int pass)
     colorTimer += .08;
 
     vector::pen rainbowPen;
-    rainbowPen.r = get_sin(colorTimer+((2*PI)/1))+.5;
-    rainbowPen.g = get_sin(colorTimer+((2*PI)/2))+.5;
-    rainbowPen.b = get_sin(colorTimer+((2*PI)/3))+.5;
+    rainbowPen.r = get_sin(colorTimer+(D3DX_TAU/1))+.5;
+    rainbowPen.g = get_sin(colorTimer+(D3DX_TAU/2))+.5;
+    rainbowPen.b = get_sin(colorTimer+(D3DX_TAU/3))+.5;
     rainbowPen.a = 1;
     rainbowPen.lineRadius = 3;
 

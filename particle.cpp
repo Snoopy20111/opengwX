@@ -26,8 +26,6 @@ int particle::mIndex = 0;
 
 static int runThread(void *ptr)
 {
-    int x,y;
-
     while(1)
     {
         while (!mRunFlag)
@@ -167,7 +165,7 @@ particle::~particle()
 }
 
 
-void particle::emitter(Point3d* position, Point3d* angle, float speed, float spread, int num, vector::pen* color, int timeToLive,
+void particle::emitter(Point3d* position, const Point3d* angle, float speed, float spread, int num, vector::pen* color, int timeToLive,
                        BOOL gravity, BOOL gridBound, float drag, BOOL glowPass)
 {
 
@@ -200,8 +198,6 @@ void particle::assignParticle(Point3d* position,
                               float aSpeedX, float aSpeedY, float aSpeedZ,
                               int aTime, vector::pen* aColor, BOOL gravity, BOOL gridBound, float drag, BOOL glowPass)
 {
-    int i;
-
     PARTICLE* particle = &mParticles[mIndex++];
     if (mIndex >= mNumParticles) mIndex = 0;
 

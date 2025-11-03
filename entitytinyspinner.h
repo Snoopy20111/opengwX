@@ -18,7 +18,7 @@ public:
 
     virtual entity* hitTest(const Point3d& pos, float radius);
 
-    void setInitialSpeed(const Point3d& speed) { mInitialSpeed = speed; }
+    void setInitialSpeed(const Point3d& speed) noexcept { mInitialSpeed = speed; }
 
 private:
     Point3d mVirtualPos;

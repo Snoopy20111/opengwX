@@ -23,7 +23,7 @@ entityProton::entityProton(void)
     mModel.mNumVertex = 16;
     mModel.mVertexList = new Point3d[mModel.mNumVertex];
 
-    float delta_theta = (2*PI)/mModel.mNumVertex;
+    float delta_theta = (D3DX_TAU)/mModel.mNumVertex;
     float r = mScale.x * mRadius;
 
     int i = 0;

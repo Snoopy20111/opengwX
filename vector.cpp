@@ -3,7 +3,7 @@
 #include "stdafx.h"
 
 
-static const float thicknessConstant = .0165;
+static constexpr float thicknessConstant = .0165;
 
 namespace vector
 {
@@ -131,9 +131,9 @@ namespace vector
 
     void extendVector(Point3d* from, Point3d* to, double amount)
     {
-        double angle = mathutils::calculate2dAngle(*from, *to) - mathutils::DegreesToRads(90);
-        float distance = mathutils::calculate2dDistance(*from, *to) * amount;
-        Point3d midPoint((from->x + to->x) / 2, (from->y + to->y) / 2, 0);
+        const double angle = mathutils::calculate2dAngle(*from, *to) - mathutils::DegreesToRads(90);
+        const float distance = mathutils::calculate2dDistance(*from, *to) * amount;
+        const Point3d midPoint((from->x + to->x) / 2, (from->y + to->y) / 2, 0);
 
         Point3d vector1(0,distance/2,0);
         Point3d vector2(0,-distance/2,0);

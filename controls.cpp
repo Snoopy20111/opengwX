@@ -70,38 +70,38 @@ controls::~controls()
 
 Point3d controls::getLeftStick(int player)
 {
-    return readXBoxControllerLeftStick(player);
-    //return readKeyboardLeftStick(player) + readXBoxControllerLeftStick(player);
+    return readXboxControllerLeftStick(player);
+    //return readKeyboardLeftStick(player) + readXboxControllerLeftStick(player);
 }
 
 Point3d controls::getRightStick(int player)
 {
-    return readXBoxControllerRightStick(player);
-    //return readKeyboardRightStick(player) + readXBoxControllerRightStick(player);
+    return readXboxControllerRightStick(player);
+    //return readKeyboardRightStick(player) + readXboxControllerRightStick(player);
 }
 
 bool controls::getTriggerButton(int player)
 {
-    return readXBoxControllerTrigger(player);
-    //return readKeyboardTrigger(player) || readXBoxControllerTrigger(player);
+    return readXboxControllerTrigger(player);
+    //return readKeyboardTrigger(player) || readXboxControllerTrigger(player);
 }
 
 bool controls::getStartButton(int player)
 {
-    return readXBoxStart(player);
-    //return readKeyboardStart(player) || readXBoxStart(player);
+    return readXboxStart(player);
+    //return readKeyboardStart(player) || readXboxStart(player);
 }
 
 bool controls::getBackButton(int player)
 {
-    return readXBoxBack(player);
-    //return readKeyboardBack(player) || readXBoxBack(player);
+    return readXboxBack(player);
+    //return readKeyboardBack(player) || readXboxBack(player);
 }
 
 bool controls::getPauseButton(int player)
 {
-    return readXBoxPause(player);
-    //return readKeyboardPause(player) || readXBoxPause(player);
+    return readXboxPause(player);
+    //return readKeyboardPause(player) || readXboxPause(player);
 }
 
 //
@@ -186,7 +186,7 @@ bool controls::readKeyboardPause(int player)
 // XBox controller
 //
 
-Point3d controls::readXBoxControllerLeftStick(int player)
+Point3d controls::readXboxControllerLeftStick(int player)
 {
     if (!mControllers[player]) return Point3d(0,0,0);
 
@@ -210,7 +210,7 @@ Point3d controls::readXBoxControllerLeftStick(int player)
     return vector;
 }
 
-Point3d controls::readXBoxControllerRightStick(int player)
+Point3d controls::readXboxControllerRightStick(int player)
 {
     if (!mControllers[player]) return Point3d(0,0,0);
 
@@ -234,7 +234,7 @@ Point3d controls::readXBoxControllerRightStick(int player)
     return vector;
 }
 
-bool controls::readXBoxControllerTrigger(int player)
+bool controls::readXboxControllerTrigger(int player)
 {
     if (!mControllers[player]) return false;
 
@@ -251,7 +251,7 @@ bool controls::readXBoxControllerTrigger(int player)
     return false;
 }
 
-bool controls::readXBoxStart(int player)
+bool controls::readXboxStart(int player)
 {
     if (!mControllers[player]) return false;
 
@@ -261,7 +261,7 @@ bool controls::readXBoxStart(int player)
     return SDL_JoystickGetButton(mControllers[player], XBOX_BUTTON_A);
 }
 
-bool controls::readXBoxBack(int player)
+bool controls::readXboxBack(int player)
 {
     if (!mControllers[player]) return false;
 
@@ -271,7 +271,7 @@ bool controls::readXBoxBack(int player)
     return SDL_JoystickGetButton(mControllers[player], XBOX_BUTTON_B);
 }
 
-bool controls::readXBoxPause(int player)
+bool controls::readXboxPause(int player)
 {
     if (!mControllers[player]) return false;
 

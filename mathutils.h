@@ -28,15 +28,9 @@ namespace mathutils
 
     float frandFrom0To1();
 
-    inline float RadsToDegrees(float radians)
-    {
-      return radians * 57.2957795786;
-    }
+    constexpr float RadsToDegrees(float radians) { return radians * 57.2957795786; }
 
-    inline float DegreesToRads(float degrees)
-    {
-      return degrees * 0.0174532925;
-    }
+    constexpr float DegreesToRads(float degrees) { return degrees * 0.0174532925; }
 
 	bool pointInPolygon(const Point3d& testPoint, Point3d poly[], int numPoints, float scale);
 
@@ -48,7 +42,7 @@ namespace mathutils
 
     bool approximatelyEqual(float testValue, float eval, float tolerance);
 
-    bool lineCircleIntersects(const Point3d& c, float r, const Point3d& p1, const Point3d& p2);
+    //bool lineCircleIntersects(const Point3d& c, float r, const Point3d& p1, const Point3d& p2);
 
 };
 

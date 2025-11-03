@@ -49,53 +49,58 @@ public:
     }EntityState;
 
     entity();
+    entity(const entity& ent) = delete;
+    entity(entity&&) = delete;
+    entity& operator=(const entity&) = delete;
+    entity& operator=(entity&&) = delete;
+    virtual ~entity() {};
 
     static entity* createEntity(EntityType _entity); // Static class factory
 
-    EntityType getType() const { return mType; }
+    EntityType getType() const noexcept { return mType; }
 
-    Point3d getPos() const { return mPos; }
-    void setPos(const Point3d& pos) { mPos = pos; }
+    Point3d getPos() const noexcept { return mPos; }
+    void setPos(const Point3d& pos) noexcept { mPos = pos; }
 
-    Point3d getSpeed() const { return mSpeed; }
-    void setSpeed(const Point3d& speed) { mSpeed = speed; }
+    Point3d getSpeed() const noexcept { return mSpeed; }
+    void setSpeed(const Point3d& speed) noexcept  { mSpeed = speed; }
 
-    Point3d getDrift() const { return mDrift; }
-    void setDrift(const Point3d& drift) { mDrift = drift; }
+    Point3d getDrift() const noexcept { return mDrift; }
+    void setDrift(const Point3d& drift) noexcept  { mDrift = drift; }
 
-    float getAngle() const { return mAngle; }
+    float getAngle() const noexcept { return mAngle; }
     void setAngle(const float& angle) { mAngle = mathutils::wrapRadians(angle); }
 
-    float getRotationRate() const { return mRotationRate; }
-    void setRotationRate(const float& rate) { mRotationRate = rate; }
+    float getRotationRate() const noexcept { return mRotationRate; }
+    void setRotationRate(const float& rate) noexcept  { mRotationRate = rate; }
 
-    Point3d getScale() const { return mScale; }
-    void setScale(const Point3d& scale) { mScale = scale; }
-    void setScale(float scale) { mScale = scale; }
+    Point3d getScale() const noexcept { return mScale; }
+    void setScale(const Point3d& scale) noexcept { mScale = scale; }
+    void setScale(float scale) noexcept { mScale = scale; }
 
-    vector::pen getPen() const { return mPen; }
-    void setPen(const vector::pen& pen) { mPen = pen; }
+    vector::pen getPen() const noexcept { return mPen; }
+    void setPen(const vector::pen& pen) noexcept { mPen = pen; }
 
-    bool getEnabled() const { return mState != ENTITY_STATE_INACTIVE; }
-    void setEnabled(const bool& enabled) { mState = (enabled) ? ENTITY_STATE_SPAWN_TRANSITION : ENTITY_STATE_INACTIVE; }
+    bool getEnabled() const noexcept { return mState != ENTITY_STATE_INACTIVE; }
+    void setEnabled(const bool& enabled) noexcept { mState = (enabled) ? ENTITY_STATE_SPAWN_TRANSITION : ENTITY_STATE_INACTIVE; }
 
-    EntityState getState() const { return mState; }
-    void setState(const EntityState& state) { mState = state; }
+    EntityState getState() const noexcept { return mState; }
+    void setState(const EntityState& state) noexcept { mState = state; }
 
-    int getStateTimer() const { return mStateTimer; }
-    void setStateTimer(int stateTimer) { mStateTimer = stateTimer; }
+    int getStateTimer() const noexcept { return mStateTimer; }
+    void setStateTimer(int stateTimer) noexcept { mStateTimer = stateTimer; }
 
-    model* getModel() { return &mModel; }
+    model* getModel() noexcept { return &mModel; }
 
-    const int getScoreValue() const { return mScoreValue; }
+    const int getScoreValue() const noexcept { return mScoreValue; }
 
-    const float getRadius() const { return mRadius; }
+    const float getRadius() const noexcept { return mRadius; }
 
-    const float getAggression() const { return mAggression; }
+    const float getAggression() const noexcept { return mAggression; }
 
-    void setEdgeBounce(BOOL bounce) { mEdgeBounce = bounce; }
+    void setEdgeBounce(BOOL bounce) noexcept { mEdgeBounce = bounce; }
 
-    void setGridBound(BOOL gridBound) { mGridBound = gridBound; }
+    void setGridBound(BOOL gridBound) noexcept { mGridBound = gridBound; }
 
     virtual void runTransition();
     virtual void run();
@@ -111,10 +116,10 @@ public:
 
     virtual void draw();
 
-    virtual entity* getParent() { return this; }
+    virtual entity* getParent() noexcept { return this; }
 
-    int getGenId() const { return mGenId; }
-    void incGenId() { ++mGenId; }
+    int getGenId() const noexcept { return mGenId; }
+    void incGenId() noexcept { ++mGenId; }
 
 protected:
 

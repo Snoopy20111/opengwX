@@ -330,7 +330,7 @@ void entityRepulsor::spawnTransition()
     mShield3->mValue = -4;
 
     // Pick a random direction
-    mAngle = mathutils::frandFrom0To1() * (2*PI);
+    mAngle = mathutils::frandFrom0To1() * (D3DX_TAU);
 
     mAIState = State_Aiming;
 

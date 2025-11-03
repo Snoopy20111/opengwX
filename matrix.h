@@ -10,14 +10,17 @@ public:
 
     float _matrix[4][4];
 
-    matrix () { Identity(); }
+    matrix() noexcept { Identity(); }
 
-    matrix (const matrix& mat)
-    {
-        Copy(mat);
-    }
+    matrix (const matrix& mat) noexcept { Copy(mat); }
 
-    void Copy (const matrix& mat)
+    matrix(matrix&&) = delete;
+    matrix& operator=(const matrix&) = delete;
+    matrix& operator=(matrix&&) = delete;
+
+    ~matrix() {}
+
+    void Copy (const matrix& mat) noexcept
     {
 
         _matrix[0][0] = mat._matrix[0][0];  _matrix[0][1] = mat._matrix[0][1];  _matrix[0][2] = mat._matrix[0][2];  _matrix[0][3] = mat._matrix[0][3];
@@ -26,8 +29,7 @@ public:
         _matrix[3][0] = mat._matrix[3][0];  _matrix[3][1] = mat._matrix[3][1];  _matrix[3][2] = mat._matrix[3][2];  _matrix[3][3] = mat._matrix[3][3];
     }
 
-
-    inline void Identity()
+    inline void Identity() noexcept
     {
         _matrix[0][0]=1;  _matrix[0][1]=0;  _matrix[0][2]=0;  _matrix[0][3]=0;
         _matrix[1][0]=0;  _matrix[1][1]=1;  _matrix[1][2]=0;  _matrix[1][3]=0;
@@ -35,7 +37,7 @@ public:
         _matrix[3][0]=0;  _matrix[3][1]=0;  _matrix[3][2]=0;  _matrix[3][3]=1;
     }
 
-    inline void Multiply (const matrix& mat)
+    inline void Multiply (const matrix& mat) noexcept
     {
         int i,j;
 
@@ -53,12 +55,12 @@ public:
         }
     }
 
-    inline void Scale (float sx, float sy, float sz)
+    inline void Scale (float sx, float sy, float sz) noexcept
     {
         _matrix[0][0] *= sx;  _matrix[1][1] *= sy;  _matrix[2][2] *= sz;
     }
 
-    inline void Translate (float tx, float ty, float tz)
+    inline void Translate (float tx, float ty, float tz) noexcept
     {
         _matrix[3][0] += tx;  _matrix[3][1] += ty;  _matrix[3][2] += tz;
     }
@@ -89,18 +91,18 @@ public:
         Multiply(temp);
     }
 
-    inline void TransformVertex (const Point3d &vertex, Point3d* result) const
+    inline void TransformVertex (const Point3d &vertex, Point3d* result) const noexcept
     {
-        float x = vertex.x * _matrix[0][0] + vertex.y * _matrix[1][0] + vertex.z * _matrix[2][0] + _matrix[3][0];
-        float y = vertex.x * _matrix[0][1] + vertex.y * _matrix[1][1] + vertex.z * _matrix[2][1] + _matrix[3][1];
-        float z = vertex.x * _matrix[0][2] + vertex.y * _matrix[1][2] + vertex.z * _matrix[2][2] + _matrix[3][2];
+        const float x = vertex.x * _matrix[0][0] + vertex.y * _matrix[1][0] + vertex.z * _matrix[2][0] + _matrix[3][0];
+        const float y = vertex.x * _matrix[0][1] + vertex.y * _matrix[1][1] + vertex.z * _matrix[2][1] + _matrix[3][1];
+        const float z = vertex.x * _matrix[0][2] + vertex.y * _matrix[1][2] + vertex.z * _matrix[2][2] + _matrix[3][2];
 
         result->x = x;
         result->y = y;
         result->z = z;
     }
 
-    inline void ProjectVertex (Point3d &point, const Point3d &vertex, float distance) const
+    inline void ProjectVertex (Point3d &point, const Point3d &vertex, float distance) const noexcept
     {
         // avoid divide by zero error...
         float z = vertex.z;

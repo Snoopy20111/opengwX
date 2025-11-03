@@ -86,7 +86,7 @@ void entityWanderer::run()
         // Change direction when we hit the grid edges
 		if (game::mGrid.hitTest(mPos, getRadius()*2))
         {
-            mCurrentHeading = mathutils::frandFrom0To1() * (2*PI);
+            mCurrentHeading = mathutils::frandFrom0To1() * (D3DX_TAU);
         }
     }
     entity::run();
@@ -100,7 +100,7 @@ void entityWanderer::spawnTransition()
     mAngle = 0;
 
     // Pick a random direction
-    mCurrentHeading = mathutils::frandFrom0To1() * (2*PI);
+    mCurrentHeading = mathutils::frandFrom0To1() * (D3DX_TAU);
 
     mAngle = 0;
     mRotationRate = mFlipped ? -.12 : .12;

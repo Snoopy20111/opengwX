@@ -97,7 +97,7 @@ void entityPlayerMissile::run()
     mPos += mSpeed;
     mPos += mDrift;
     mAngle -= mRotationRate;
-    mAngle = fmodf(mAngle, 2.0f*PI);
+    mAngle = fmodf(mAngle, D3DX_TAU);
 
     // Update the model's matrix
     mModel.Identity();
@@ -200,7 +200,7 @@ void entityPlayerMissile::destroyTransition()
     Point3d pos(this->mPos);
     Point3d angle(0,0,0);
     float speed = 2;
-    float spread = 2*PI;
+    float spread = D3DX_TAU;
     int num = 20;
     int timeToLive = 200;
     vector::pen pen = mPen;

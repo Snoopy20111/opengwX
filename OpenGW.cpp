@@ -117,7 +117,7 @@ void createOffscreens()
 
 void drawOffscreens()
 {
-    int viewport[4];
+    //int viewport[4];
     //glGetIntegerv(GL_VIEWPORT,(int*)viewport);
 
     if (theGame.mSettings.mEnableGlow)

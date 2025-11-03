@@ -14,20 +14,20 @@
 #include "player.h"
 
 
-const int numEnemyWanderer    = 100;
-const int numEnemyGrunt       = 200;
-const int numEnemySpinner     = 100;
-const int numEnemyTinySpinner = 100;
-const int numEnemyWeaver      = 200;
-const int numEnemySnake       = 50;
-const int numEnemyBlackHole   = 8;
-const int numEnemyRepulsor    = 4;
-const int numEnemyMayfly      = 400;
-const int numEnemyProton      = 200;
+constexpr int numEnemyWanderer    = 100;
+constexpr int numEnemyGrunt       = 200;
+constexpr int numEnemySpinner     = 100;
+constexpr int numEnemyTinySpinner = 100;
+constexpr int numEnemyWeaver      = 200;
+constexpr int numEnemySnake       = 50;
+constexpr int numEnemyBlackHole   = 8;
+constexpr int numEnemyRepulsor    = 4;
+constexpr int numEnemyMayfly      = 400;
+constexpr int numEnemyProton      = 200;
 
 
-#define NUM_ENEMIES (numEnemyWanderer + numEnemyGrunt + numEnemySpinner + numEnemyTinySpinner + numEnemyWeaver + numEnemySnake + numEnemyBlackHole + numEnemyRepulsor + numEnemyMayfly + numEnemyProton)
-#define NUM_LINES 250
+constexpr int NUM_ENEMIES = numEnemyWanderer + numEnemyGrunt + numEnemySpinner + numEnemyTinySpinner + numEnemyWeaver + numEnemySnake + numEnemyBlackHole + numEnemyRepulsor + numEnemyMayfly + numEnemyProton;
+constexpr int NUM_LINES = 250;
 
 class enemies
 {

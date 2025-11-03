@@ -767,7 +767,7 @@ void player::destroyTransition()
     Point3d pos(this->mPos);
     Point3d angle(0,0,0);
     float speed = 2.0;
-    float spread = 2*PI;
+    float spread = D3DX_TAU;
     int num = 500;
     int timeToLive = 200;
     vector::pen pen = mPen;

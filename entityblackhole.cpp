@@ -87,7 +87,7 @@ void entityBlackHole::run()
                 if (enemy)
                 {
                     const float distance = mathutils::frandFrom0To1() * 10;
-                    float angle = mathutils::frandFrom0To1() * (2*PI);
+                    float angle = mathutils::frandFrom0To1() * (D3DX_TAU);
                     Point3d spawnPoint(distance, 0, 0);
                     spawnPoint = mathutils::rotate2dPoint(spawnPoint, angle);
 
@@ -187,7 +187,7 @@ void entityBlackHole::run()
     if (mActivated)
     {
         float delta_theta = .1;
-        for (float a = 0; a < 2*PI; a += delta_theta )
+        for (float a = 0; a < D3DX_TAU; a += delta_theta )
         {
             if (mathutils::frandFrom0To1() > .99)
             {
@@ -196,9 +196,9 @@ void entityBlackHole::run()
                 pos += mPos;
 
                 Point3d direction(0,1,0);
-                mathutils::rotate2dPoint(direction, mathutils::frandFrom0To1()*2*PI);
+                mathutils::rotate2dPoint(direction, mathutils::frandFrom0To1()*D3DX_TAU);
                 float speed = 0.1;
-                float spread = 2*PI;
+                float spread = D3DX_TAU;
                 int num = 1;
                 int timeToLive = mathutils::frandFrom0To1() * 300;
 
@@ -272,7 +272,7 @@ void entityBlackHole::destroyTransition()
         Point3d pos(this->mPos);
         Point3d angle(0,0,0);
         float speed = ((float)i/200) * 1000;
-        float spread = 2*PI;
+        float spread = D3DX_TAU;
         int num = 1;
         int timeToLive = mathutils::frandFrom0To1() * 300;
         vector::pen pen = mPen;
@@ -671,7 +671,7 @@ void entityBlackHole::drawRing()
 
     //glBegin(GL_LINE_LOOP);
 
-    for (float angle = 0; angle < 2*PI; angle += delta_theta )
+    for (float angle = 0; angle < D3DX_TAU; angle += delta_theta )
     {
         //glVertex3f( mPos.x + (r*get_cos(angle)), mPos.y + (r*get_sin(angle)), 0 );
     }
@@ -685,7 +685,7 @@ void entityBlackHole::drawRing()
     }
 }
 
-void entityBlackHole::feed(int points)
+void entityBlackHole::feed(int points) noexcept
 {
     mPoints += points * 2;
     mStrength += .06;

@@ -33,7 +33,7 @@ void spawner::run(void)
     // Update our spawn index
     if (getSpawnIndex() < MAX_SPAWN_INDEX)
     {
-        mSpawnIndex += .0008;
+        mSpawnIndex += .0008f;
         if (mSpawnIndex > MAX_SPAWN_INDEX) mSpawnIndex = MAX_SPAWN_INDEX;
         if (getSpawnIndex() > mLastSpawnIndex)
         {
@@ -383,7 +383,7 @@ void spawner::runWaves()
                         float ry = (mathutils::frandFrom0To1() * 4)-2;
 
                         Point3d spawnPoint(wd->entityType == entity::ENTITY_TYPE_BLACKHOLE ? 80 : 40, 0, 0);
-                        spawnPoint = mathutils::rotate2dPoint(spawnPoint, mathutils::frandFrom0To1() * (2*PI));
+                        spawnPoint = mathutils::rotate2dPoint(spawnPoint, mathutils::frandFrom0To1() * D3DX_TAU);
                         spawnPoint.x += playerPos.x + rx;
                         spawnPoint.y += playerPos.y + ry;
 

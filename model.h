@@ -20,9 +20,9 @@ public:
         int to;
     }Edge;
 
-    void Identity() { mMatrix.Identity(); }
-    void Scale(Point3d scale) { mMatrix.Scale(scale.x, scale.y, scale.z); }
-    void Translate(Point3d trans) { mMatrix.Translate(trans.x, trans.y, trans.z); }
+    void Identity() noexcept { mMatrix.Identity(); }
+    void Scale(Point3d scale) noexcept { mMatrix.Scale(scale.x, scale.y, scale.z); }
+    void Translate(Point3d trans) noexcept { mMatrix.Translate(trans.x, trans.y, trans.z); }
     void Rotate(float angle) { mMatrix.Rotate(0, 0, angle); }
     void Rotate(float x, float y, float z) { mMatrix.Rotate(x, y, z); }
 

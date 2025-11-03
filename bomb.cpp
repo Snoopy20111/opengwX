@@ -147,7 +147,7 @@ void bomb::startBomb(Point3d pos, float radius, float thickness, float speed, in
         ring->pen = pen;
 
         Point3d angle(0,0,0);
-        float spread = 2*PI;
+        float spread = D3DX_TAU;
         int num = 100;
         int timeToLive = ring->timeToLive;
         pen.lineRadius=5;

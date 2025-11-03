@@ -6,8 +6,8 @@ namespace mathutils
 {
     float wrapRadians(float radians)
     {
-        radians = fmodf(radians, RADIAN);
-        if (radians < 0.0) radians += RADIAN;
+        radians = fmodf(radians, D3DX_TAU);
+        if (radians < 0.0) radians += D3DX_TAU;
         return radians;
     }
 
@@ -41,23 +41,23 @@ namespace mathutils
             if (dy == 0)
                 angle = 0;
             else if (dy > 0)
-                angle = PI/2;
+                angle = D3DX_PI/2;
             else
-                angle = PI * 3.0 / 2.0;
+                angle = D3DX_PI * 3.0 / 2.0;
         }
         else if (dy == 0)
         {
             if (dx > 0)
                 angle = 0;
             else
-                angle = PI;
+                angle = D3DX_PI;
         }
         else
         {
             if (dx < 0)
-                angle = atan(dy/dx) + PI;
+                angle = atan(dy/dx) + D3DX_PI;
             else if (dy < 0)
-                angle = atan(dy/dx) + (2*PI);
+                angle = atan(dy/dx) + D3DX_TAU;
             else
                 angle = atan(dy/dx);
         }
@@ -107,7 +107,7 @@ namespace mathutils
         return pt;
     }
 
-    Point3d translate2dPoint(const Point3d& point, Point3d translation)
+    Point3d translate2dPoint(const Point3d& point, Point3d translation) noexcept
     {
         Point3d pt(point.x + translation.x, point.y + translation.y);
         return pt;
@@ -232,7 +232,7 @@ namespace mathutils
         return distance < 1 ? true : false;
     }
 
-    bool approximatelyEqual(float testValue, float eval, float tolerance)
+    bool approximatelyEqual(float testValue, float eval, float tolerance) noexcept
     {
         return ((eval > (testValue - tolerance)) && (eval < (testValue + tolerance)));
     }

@@ -9,9 +9,9 @@ namespace vector
     class pen
     {
         public:
-          pen() {r=g=b=a=1; lineRadius=1;}
-          pen(float _r, float _g, float _b, float _a, float _radius) { r=_r; g=_g, b=_b; a=_a; lineRadius=_radius; }
-          pen(const pen& p, float _a, float _radius) { r=p.r; g=p.g, b=p.b; a=_a; lineRadius=_radius; }
+          pen() noexcept {r=g=b=a=1; lineRadius=1;}
+          pen(float _r, float _g, float _b, float _a, float _radius) noexcept { r=_r; g=_g, b=_b; a=_a; lineRadius=_radius; }
+          pen(const pen& p, float _a, float _radius) noexcept { r=p.r; g=p.g, b=p.b; a=_a; lineRadius=_radius; }
           float r,g,b,a;
           float lineRadius;
     };
@@ -19,7 +19,7 @@ namespace vector
     class vector
     {
         public:
-          vector() {;}
+          vector() noexcept {}
           vector(const Point3d& p1, const Point3d& p2) { from = p1; to = p2; }
           Point3d from, to;
     };

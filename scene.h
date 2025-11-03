@@ -19,7 +19,7 @@ public:
 
     void run();
     void draw(int pass);
-	void size(float w, float h) { mWidth = w; mHeight = h; mAspect = w/h; }
+	void size(float w, float h) noexcept { mWidth = w; mHeight = h; mAspect = w/h; }
 
 	void glEnable2D();
 	void glDisable2D();

@@ -1,8 +1,8 @@
 #include "entitysnake.h"
 #include "game.h"
 
-#define NUM_SEGMENTS 23
-#define NUM_SEG_STREAM_ITEMS 5 // sets the spacing between segments
+constexpr int NUM_SEGMENTS = 23;
+constexpr int NUM_SEG_STREAM_ITEMS = 5; // sets the spacing between segments
 
 
 // PERFORMANCE: ~Something~ about the snakes causes a huge slowdown. No idea if it's the drawing or something else in the run() code...
@@ -57,35 +57,37 @@ public:
             mSegmentStream[i].pos = mPos;
             mSegmentStream[i].angle = mAngle;
         }
+
+        mParent = NULL;
     }
 
-    void setParent(entity* parent)
+    void setParent(entity* parent) noexcept
     {
         mParent = parent;
     }
 
-    virtual entity* getParent()
+    virtual entity* getParent() noexcept
     {
         return mParent;
     }
 
-    void setStreamHead(const SegmentStreamItem& item)
+    void setStreamHead(const SegmentStreamItem& item) noexcept
     {
         mSegmentStream[0].pos = item.pos;
         mSegmentStream[0].angle = item.angle;
     }
 
-    const SegmentStreamItem getStreamHead()
+    const SegmentStreamItem getStreamHead() noexcept
     {
         return mSegmentStream[0];
     }
 
-    const SegmentStreamItem getStreamTail()
+    const SegmentStreamItem getStreamTail() noexcept
     {
         return mSegmentStream[(int)mTail];
     }
 
-    void draw()
+    void draw() override
     {
         if (this->getState() == entity::ENTITY_STATE_INDICATING)
         {
@@ -120,16 +122,16 @@ public:
     {
         vector::pen pen = mPen;
 
-        Point3d scale = mScale;
-        Point3d trans = mPos;
+        const Point3d scale = mScale;
+        const Point3d trans = mPos;
 
-        float inc = 1.0f / total;
+        const float inc = 1.0f / total;
         float progress = index * inc;
 
         // *********************************************
         {
 
-            progress = 1-progress;
+            progress = 1 - progress;
 
             float a = progress;
             if (a<0) a = 0;
@@ -138,7 +140,7 @@ public:
             pen.a = a;
 
             mModel.Identity();
-            Point3d s(scale.x * progress * 1, scale.y, scale.z);
+            const Point3d s(scale.x * progress * 1, scale.y, scale.z);
             mModel.Scale(s);
             mModel.Rotate(mAngle);
             mModel.Translate(trans);
@@ -147,7 +149,7 @@ public:
         }
     }
 
-    void run()
+    void run() override
     {
         entity::run();
 
@@ -169,13 +171,13 @@ public:
         }
     }
 
-    void spawnTransition()
+    void spawnTransition() override
     {
         entity::spawnTransition();
 		mTail = NUM_SEG_STREAM_ITEMS-1;
     }
 
-	void postSpawnTransition()
+	void postSpawnTransition() noexcept
 	{
         // Set up all the segments
         for (int i=0; i<NUM_SEG_STREAM_ITEMS; i++)
@@ -185,7 +187,7 @@ public:
         }
 	}
 
-    void destroyTransition()
+    void destroyTransition() override
     {
         setState(ENTITY_STATE_DESTROYED);
         mStateTimer = mDestroyTime;
@@ -193,10 +195,10 @@ public:
         // Throw out some particles
         Point3d pos(this->mPos);
         Point3d angle(0,0,0);
-        float speed = 1.2;
-        float spread = 2*PI;
-        int num = 10;
-        int timeToLive = 150;
+        constexpr float speed = 1.2;
+        constexpr float spread = 2 * D3DX_PI;
+        constexpr int num = 10;
+        constexpr int timeToLive = 150;
         vector::pen pen = mPen;
         pen.r *= 1.2;
         pen.g *= 1.2;
@@ -209,12 +211,12 @@ public:
         game::mEnemies.explodeEntity(*this);
     }
 
-    void destroy()
+    void destroy() override
     {
         entity::destroy();
     }
 
-    void hit(entity* aEntity)
+    void hit(entity* aEntity) noexcept override
     {
         // Do nothing and don't call the base class method (tail segments are invinsible)
     }
@@ -225,7 +227,7 @@ public:
 
 //////////////////////////////////////////////////////////////////////////
 
-entitySnake::entitySnake()
+entitySnake::entitySnake() noexcept
 {
     mScale = 1.25;
     mRadius = 3;
@@ -377,7 +379,7 @@ void entitySnake::spawnTransition()
     entity::spawnTransition();
 
 	// Aim towards the closest player
-	mAngle = mathutils::frandFrom0To1() * 2 * PI;
+	mAngle = mathutils::frandFrom0To1() * D3DX_TAU;
 
     updateTarget();
 
@@ -570,7 +572,7 @@ void entitySnake::updateTarget()
     // Pick a random point around us
     const float distance = 40;
 
-    float angle = mathutils::frandFrom0To1() * (2*PI);
+    float angle = mathutils::frandFrom0To1() * (D3DX_TAU);
     mTarget = Point3d(distance, 0, 0);
     mTarget = mathutils::rotate2dPoint(mTarget, angle);
     mTarget += mPos;
@@ -590,11 +592,3 @@ void entitySnake::updateTarget()
     else if (mTarget.y > topEdge)
         mTarget.y = topEdge;
 }
-
-
-
-
-
-
-
-

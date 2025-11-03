@@ -31,13 +31,13 @@ private:
     bool readKeyboardPause(int player);
     */
 
-    // XBox controller
-    Point3d readXBoxControllerLeftStick(int player);
-    Point3d readXBoxControllerRightStick(int player);
-    bool readXBoxControllerTrigger(int player);
-    bool readXBoxStart(int player);
-    bool readXBoxBack(int player);
-    bool readXBoxPause(int player);
+    // Xbox controller
+    Point3d readXboxControllerLeftStick(int player);
+    Point3d readXboxControllerRightStick(int player);
+    bool readXboxControllerTrigger(int player);
+    bool readXboxStart(int player);
+    bool readXboxBack(int player);
+    bool readXboxPause(int player);
 
     SDL_Joystick* mControllers[4];
 
